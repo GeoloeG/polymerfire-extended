@@ -1,0 +1,28 @@
+{
+  "name": "firebase-auth-dialog",
+  "version": "0.1.0",
+  "authors": [
+    "Pascal Gula aka MeTaNoV"
+  ],
+  "description": "TODO",
+  "keywords": [
+    "web",
+    "component",
+    "polymer",
+    "firebase",
+    "auth",
+    "dialog",
+  ],
+  "main": "firebase-auth-dialog.html",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/MeTaNoV/firebase-auth-dialog/",
+  "ignore": [],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.0.0",
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^3.4.0"
+  }
+}
