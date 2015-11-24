@@ -1,61 +1,54 @@
-# firebase-auth-dialog
+[![Bower version](https://badge.fury.io/bo/gold-password-input.svg)](https://badge.fury.io/bo/gold-password-input)
+[![Build Status](https://travis-ci.org/MeTaNoV/gold-password-input.svg?branch=master)](https://travis-ci.org/MeTaNoV/gold-password-input)
+[![Dependency Status](https://gemnasium.com/MeTaNoV/gold-password-input.svg)](https://gemnasium.com/MeTaNoV/gold-password-input)
 
-An element providing a starting point for your own reusable Polymer elements.
+[![Stories in Ready](https://badge.waffle.io/MeTaNoV/gold-password-input.svg?label=ready&title=Ready)](http://waffle.io/MeTaNoV/gold-password-input)
+[![Stories in Progress](https://badge.waffle.io/MeTaNoV/gold-password-input.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/MeTaNoV/gold-password-input)
+[![Stories in Done](https://badge.waffle.io/MeTaNoV/gold-password-input.svg?label=done&title=Done)](http://waffle.io/MeTaNoV/gold-password-input)
 
+## Demo
 
-## Dependencies
+[https://metanov.github.io/gold-password-input/](https://metanov.github.io/gold-password-input/)
 
-Element dependencies are managed via [Bower](http://bower.io/). You can
-install that via:
+## Install
 
-    npm install -g bower
+Install the component using [Bower](http://bower.io/):
 
-Then, go ahead and download the element's dependencies:
+```sh
+$ bower install gold-password-input --save
+```
 
-    bower install
+## Usage
 
+Import Custom Element:
 
-## Playing With Your Element
+```html
+<link rel="import" href="bower_components/gold-password-input/gold-password-input.html">
+```
 
-If you wish to work on your element in isolation, we recommend that you use
-[Polyserve](https://github.com/PolymerLabs/polyserve) to keep your element's
-bower dependencies in line. You can install it via:
+And then use it:
 
-    npm install -g polyserve
+```html
+<gold-password-input></gold-password-input>
+```
+or
+```html
+<gold-password-input strength-meter></gold-password-input>
+```
 
-And you can run it via:
+See the [Documentation](https://metanov.github.io/gold-password-input/) for more options.
 
-    polyserve
+## Contributing
 
-Once running, you can preview your element at
-`http://localhost:8080/components/firebase-auth-dialog/`, where `firebase-auth-dialog` is the name of the directory containing it.
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
 
+## License
 
-## Testing Your Element
+[MIT License](http://opensource.org/licenses/MIT) © Pascal Gula
 
-Simply navigate to the `/test` directory of your element to run its tests. If
-you are using Polyserve: `http://localhost:8080/components/firebase-auth-dialog/test/`
+[![Throughput Graph](https://graphs.waffle.io/MeTaNoV/gold-password-input/throughput.svg)](https://waffle.io/MeTaNoV/gold-password-input/metrics)
 
-### web-component-tester
-
-The tests are compatible with [web-component-tester](https://github.com/Polymer/web-component-tester).
-Install it via:
-
-    npm install -g web-component-tester
-
-Then, you can run your tests on _all_ of your local browsers via:
-
-    wct
-
-#### WCT Tips
-
-`wct -l chrome` will only run tests in chrome.
-
-`wct -p` will keep the browsers alive after test runs (refresh to re-run).
-
-`wct test/some-file.html` will test only the files you specify.
-
-
-## Yeoman support
-
-If you'd like to use Yeoman to scaffold your element that's possible. The official [`generator-polymer`](https://github.com/yeoman/generator-polymer) generator has a [`seed`](https://github.com/yeoman/generator-polymer#seed) subgenerator.

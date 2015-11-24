@@ -15,7 +15,6 @@ Example:
 @hero hero.svg
 -->
 <dom-module id="firebase-auth-dialog">
-
   <template>
 
     <style>
@@ -25,111 +24,135 @@ Example:
     </style>
   
     <paper-dialog>
-      <h2>Dialog Title</h2>
+      <h2>[[_computeHeader(type)]]</h2>
+      <div class="buttons">
+        <paper-button dialog-confirm>[[_computeConfirm(type)]]</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+      </div>
     </paper-dialog>
 
   </template>
+  <script>
+    (function() {
+      /**
+       * Enum dialog type values.
+       * @readonly
+       * @enum {string}
+       */
+      var DialogTypeValue = {
+          REGISTER: 'register',
+          LOGIN: 'login'
+      };
 
+      Polymer({
+
+        is: 'firebase-auth-dialog',
+
+        properties: {
+
+          /**
+           * `type` indicates the type of authentication dialog to use. It can hold currently two 
+           * values, namely DialogTypeValue.REGISTER and DialogTypeValue.LOGIN.
+           * TODO PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
+           *
+           * @type {string}
+           */
+          type: {
+            type: String,
+            value: DialogTypeValue.REGISTER
+          },
+
+          /**
+           * Describes the author of the element, but is really just an excuse to
+           * show off JSDoc annotations.
+           *
+           * @type {{name: string, image: string}}
+           */
+          author: {
+            type: Object,
+            value: function() {
+              return {
+                name:  'Dimitri Glazkov',
+                image: 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg',
+              };
+            }
+          },
+
+        },
+
+        // Element Lifecycle
+
+        ready: function() {
+          // `ready` is called after all elements have been configured, but
+          // propagates bottom-up. This element's children are ready, but parents
+          // are not.
+          //
+          // This is the point where you should make modifications to the DOM (when
+          // necessary), or kick off any processes the element wants to perform.
+        },
+
+        attached: function() {
+          // `attached` fires once the element and its parents have been inserted
+          // into a document.
+          //
+          // This is a good place to perform any work related to your element's
+          // visual state or active behavior (measuring sizes, beginning animations,
+          // loading resources, etc).
+        },
+
+        detached: function() {
+        },
+
+        // Element Behavior
+
+        /**
+         * The `firebase-auth-dialog-lasers` event is fired whenever `fireLasers` is called.
+         *
+         * @event firebase-auth-dialog-lasers
+         * @detail {{sound: String}}
+         */
+
+        /**
+         * Attempt to destroy this element's enemies with a beam of light!
+         *
+         * Or, at least, dispatch an event in the vain hope that someone else will
+         * do the zapping.
+         */
+        fireLasers: function() {
+          this.fire('firebase-auth-dialog-lasers', {sound: 'Pew Pew!'});
+        },
+
+        /**
+         * @param {string} Type of the Dialog.
+         * @return {string} The label of the header.
+         */
+        _computeHeader(type) {
+          switch(type) {
+            case DialogTypeValue.REGISTER:
+              return DialogTypeValue.REGISTER;
+            case DialogTypeValue.LOGIN:
+              return DialogTypeValue.LOGIN;
+            default:
+              // TODO PG: signal a warning!
+          }
+        },
+        /**
+         * @param {string} Type of the Dialog.
+         * @return {string} The label of the confirm button.
+         */
+        _computeConfirm(type) {
+          switch(type) {
+            case DialogTypeValue.REGISTER:
+              return DialogTypeValue.REGISTER;
+            case DialogTypeValue.LOGIN:
+              return DialogTypeValue.LOGIN;
+            default:
+              // TODO PG: signal a warning!
+          }
+        },
+
+      });
+    }());
+  </script>
 </dom-module>
 
-<script>
-
-  Polymer({
-
-    is: 'firebase-auth-dialog',
-
-    properties: {
-
-      /**
-       * `fancy` indicates that the element should don a monocle and tophat,
-       * while checking its pocket watch.
-       */
-      fancy: Boolean,
-
-      /**
-       * Describes the author of the element, but is really just an excuse to
-       * show off JSDoc annotations.
-       *
-       * @type {{name: string, image: string}}
-       */
-      author: {
-        type: Object,
-        // Use `value` to provide a default value for a property, by setting it
-        // on your element's prototype.
-        //
-        // If you provide a function, as we do here, Polymer will call that
-        // _per element instance_.
-        //
-        // We do that to ensure that each element gets its own copy of the
-        // value, rather than having it shared across all instances (via the
-        // prototype).
-        value: function() {
-          return {
-            name:  'Dimitri Glazkov',
-            image: 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg',
-          };
-        }
-      },
-
-    },
-
-    // Element Lifecycle
-
-    ready: function() {
-      // `ready` is called after all elements have been configured, but
-      // propagates bottom-up. This element's children are ready, but parents
-      // are not.
-      //
-      // This is the point where you should make modifications to the DOM (when
-      // necessary), or kick off any processes the element wants to perform.
-    },
-
-    attached: function() {
-      // `attached` fires once the element and its parents have been inserted
-      // into a document.
-      //
-      // This is a good place to perform any work related to your element's
-      // visual state or active behavior (measuring sizes, beginning animations,
-      // loading resources, etc).
-    },
-
-    detached: function() {
-      // The analog to `attached`, `detached` fires when the element has been
-      // removed from a document.
-      //
-      // Use this to clean up anything you did in `attached`.
-    },
-
-    // Element Behavior
-
-    /**
-     * The `firebase-auth-dialog-lasers` event is fired whenever `fireLasers` is called.
-     *
-     * @event firebase-auth-dialog-lasers
-     * @detail {{sound: String}}
-     */
-
-    /**
-     * Sometimes it's just nice to say hi.
-     *
-     * @param {string} greeting A positive greeting.
-     * @return {string} The full greeting.
-     */
-    sayHello: function(greeting) {
-      var response = greeting || 'Hello World!';
-      return 'firebase-auth-dialog says, ' + response;
-    },
-
-    /**
-     * Attempt to destroy this element's enemies with a beam of light!
-     *
-     * Or, at least, dispatch an event in the vain hope that someone else will
-     * do the zapping.
-     */
-    fireLasers: function() {
-      this.fire('firebase-auth-dialog-lasers', {sound: 'Pew pew!'});
-    }
-
-  });
-
-</script>

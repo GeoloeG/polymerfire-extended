@@ -6,23 +6,34 @@
   ],
   "description": "TODO",
   "keywords": [
+    "web-components",
     "web",
     "component",
+    "custom",
+    "element",
     "polymer",
     "firebase",
     "auth",
-    "dialog",
+    "dialog"
   ],
   "main": "firebase-auth-dialog.html",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MeTaNoV/firebase-auth-dialog.git"
+  },
   "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://github.com/MeTaNoV/firebase-auth-dialog/",
+  "homepage": "https://metanov.github.io/firebase-auth-dialog/",
   "ignore": [],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
-    "paper-dialog": "PolymerElements/paper-dialog#^1.0.0",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.0.0"
   },
   "devDependencies": {
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-validator-behavior": "PolymerElements/iron-validator-behavior#^1.0.0",
+    "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
     "web-component-tester": "^3.4.0"
   }
 }
