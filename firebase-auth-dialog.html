@@ -1,6 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../gold-email-input/gold-email-input.html">
+<link rel="import" href="../gold-password-input/gold-password-input.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -25,6 +28,14 @@ Example:
   
     <paper-dialog>
       <h2>[[_computeHeader(type)]]</h2>
+      <div class="services">
+        <!-- TODO PG: add the service buttons (Google and Facebook)         -->
+        <paper-button>Google</paper-button>
+        <paper-button>Facebook</paper-button>
+      </div>
+      <div class="user-inputs">
+        <!-- TODO PG: Add the gold input fields! -->
+      </div>
       <div class="buttons">
         <paper-button dialog-confirm>[[_computeConfirm(type)]]</paper-button>
         <paper-button dialog-dismiss>Cancel</paper-button>
@@ -49,7 +60,6 @@ Example:
         is: 'firebase-auth-dialog',
 
         properties: {
-
           /**
            * `type` indicates the type of authentication dialog to use. It can hold currently two 
            * values, namely DialogTypeValue.REGISTER and DialogTypeValue.LOGIN.
