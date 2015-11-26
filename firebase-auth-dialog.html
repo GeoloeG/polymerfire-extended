@@ -2,16 +2,17 @@
 
 <link rel="import" href="../firebase-element/firebase-auth.html">
 
-<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../neon-animation/neon-animations.html">
 <link rel="import" href="../gold-email-input/gold-email-input.html">
 <link rel="import" href="../gold-password-input/gold-password-input.html">
 <link rel="import" href="../gold-password-input/gold-password-input-validator.html">
 
 <!--
-This component provides a default Register/Login dialog to use Firebase underlying authentication 
-features.
+`<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverage firebase authentication in a flexible way. You can setup a 'Register' or 'Login' flavor. You can configure the providers accessible within the dialog.
+See `Polymer.PaperDialogBehavior` for specifics.
 
 Example:
 
@@ -19,12 +20,34 @@ Example:
       type="Register"
       location="https://metanov-test.firebaseio.com"
       providers='["google", "facebook"]'
-      user="{{user}}"
-      status-known="{{statusKnown}}"
+      modal
       >
     </firebase-auth-dialog>
 
-The `type` property should be set prior to calling the `open()` method.
+### Styling
+
+See the docs of `Polymer.PaperDialogBehavior` for the custom properties available for styling
+this element.
+
+### Animations
+
+Set the `entry-animation` and/or `exit-animation` attributes to add an animation when the dialog
+is opened or closed. See the documentation in
+[PolymerElements/neon-animation](https://github.com/PolymerElements/neon-animation) for more info.
+
+For example:
+
+    <link rel="import" href="components/neon-animation/animations/scale-up-animation.html">
+    <link rel="import" href="components/neon-animation/animations/fade-out-animation.html">
+
+    <firebase-auth-dialog entry-animation="scale-up-animation"
+                  exit-animation="fade-out-animation">
+    </firebase-auth-dialog>
+
+### Accessibility
+
+See the docs of `Polymer.PaperDialogBehavior` for accessibility features implemented by this
+element.
 
 @group GoogleWebComponents Elements
 @element firebase-auth-dialog
@@ -33,6 +56,7 @@ The `type` property should be set prior to calling the `open()` method.
 -->
 <dom-module id="firebase-auth-dialog">
   <template>
+    <style include="paper-dialog-shared-styles"></style>
 
     <style>
       :host {
@@ -59,72 +83,61 @@ The `type` property should be set prior to calling the `open()` method.
 
     <!-- TODO PG: set provider on the ontap from the relevant provider button  -->
     <firebase-auth id="firebaseAuth" 
+      type="Register"
       location="[[location]]"
-      provider="password"
-      user="{{user}}"
-      status-known="{{statusKnown}}"
-      on-error="_errorHandler"
-      on-login="_loginHandler"
-      on-user-created="_userSuccessHandler">
+      provider="password">
     </firebase-auth>
 
     <!-- TODO PG: test with and without backdrop -->
-    <paper-dialog
-      entry-animation="scale-up-animation" 
-      exit-animation="fade-out-animation" 
-      modal 
-      with-backdrop>
+    <h2>[[_computeHeader(type)]]</h2>
 
-      <h2>[[_computeHeader(type)]]</h2>
+    <span>{{type}} with the following provider(s):</span>
+    <div class="services">
+      <template is="dom-repeat" items={{providers}} as="provider">
+        <paper-button class$="[[provider]]">[[provider]]</paper-button>
+      </template>
+    </div>
 
-      <span>{{type}} with the following provider(s):</span>
-      <div class="services">
-        <template is="dom-repeat" items={{providers}} as="provider">
-          <paper-button class$="[[provider]]">[[provider]]</paper-button>
-        </template>
-      </div>
+    <span>or with your account</span>
+    <div class="user-inputs">
+      <!-- Email input -->
+      <gold-email-input id="email"
+        required
+        auto-validate
+        error-message="Please, enter a valid email">
+      </gold-email-input>
+      <!-- Primary password input -->
+      <gold-password-input id="primary-password"
+        required 
+        auto-validate 
+        minlength="6" 
+        error-message="The password must contain at least 6 characters" 
+        autocomplete=[[_computeAutocomplete(type)]]
+        strength-meter
+        value={{primaryValue}}>
+      </gold-password-input>
+      <!-- Verification password input -->
+      <gold-password-input-validator
+        pattern="[[primaryValue]]">
+      </gold-password-input-validator>
+      <gold-password-input id="verification-password"
+        required
+        auto-validate
+        validator="gold-password-input-validator"
+        error-message="The verification password you entered is different!">
+      </gold-password-input>
+    </div>
 
-      <span>or with your account</span>
-      <div class="user-inputs">
-        <!-- Email input -->
-        <gold-email-input id="email"
-          required
-          auto-validate
-          error-message="Please, enter a valid email">
-        </gold-email-input>
-        <!-- Primary password input -->
-        <gold-password-input id="primary-password"
-          required 
-          auto-validate 
-          minlength="6" 
-          error-message="The password must contain at least 6 characters" 
-          autocomplete=[[_computeAutocomplete(type)]]
-          strength-meter
-          password={{primaryValue}}>
-        </gold-password-input>
-        <!-- Verification password input -->
-        <gold-password-input-validator
-          pattern="[[primaryValue]]">
-        </gold-password-input-validator>
-        <gold-password-input id="verification-password"
-          required
-          validator="gold-password-input-validator"
-          error-message="The verification password you entered is different!">
-        </gold-password-input>
-      </div>
+    <!-- Add a remember me option -->
 
-      <!-- Add a remember me option -->
-
-      <div class="buttons">
-        <paper-button dialog-confirm
-          disabled="_computeConfirmDisabled(type)"
-          on-tap="_handleConfirm">
-            [[_computeConfirm(type)]]
-        </paper-button>
-        <paper-button dialog-dismiss>Cancel</paper-button>
-      </div>
-
-    </paper-dialog>
+    <div class="buttons">
+      <paper-button dialog-confirm
+        disabled="_computeConfirmDisabled(type)"
+        on-tap="_handleConfirm">
+          [[_computeConfirm(type)]]
+      </paper-button>
+      <paper-button dialog-dismiss>Cancel</paper-button>
+    </div>
 
   </template>
   <script>
@@ -142,6 +155,15 @@ The `type` property should be set prior to calling the `open()` method.
       Polymer({
 
         is: 'firebase-auth-dialog',
+
+        behaviors: [
+          Polymer.PaperDialogBehavior,
+          Polymer.NeonAnimationRunnerBehavior
+        ],
+
+        listeners: {
+          'neon-animation-finish': '_onNeonAnimationFinish'
+        },
 
         properties: {
           /**
@@ -171,32 +193,8 @@ The `type` property should be set prior to calling the `open()` method.
            */
           providers: {
             type: Array,
-            value: []
-          },
-
-          /**
-           * When true, login status can be determined by checking `user` property.
-           *
-           * @type {boolean}
-           */
-          statusKnown: {
-            type: Boolean,
-            value: false,
-            notify: true,
-            readOnly: true,
-          },
-
-          /**
-           * When logged in, this property reflects the firebase user auth object.
-           *
-           * @type TODO PG: {{name: string, image: string}}
-           */
-          user: {
-            type: Object,
-            value: {},
-            readOnly: true,
-            notify: true
-          },
+            value: function() { return []; }
+          }
         },
 
         // Element Lifecycle
@@ -225,6 +223,27 @@ The `type` property should be set prior to calling the `open()` method.
         //
         // Element Behavior
         //
+        _renderOpened: function() {
+          if (this.withBackdrop) {
+            this.backdropElement.open();
+          }
+          this.playAnimation('entry');
+        },
+
+        _renderClosed: function() {
+          if (this.withBackdrop) {
+            this.backdropElement.close();
+          }
+          this.playAnimation('exit');
+        },
+
+        _onNeonAnimationFinish: function() {
+          if (this.opened) {
+            this._finishRenderOpened();
+          } else {
+            this._finishRenderClosed();
+          }
+        },
 
         _computeAutocomplete(type) {
           switch(type) {

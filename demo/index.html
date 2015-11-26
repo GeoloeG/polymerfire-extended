@@ -27,14 +27,14 @@
         padding: 5px;
       }
 
-      paper-dialog.colored {
+      firebase-auth-dialog.colored {
         border: 2px solid;
         border-color: var(--paper-green-500);
         background-color: var(--paper-light-green-50);
         color: var(--paper-green-500);
       }
 
-      paper-dialog.size-position {
+      firebase-auth-dialog.size-position {
         position: fixed;
         top: 16px;
         right: 16px;
@@ -49,21 +49,40 @@
 
     <section onclick="clickHandler(event)">
 
-      <paper-button data-dialog="register">Register Dialog</paper-button>
-      <paper-button data-dialog="login">Login Dialog</paper-button>
+      <paper-button data-dialog="Register">Register Dialog</paper-button>
+      <paper-button data-dialog="Login">Login Dialog</paper-button>
     
       <firebase-auth-dialog id="firebaseAuthDialog"
+        type="Register"
         location="https://metanov-test.firebaseio.com"
-        user=[[user]]
-        status-known="[[statusKnown]]"
+        providers='["google", "facebook"]'
+        modal
+        with-backdrop
         >
       </firebase-auth-dialog>
+
+      <!-- TODO PG: add user info report -->
 
     </section>
 
     <script>
+      window.addEventListener('login', loginHandler);
+      window.addEventListener('user-created', registerHandler);
+      window.addEventListener('error', errorHandler);
+
+      function loginHandler(e) {
+        console.log("TODO PG: login");
+      }
+
+      function registerHandler(e) {
+        console.log("TODO PG: register");
+      }
+
+      function errorHandler(e) {
+        console.log("TODO PG: error");
+      }
+
       function clickHandler(e) {
-        console.log("clickHandler");
         var button = e.target;
         while (!button.hasAttribute('data-dialog') && button !== document.body) {
           button = button.parentElement;
@@ -76,7 +95,6 @@
         if (dialog) {
           var type = button.getAttribute('data-dialog');
           dialog.setAttribute('type', type);
-          console.log("Opening dialog: " + dialog);
           dialog.open();
         }
       }
