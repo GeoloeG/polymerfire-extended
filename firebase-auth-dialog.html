@@ -1,17 +1,28 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../firebase-element/firebase-auth.html">
+
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../neon-animation/neon-animations.html">
 <link rel="import" href="../gold-email-input/gold-email-input.html">
 <link rel="import" href="../gold-password-input/gold-password-input.html">
+<link rel="import" href="../gold-password-input/gold-password-input-validator.html">
 
 <!--
-An element providing a solution to no problem in particular.
+This component provide a default Register/Login dialog to use Firebase underlying authentication 
+features.
 
 Example:
 
-    <firebase-auth-dialog></firebase-auth-dialog>
+    <firebase-auth-dialog
+      location="https://metanov-test.firebaseio.com"
+      user=[[user]]
+      status-known="[[statusKnown]]"
+      >
+    </firebase-auth-dialog>
+
+The `type` property should be set prior to calling the `open()` method.
 
 @group GoogleWebComponents Elements
 @element firebase-auth-dialog
@@ -24,9 +35,20 @@ Example:
     <style>
       :host {
         display: block;
-      }  
+      }
     </style>
-  
+
+    <!-- TODO PG: set provider on the ontap from the relevant provider   -->
+    <firebase-auth id="firebaseAuth" 
+      location="[[location]]"
+      provider="password"
+      user="{{user}}"
+      status-known="{{statusKnown}}"
+      on-error="_errorHandler"
+      on-login="_loginHandler"
+      on-user-created="_userSuccessHandler">
+    </firebase-auth>
+
     <!-- TODO PG: test with and without backdrop -->
     <paper-dialog
       entry-animation="scale-up-animation" 
@@ -35,26 +57,46 @@ Example:
       with-backdrop>
 
       <h2>[[_computeHeader(type)]]</h2>
+
       <div class="services">
-        <!-- TODO PG: add the service buttons (Google and Facebook)         -->
         <paper-button>Google</paper-button>
         <paper-button>Facebook</paper-button>
       </div>
+
       <div class="user-inputs">
-        <!-- TODO PG: Add the gold input fields! -->
-        <gold-email-input 
+        <!-- Email input -->
+        <gold-email-input id="email"
           required
           auto-validate
           error-message="Please, enter a valid email">
         </gold-email-input>
-        <gold-password-input 
-          required
+        <!-- Primary password input -->
+        <gold-password-input id="primary-password"
+          required 
+          auto-validate 
+          minlength="6" 
+          error-message="The password must contain at least 6 characters" 
           autocomplete=[[_computeAutocomplete(type)]]
-          strength-meter>
+          strength-meter
+          password={{primaryValue}}>
+        </gold-password-input>
+        <!-- Verification password input -->
+        <gold-password-input-validator
+          pattern="[[primaryValue]]">
+        </gold-password-input-validator>
+        <gold-password-input id="verification-password"
+          required
+          validator="gold-password-input-validator"
+          error-message="The verification password you entered is different!">
         </gold-password-input>
       </div>
+
       <div class="buttons">
-        <paper-button dialog-confirm>[[_computeConfirm(type)]]</paper-button>
+        <paper-button dialog-confirm
+          disabled="_computeConfirmDisabled(type)"
+          on-tap="_handleConfirm">
+            [[_computeConfirm(type)]]
+        </paper-button>
         <paper-button dialog-dismiss>Cancel</paper-button>
       </div>
 
@@ -90,21 +132,33 @@ Example:
           },
 
           /**
-           * Describes the author of the element, but is really just an excuse to
-           * show off JSDoc annotations.
+           * `location` indicates the Firebase location URL
+           *
+           * @type {string}
+           */
+          location: {
+            type: String
+          },
+
+          /**
+           * When true, login status can be determined by checking `user` property.
+           */
+          statusKnown: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            readOnly: true,
+          },
+
+          /**
+           * When logged in, this property reflects the firebase user auth object.
            *
            * @type {{name: string, image: string}}
            */
-          author: {
+          user: {
             type: Object,
-            value: function() {
-              return {
-                name:  'Dimitri Glazkov',
-                image: 'http://addyosmani.com/blog/wp-content/uploads/2013/04/unicorn.jpg',
-              };
-            }
+            notify: true
           },
-
         },
 
         // Element Lifecycle

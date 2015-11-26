@@ -48,14 +48,17 @@
   <body unresolved>
 
     <section onclick="clickHandler(event)">
+
       <paper-button data-dialog="register">Register Dialog</paper-button>
       <paper-button data-dialog="login">Login Dialog</paper-button>
     
-      <firebase-auth-dialog id="register" type="register">
+      <firebase-auth-dialog id="firebaseAuthDialog"
+        location="https://metanov-test.firebaseio.com"
+        user=[[user]]
+        status-known="[[statusKnown]]"
+        >
       </firebase-auth-dialog>
 
-      <firebase-auth-dialog id="login" type="login">
-      </firebase-auth-dialog>
     </section>
 
     <script>
@@ -68,9 +71,11 @@
         if (!button.hasAttribute('data-dialog')) {
           return;
         }
-        var id = button.getAttribute('data-dialog');
-        var dialog = document.getElementById(id);
+        var dialog = document.getElementById("firebaseAuthDialog");
+        
         if (dialog) {
+          var type = button.getAttribute('data-dialog');
+          dialog.setAttribute('type', type);
           console.log("Opening dialog: " + dialog);
           dialog.open();
         }
