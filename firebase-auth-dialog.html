@@ -10,15 +10,17 @@
 <link rel="import" href="../gold-password-input/gold-password-input-validator.html">
 
 <!--
-This component provide a default Register/Login dialog to use Firebase underlying authentication 
+This component provides a default Register/Login dialog to use Firebase underlying authentication 
 features.
 
 Example:
 
     <firebase-auth-dialog
+      type="Register"
       location="https://metanov-test.firebaseio.com"
-      user=[[user]]
-      status-known="[[statusKnown]]"
+      providers='["google", "facebook"]'
+      user="{{user}}"
+      status-known="{{statusKnown}}"
       >
     </firebase-auth-dialog>
 
@@ -26,8 +28,8 @@ The `type` property should be set prior to calling the `open()` method.
 
 @group GoogleWebComponents Elements
 @element firebase-auth-dialog
-@demo demo/index.html
 @hero hero.svg
+@demo demo/index.html
 -->
 <dom-module id="firebase-auth-dialog">
   <template>
@@ -36,9 +38,26 @@ The `type` property should be set prior to calling the `open()` method.
       :host {
         display: block;
       }
+
+      paper-button {
+        
+      }      
+
+      paper-button.facebook {
+        
+      }
+      paper-button.github {
+        
+      }
+      paper-button.google {
+        
+      }
+      paper-button.tweeter {
+        
+      }
     </style>
 
-    <!-- TODO PG: set provider on the ontap from the relevant provider   -->
+    <!-- TODO PG: set provider on the ontap from the relevant provider button  -->
     <firebase-auth id="firebaseAuth" 
       location="[[location]]"
       provider="password"
@@ -58,11 +77,14 @@ The `type` property should be set prior to calling the `open()` method.
 
       <h2>[[_computeHeader(type)]]</h2>
 
+      <span>{{type}} with the following provider(s):</span>
       <div class="services">
-        <paper-button>Google</paper-button>
-        <paper-button>Facebook</paper-button>
+        <template is="dom-repeat" items={{providers}} as="provider">
+          <paper-button class$="[[provider]]">[[provider]]</paper-button>
+        </template>
       </div>
 
+      <span>or with your account</span>
       <div class="user-inputs">
         <!-- Email input -->
         <gold-email-input id="email"
@@ -91,6 +113,8 @@ The `type` property should be set prior to calling the `open()` method.
         </gold-password-input>
       </div>
 
+      <!-- Add a remember me option -->
+
       <div class="buttons">
         <paper-button dialog-confirm
           disabled="_computeConfirmDisabled(type)"
@@ -111,8 +135,8 @@ The `type` property should be set prior to calling the `open()` method.
        * @enum {string}
        */
       var DialogTypeValue = {
-          REGISTER: 'register',
-          LOGIN: 'login'
+          REGISTER: 'Register',
+          LOGIN: 'Login'
       };
 
       Polymer({
@@ -141,7 +165,19 @@ The `type` property should be set prior to calling the `open()` method.
           },
 
           /**
+           * `providers` set the list of provider accessible for Register/Login.
+           *
+           * @type {Array}
+           */
+          providers: {
+            type: Array,
+            value: []
+          },
+
+          /**
            * When true, login status can be determined by checking `user` property.
+           *
+           * @type {boolean}
            */
           statusKnown: {
             type: Boolean,
@@ -153,10 +189,12 @@ The `type` property should be set prior to calling the `open()` method.
           /**
            * When logged in, this property reflects the firebase user auth object.
            *
-           * @type {{name: string, image: string}}
+           * @type TODO PG: {{name: string, image: string}}
            */
           user: {
             type: Object,
+            value: {},
+            readOnly: true,
             notify: true
           },
         },
@@ -184,24 +222,9 @@ The `type` property should be set prior to calling the `open()` method.
         detached: function() {
         },
 
+        //
         // Element Behavior
-
-        /**
-         * The `firebase-auth-dialog-lasers` event is fired whenever `fireLasers` is called.
-         *
-         * @event firebase-auth-dialog-lasers
-         * @detail {{sound: String}}
-         */
-
-        /**
-         * Attempt to destroy this element's enemies with a beam of light!
-         *
-         * Or, at least, dispatch an event in the vain hope that someone else will
-         * do the zapping.
-         */
-        fireLasers: function() {
-          this.fire('firebase-auth-dialog-lasers', {sound: 'Pew Pew!'});
-        },
+        //
 
         _computeAutocomplete(type) {
           switch(type) {
@@ -235,7 +258,6 @@ The `type` property should be set prior to calling the `open()` method.
               // TODO PG: signal a warning!
           }
         },
-
       });
     }());
   </script>
