@@ -1,38 +1,80 @@
 <!doctype html>
 <html>
   <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  
     <title>firebase-auth-dialog Demo</title>
+  
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  
     <link rel="import" href="../firebase-auth-dialog.html">
+    <link rel="import" href="../../paper-button/paper-button.html">
+    <link rel="import" href="../../paper-styles/color.html">
+    <link rel="import" href="../../paper-styles/demo-pages.html">
+  
+    <link rel="stylesheet" href="../../paper-styles/demo.css">
+
+    <style is="custom-style">
+      section > paper-button {
+        background-color: var(--google-grey-300);
+        padding: 5px;
+      }
+
+      section > paper-button:hover {
+        background-color: var(--paper-light-blue-200);
+        padding: 5px;
+      }
+
+      paper-dialog.colored {
+        border: 2px solid;
+        border-color: var(--paper-green-500);
+        background-color: var(--paper-light-green-50);
+        color: var(--paper-green-500);
+      }
+
+      paper-dialog.size-position {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 300px;
+        height: 300px;
+        overflow: auto;
+      }
+    </style>
+
   </head>
   <body unresolved>
 
-    <p>An example of <code>&lt;firebase-auth-dialog&gt;</code>:</p>
+    <section onclick="clickHandler(event)">
+      <paper-button data-dialog="register">Register Dialog</paper-button>
+      <paper-button data-dialog="login">Login Dialog</paper-button>
+    
+      <firebase-auth-dialog id="register" type="register">
+      </firebase-auth-dialog>
 
-    <p>Make words! <button id="saybtn">Say Something</button></p>
-    <p>Make lasers! <button id="laserbtn">Fire lasers</button></p>
-
-    <firebase-auth-dialog author='{"name": "Lord Meowser", "image": "http://placekitten.com/g/200/300"}' fancy>
-      <h2>Hello firebase-auth-dialog</h2>
-    </firebase-auth-dialog>
+      <firebase-auth-dialog id="login" type="login">
+      </firebase-auth-dialog>
+    </section>
 
     <script>
-      var seedElement = document.querySelector('firebase-auth-dialog');
-      
-      document.querySelector('#saybtn').addEventListener('click', function() {
-        alert(seedElement.sayHello('Hallo!'));
-      });
-      
-      document.querySelector('#laserbtn').addEventListener('click', function() {
-        seedElement.fireLasers();
-      });
-      
-      document.addEventListener("firebase-auth-dialog-lasers", function(e) {
-        console.log(e.detail.sound);
-      });
-      
+      function clickHandler(e) {
+        console.log("clickHandler");
+        var button = e.target;
+        while (!button.hasAttribute('data-dialog') && button !== document.body) {
+          button = button.parentElement;
+        }
+        if (!button.hasAttribute('data-dialog')) {
+          return;
+        }
+        var id = button.getAttribute('data-dialog');
+        var dialog = document.getElementById(id);
+        if (dialog) {
+          console.log("Opening dialog: " + dialog);
+          dialog.open();
+        }
+      }
     </script>
 
   </body>

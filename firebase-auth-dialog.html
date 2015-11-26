@@ -2,6 +2,7 @@
 
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../neon-animation/neon-animations.html">
 <link rel="import" href="../gold-email-input/gold-email-input.html">
 <link rel="import" href="../gold-password-input/gold-password-input.html">
 
@@ -26,7 +27,13 @@ Example:
       }  
     </style>
   
-    <paper-dialog>
+    <!-- TODO PG: test with and without backdrop -->
+    <paper-dialog
+      entry-animation="scale-up-animation" 
+      exit-animation="fade-out-animation" 
+      modal 
+      with-backdrop>
+
       <h2>[[_computeHeader(type)]]</h2>
       <div class="services">
         <!-- TODO PG: add the service buttons (Google and Facebook)         -->
@@ -35,11 +42,22 @@ Example:
       </div>
       <div class="user-inputs">
         <!-- TODO PG: Add the gold input fields! -->
+        <gold-email-input 
+          required
+          auto-validate
+          error-message="Please, enter a valid email">
+        </gold-email-input>
+        <gold-password-input 
+          required
+          autocomplete=[[_computeAutocomplete(type)]]
+          strength-meter>
+        </gold-password-input>
       </div>
       <div class="buttons">
         <paper-button dialog-confirm>[[_computeConfirm(type)]]</paper-button>
         <paper-button dialog-dismiss>Cancel</paper-button>
       </div>
+
     </paper-dialog>
 
   </template>
@@ -68,8 +86,7 @@ Example:
            * @type {string}
            */
           type: {
-            type: String,
-            value: DialogTypeValue.REGISTER
+            type: String
           },
 
           /**
@@ -132,10 +149,17 @@ Example:
           this.fire('firebase-auth-dialog-lasers', {sound: 'Pew Pew!'});
         },
 
-        /**
-         * @param {string} Type of the Dialog.
-         * @return {string} The label of the header.
-         */
+        _computeAutocomplete(type) {
+          switch(type) {
+            case DialogTypeValue.REGISTER:
+              return "new-password";
+            case DialogTypeValue.LOGIN:
+              return "current-password";
+            default:
+              // TODO PG: signal a warning!
+          }
+        },
+
         _computeHeader(type) {
           switch(type) {
             case DialogTypeValue.REGISTER:
@@ -146,10 +170,7 @@ Example:
               // TODO PG: signal a warning!
           }
         },
-        /**
-         * @param {string} Type of the Dialog.
-         * @return {string} The label of the confirm button.
-         */
+
         _computeConfirm(type) {
           switch(type) {
             case DialogTypeValue.REGISTER:
