@@ -52,10 +52,12 @@
       <paper-button data-dialog="Register">Register Dialog</paper-button>
       <paper-button data-dialog="Login">Login Dialog</paper-button>
     
+      <!-- TODO PG: Add a selection check box to add the services used -->
+
       <firebase-auth-dialog id="firebaseAuthDialog"
         type="Register"
         location="https://metanov-test.firebaseio.com"
-        providers='["google", "facebook"]'
+        providers='["facebook", "github", "google"]'
         modal
         with-backdrop
         >
