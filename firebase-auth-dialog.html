@@ -107,7 +107,12 @@ element.
 
     <div class="services">
       <template is="dom-repeat" items={{providers}} as="provider">
-        <paper-button class$="[[provider]]">[[provider]]</paper-button>
+        <paper-button 
+          raised
+          class$="[[provider]]" 
+          provider$="[[provider]]"
+          on-tap="_handleProvider">[[provider]]
+        </paper-button>
       </template>
     </div>
 
@@ -217,7 +222,8 @@ element.
            */
           providers: {
             type: Array,
-            value: function() { return []; }
+            value: function() { return []; },
+            observer: "_providersChanged"
           }
         },
 
@@ -246,8 +252,8 @@ element.
           }
         },
 
-        _typeChanged: function(newValue, oldValue) {
-          switch(newValue) {
+        _typeChanged: function() {
+          switch(this.type) {
             case DialogTypeValue.REGISTER:
               this.$.primary.setAttribute('strength-meter', '');
               this.$.verification.removeAttribute('hidden');
@@ -257,8 +263,13 @@ element.
               this.$.verification.setAttribute('hidden', '');
               break;
             default:
-              console.warn("invalid type");
+              this.type = DialogTypeValue.REGISTER;
+              console.warn("invalid type, switching to default: " + DialogTypeValue.REGISTER);
           }
+        },
+
+        _providersChanged: function() {
+          // TODO PG: check the list of provider given and filter only the supported one
         },
 
         _computeAutocomplete(type) {
@@ -267,8 +278,6 @@ element.
               return "new-password";
             case DialogTypeValue.LOGIN:
               return "current-password";
-            default:
-              console.warn("invalid type");
           }
         },
 
@@ -278,8 +287,6 @@ element.
               return DialogTypeValue.REGISTER;
             case DialogTypeValue.LOGIN:
               return DialogTypeValue.LOGIN;
-            default:
-              console.warn("invalid type");
           }
         },
 
@@ -289,8 +296,6 @@ element.
               return DialogTypeValue.REGISTER;
             case DialogTypeValue.LOGIN:
               return DialogTypeValue.LOGIN;
-            default:
-              console.warn("invalid type");
           }
         },
 
@@ -308,16 +313,41 @@ element.
                 return true;
               }
               break;
-            default:
-              console.warn("invalid type");
-              return true;
           }
           return false;
         },
 
-        _handleConfirm() {
-          console.log("TODO PG");
+        _handleProvider(e) {
+          this.$.firebaseAuth.provider = e.target.getAttribute("provider");
+
+          switch(this.type) {
+            case DialogTypeValue.REGISTER:
+              this.$.firebaseAuth.login();
+              break;
+            case DialogTypeValue.LOGIN:
+              this.$.firebaseAuth.login();
+              break;
+          }
+
+          this.close();
         },
+
+        _handleConfirm() {
+          var params = {};
+          // TODO PG: check the potential params to add...
+          params.email = this.$.email.value;
+          params.password = this.$.primary.value;
+
+          switch(this.type) {
+            case DialogTypeValue.REGISTER:
+              this.$.firebaseAuth.createUser(params.email, params.password);
+              break;
+            case DialogTypeValue.LOGIN:
+              this.$.firebaseAuth.login(params);
+              break;
+          }
+        },
+
         _handleCancel() {
           this.$.email.value = "";
           this.$.primary.value = "";

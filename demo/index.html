@@ -68,6 +68,17 @@
       </firebase-auth-dialog>
 
       <!-- TODO PG: add user info report -->
+      <h3>Register status:</h3>
+      <p id="register"></p>
+
+      <h3>Login status:</h3>
+      <pre id="login"></pre>
+
+      <h3>User</h3>
+      <pre id="user"></pre>
+
+      <h3>Error status:</h3>
+      <pre id="error"></pre>
 
     </section>
 
@@ -76,16 +87,20 @@
       window.addEventListener('user-created', registerHandler);
       window.addEventListener('error', errorHandler);
 
-      function loginHandler(e) {
-        console.log("TODO PG: login");
-      }
-
       function registerHandler(e) {
         console.log("TODO PG: register");
       }
 
+      function loginHandler(e) {
+        var login = document.getElementById("login");
+        login.innerText = "Logged In";
+        var user = document.getElementById("user");
+        user.innerHTML = JSON.stringify(e.detail.user);
+      }
+
       function errorHandler(e) {
-        console.log("TODO PG: error");
+        var error = document.getElementById("error");
+        user.innerHTML = JSON.stringify(e.detail);
       }
 
       function clickHandler(e) {
