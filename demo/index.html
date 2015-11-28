@@ -13,6 +13,8 @@
     <link rel="import" href="../../paper-button/paper-button.html">
     <link rel="import" href="../../paper-styles/color.html">
     <link rel="import" href="../../paper-styles/demo-pages.html">
+    <link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
+    <link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
   
     <link rel="stylesheet" href="../../paper-styles/demo.css">
 
@@ -55,6 +57,8 @@
       <!-- TODO PG: Add a selection check box to add the services used -->
 
       <firebase-auth-dialog id="firebaseAuthDialog"
+        entry-animation="scale-up-animation"
+        exit-animation="fade-out-animation"
         type="Register"
         location="https://metanov-test.firebaseio.com"
         providers='["facebook", "github", "google"]'

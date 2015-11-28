@@ -19,8 +19,9 @@ Example:
     <firebase-auth-dialog
       type="Register"
       location="https://metanov-test.firebaseio.com"
-      providers='["google", "facebook"]'
+      providers='["facebook", "github", "google"]'
       modal
+      with-backdrop
       >
     </firebase-auth-dialog>
 
@@ -40,8 +41,11 @@ For example:
     <link rel="import" href="components/neon-animation/animations/scale-up-animation.html">
     <link rel="import" href="components/neon-animation/animations/fade-out-animation.html">
 
-    <firebase-auth-dialog entry-animation="scale-up-animation"
-                  exit-animation="fade-out-animation">
+    <firebase-auth-dialog
+      entry-animation="scale-up-animation"
+      exit-animation="fade-out-animation"
+      ...
+      >
     </firebase-auth-dialog>
 
 ### Accessibility
@@ -83,6 +87,10 @@ element.
         color: white;
         background-color: #4099FF;        
       }
+
+      #introduction, #separation {
+        text-align: center;
+      }
     </style>
 
     <!-- TODO PG: set provider on the ontap from the relevant provider button  -->
@@ -95,36 +103,41 @@ element.
     <!-- TODO PG: test with and without backdrop -->
     <h2>[[_computeHeader(type)]]</h2>
 
-    <span>{{type}} with the following provider(s):</span>
+    <div id="introduction">-- {{type}} with the following provider(s): --</div>
+
     <div class="services">
       <template is="dom-repeat" items={{providers}} as="provider">
         <paper-button class$="[[provider]]">[[provider]]</paper-button>
       </template>
     </div>
 
-    <span>or with your account</span>
     <div class="user-inputs">
+      <div id="separation">-- or with an account: --</div>
+
       <!-- Email input -->
       <gold-email-input id="email"
+        invalid="{{emailInvalid}}"
         required
         auto-validate
         error-message="Please, enter a valid email">
       </gold-email-input>
       <!-- Primary password input -->
-      <gold-password-input id="primary-password"
+      <gold-password-input id="primary"
+        value="{{primary}}"
+        invalid="{{primaryInvalid}}"
         required 
         auto-validate 
         minlength="6" 
         error-message="The password must contain at least 6 characters" 
         autocomplete=[[_computeAutocomplete(type)]]
-        strength-meter
-        value={{primaryValue}}>
+        strength-meter>
       </gold-password-input>
       <!-- Verification password input -->
       <gold-password-input-validator
-        pattern="[[primaryValue]]">
+        pattern="[[primary]]">
       </gold-password-input-validator>
-      <gold-password-input id="verification-password"
+      <gold-password-input id="verification"
+        invalid="{{verificationInvalid}}"
         required
         auto-validate
         validator="gold-password-input-validator"
@@ -136,11 +149,16 @@ element.
 
     <div class="buttons">
       <paper-button dialog-confirm
-        disabled="_computeConfirmDisabled(type)"
+        disabled="[[_computeConfirmDisabled(type,emailInvalid,primaryInvalid,verificationInvalid)]]"
         on-tap="_handleConfirm">
           [[_computeConfirm(type)]]
       </paper-button>
-      <paper-button dialog-dismiss>Cancel</paper-button>
+      <paper-button 
+        dialog-dismiss
+        on-tap="_handleCancel"
+        >
+        Cancel
+      </paper-button>
     </div>
 
   </template>
@@ -173,12 +191,14 @@ element.
           /**
            * `type` indicates the type of authentication dialog to use. It can hold currently two 
            * values, namely DialogTypeValue.REGISTER and DialogTypeValue.LOGIN.
-           * TODO PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
+           * FIXME PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
+           * FIXME PG: https://github.com/Polymer/polymer/issues/3099
            *
            * @type {string}
            */
           type: {
-            type: String
+            type: String,
+            observer: "_typeChanged"
           },
 
           /**
@@ -199,29 +219,6 @@ element.
             type: Array,
             value: function() { return []; }
           }
-        },
-
-        // Element Lifecycle
-
-        ready: function() {
-          // `ready` is called after all elements have been configured, but
-          // propagates bottom-up. This element's children are ready, but parents
-          // are not.
-          //
-          // This is the point where you should make modifications to the DOM (when
-          // necessary), or kick off any processes the element wants to perform.
-        },
-
-        attached: function() {
-          // `attached` fires once the element and its parents have been inserted
-          // into a document.
-          //
-          // This is a good place to perform any work related to your element's
-          // visual state or active behavior (measuring sizes, beginning animations,
-          // loading resources, etc).
-        },
-
-        detached: function() {
         },
 
         //
@@ -249,6 +246,21 @@ element.
           }
         },
 
+        _typeChanged: function(newValue, oldValue) {
+          switch(newValue) {
+            case DialogTypeValue.REGISTER:
+              this.$.primary.setAttribute('strength-meter', '');
+              this.$.verification.removeAttribute('hidden');
+              break;
+            case DialogTypeValue.LOGIN:
+              this.$.primary.removeAttribute('strength-meter');
+              this.$.verification.setAttribute('hidden', '');
+              break;
+            default:
+              console.warn("invalid type");
+          }
+        },
+
         _computeAutocomplete(type) {
           switch(type) {
             case DialogTypeValue.REGISTER:
@@ -256,7 +268,7 @@ element.
             case DialogTypeValue.LOGIN:
               return "current-password";
             default:
-              // TODO PG: signal a warning!
+              console.warn("invalid type");
           }
         },
 
@@ -267,7 +279,7 @@ element.
             case DialogTypeValue.LOGIN:
               return DialogTypeValue.LOGIN;
             default:
-              // TODO PG: signal a warning!
+              console.warn("invalid type");
           }
         },
 
@@ -278,10 +290,56 @@ element.
             case DialogTypeValue.LOGIN:
               return DialogTypeValue.LOGIN;
             default:
-              // TODO PG: signal a warning!
+              console.warn("invalid type");
           }
         },
+
+        _computeConfirmDisabled(type,emailInvalid,primaryInvalid,verificationInvalid) {
+          switch(type) {
+            case DialogTypeValue.REGISTER:
+              if (this.$.verification.value === '' || verificationInvalid) {
+                return true;                
+              }
+            case DialogTypeValue.LOGIN:
+              if (this.$.email.value === '' || emailInvalid) {
+                return true;
+              }
+              if (this.$.primary.value === '' || primaryInvalid) {
+                return true;
+              }
+              break;
+            default:
+              console.warn("invalid type");
+              return true;
+          }
+          return false;
+        },
+
+        _handleConfirm() {
+          console.log("TODO PG");
+        },
+        _handleCancel() {
+          this.$.email.value = "";
+          this.$.primary.value = "";
+          this.$.verification.value = "";
+        }
       });
+
+      /*
+      The `error` event is fired whenever the underlying firebase `error` is fired.
+      @event error
+      */
+
+      /*
+      The `login` event is fired whenever the underlying firebase `login` is fired.
+      @event login
+      */
+
+      /*
+      The `user-created` event is fired whenever the underlying firebase `user-created` is fired.
+      @event user-created
+      */
+
     }());
   </script>
 </dom-module>
