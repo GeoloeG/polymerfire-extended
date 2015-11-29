@@ -1,21 +1,17 @@
-[![Bower version](https://badge.fury.io/bo/gold-password-input.svg)](https://badge.fury.io/bo/gold-password-input)
-[![Build Status](https://travis-ci.org/MeTaNoV/gold-password-input.svg?branch=master)](https://travis-ci.org/MeTaNoV/gold-password-input)
-[![Dependency Status](https://gemnasium.com/MeTaNoV/gold-password-input.svg)](https://gemnasium.com/MeTaNoV/gold-password-input)
-
-[![Stories in Ready](https://badge.waffle.io/MeTaNoV/gold-password-input.svg?label=ready&title=Ready)](http://waffle.io/MeTaNoV/gold-password-input)
-[![Stories in Progress](https://badge.waffle.io/MeTaNoV/gold-password-input.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/MeTaNoV/gold-password-input)
-[![Stories in Done](https://badge.waffle.io/MeTaNoV/gold-password-input.svg?label=done&title=Done)](http://waffle.io/MeTaNoV/gold-password-input)
+[![Bower version](https://badge.fury.io/bo/firebase-auth-dialog.svg)](https://badge.fury.io/bo/firebase-auth-dialog)
+[![Build Status](https://travis-ci.org/MeTaNoV/firebase-auth-dialog?branch=master)](https://travis-ci.org/MeTaNoV/firebase-auth-dialog)
+[![Dependency Status](https://gemnasium.com/MeTaNoV/firebase-auth-dialog.svg)](https://gemnasium.com/MeTaNoV/firebase-auth-dialog)
 
 ## Demo
 
-[https://metanov.github.io/gold-password-input/](https://metanov.github.io/gold-password-input/)
+[https://metanov.github.io/firebase-auth-dialog/](https://metanov.github.io/firebase-auth-dialog/)
 
 ## Install
 
 Install the component using [Bower](http://bower.io/):
 
 ```sh
-$ bower install gold-password-input --save
+$ bower install firebase-auth-dialog --save
 ```
 
 ## Usage
@@ -23,20 +19,23 @@ $ bower install gold-password-input --save
 Import Custom Element:
 
 ```html
-<link rel="import" href="bower_components/gold-password-input/gold-password-input.html">
+<link rel="import" href="bower_components/firebase-auth-dialog/firebase-auth-dialog.html">
 ```
 
 And then use it:
 
 ```html
-<gold-password-input></gold-password-input>
-```
-or
-```html
-<gold-password-input strength-meter></gold-password-input>
+	<firebase-auth-dialog id="firebaseAuthDialog"
+		entry-animation="scale-up-animation"
+		exit-animation="fade-out-animation"
+		type="Register"
+		location="https://metanov-test.firebaseio.com"
+		providers='["facebook", "github", "google"]'
+		modal with-backdrop>
+	</firebase-auth-dialog>
 ```
 
-See the [Documentation](https://metanov.github.io/gold-password-input/) for more options.
+See the [Documentation](https://metanov.github.io/firebase-auth-dialog/) for more options.
 
 ## Contributing
 
@@ -50,5 +49,5 @@ See the [Documentation](https://metanov.github.io/gold-password-input/) for more
 
 [MIT License](http://opensource.org/licenses/MIT) © Pascal Gula
 
-[![Throughput Graph](https://graphs.waffle.io/MeTaNoV/gold-password-input/throughput.svg)](https://waffle.io/MeTaNoV/gold-password-input/metrics)
+[![Throughput Graph](https://graphs.waffle.io/MeTaNoV/firebase-auth-dialog/throughput.svg)](https://waffle.io/MeTaNoV/firebase-auth-dialog/metrics)
 
