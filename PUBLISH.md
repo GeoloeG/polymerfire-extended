@@ -1,6 +1,6 @@
 ## Registering to Bower
 
-`bower register gold-password-input git://github.com/MeTaNoV/gold-password-input.git`
+`bower register firebase-auth-dialog git://github.com/MeTaNoV/firebase-auth-dialog.git`
 
 ## Deploying to Github Pages
 
