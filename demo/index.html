@@ -88,7 +88,13 @@
       window.addEventListener('error', errorHandler);
 
       function registerHandler(e) {
-        console.log("TODO PG: register");
+        var register = document.getElementById("register");
+        register.innerText = "Registered";
+        // FIXME PG: not additional user ID provided in the event...
+        // https://github.com/GoogleWebComponents/firebase-element/issues/74
+
+        // var user = document.getElementById("user");
+        // user.innerHTML = JSON.stringify(e.detail);
       }
 
       function loginHandler(e) {
@@ -111,6 +117,16 @@
         if (!button.hasAttribute('data-dialog')) {
           return;
         }
+
+        var register = document.getElementById("register");
+        register.innerText = "";
+        var login = document.getElementById("login");
+        login.innerText = "";
+        var user = document.getElementById("user");
+        user.innerHTML = "";
+        var error = document.getElementById("error");
+        user.innerHTML = "";
+
         var dialog = document.getElementById("firebaseAuthDialog");
         
         if (dialog) {
