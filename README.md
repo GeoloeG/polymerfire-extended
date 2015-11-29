@@ -1,5 +1,5 @@
 [![Bower version](https://badge.fury.io/bo/firebase-auth-dialog.svg)](https://badge.fury.io/bo/firebase-auth-dialog)
-[![Build Status](https://travis-ci.org/MeTaNoV/firebase-auth-dialog?branch=master)](https://travis-ci.org/MeTaNoV/firebase-auth-dialog)
+[![Build Status](https://travis-ci.org/MeTaNoV/firebase-auth-dialog.svg?branch=master)](https://travis-ci.org/MeTaNoV/firebase-auth-dialog)
 [![Dependency Status](https://gemnasium.com/MeTaNoV/firebase-auth-dialog.svg)](https://gemnasium.com/MeTaNoV/firebase-auth-dialog)
 
 ## Demo
@@ -47,7 +47,7 @@ See the [Documentation](https://metanov.github.io/firebase-auth-dialog/) for mor
 
 ## License
 
-[MIT License](http://opensource.org/licenses/MIT) © Pascal Gula
+[MIT License](http://opensource.org/licenses/MIT) Â© Pascal Gula
 
 [![Throughput Graph](https://graphs.waffle.io/MeTaNoV/firebase-auth-dialog/throughput.svg)](https://waffle.io/MeTaNoV/firebase-auth-dialog/metrics)
 
