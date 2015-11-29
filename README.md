@@ -25,14 +25,14 @@ Import Custom Element:
 And then use it:
 
 ```html
-	<firebase-auth-dialog id="firebaseAuthDialog"
-		entry-animation="scale-up-animation"
-		exit-animation="fade-out-animation"
-		type="Register"
-		location="https://metanov-test.firebaseio.com"
-		providers='["facebook", "github", "google"]'
-		modal with-backdrop>
-	</firebase-auth-dialog>
+<firebase-auth-dialog id="firebaseAuthDialog"
+	entry-animation="scale-up-animation"
+	exit-animation="fade-out-animation"
+	type="Register"
+	location="https://metanov-test.firebaseio.com"
+	providers='["facebook", "github", "google"]'
+	modal with-backdrop>
+</firebase-auth-dialog>
 ```
 
 See the [Documentation](https://metanov.github.io/firebase-auth-dialog/) for more options.
