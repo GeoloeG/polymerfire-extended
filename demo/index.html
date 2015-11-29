@@ -9,14 +9,17 @@
   
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   
-    <link rel="import" href="../firebase-auth-dialog.html">
+    <link rel="import" href="../../polymer/polymer.html">
+
+    <link rel="import" href="../../firebase-element/firebase-auth.html">
     <link rel="import" href="../../paper-button/paper-button.html">
     <link rel="import" href="../../paper-styles/color.html">
     <link rel="import" href="../../paper-styles/demo-pages.html">
     <link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
     <link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
-  
     <link rel="stylesheet" href="../../paper-styles/demo.css">
+  
+    <link rel="import" href="../firebase-auth-dialog.html">
 
     <style is="custom-style">
       section > paper-button {
@@ -29,6 +32,7 @@
         padding: 5px;
       }
 
+      /*TODO PG: check the style...*/
       firebase-auth-dialog.colored {
         border: 2px solid;
         border-color: var(--paper-green-500);
@@ -48,23 +52,27 @@
 
   </head>
   <body unresolved>
+    <template id="t" is="dom-bind">
 
-    <section onclick="clickHandler(event)">
-
-      <paper-button data-dialog="Register">Register Dialog</paper-button>
-      <paper-button data-dialog="Login">Login Dialog</paper-button>
+      <paper-button on-tap="signUpButton" disabled="[[user]]">Register Dialog</paper-button>
+      <paper-button on-tap="signInButton" disabled="[[user]]">Login Dialog</paper-button>
+      <paper-button on-tap="signOutButton" disabled="[[!user]]">Logout</paper-button>
     
       <!-- TODO PG: Add a selection check box to add the services used -->
+      <firebase-auth id="firebaseAuth"
+        user="{{user}}"
+        status-known="{{statusKnown}}"
+        location="https://metanov-test.firebaseio.com"
+        error="{{error}}"
+        on-error="errorHandler"
+        >
+      </firebase-auth>
 
       <firebase-auth-dialog id="firebaseAuthDialog"
         entry-animation="scale-up-animation"
         exit-animation="fade-out-animation"
-        type="Register"
-        location="https://metanov-test.firebaseio.com"
         providers='["facebook", "github", "google"]'
-        modal
-        with-backdrop
-        >
+        modal with-backdrop>
       </firebase-auth-dialog>
 
       <!-- TODO PG: add user info report -->
@@ -72,22 +80,67 @@
       <p id="register"></p>
 
       <h3>Login status:</h3>
-      <pre id="login"></pre>
+      <pre id="login">[[_showStatus(statusKnown,user)]]</pre>
 
       <h3>User</h3>
-      <pre id="user"></pre>
+      <pre id="user">[[_showUser(user)]]</pre>
 
       <h3>Error status:</h3>
-      <pre id="error"></pre>
+      <pre id="error">[[error]]</pre>
 
-    </section>
+    </template>
 
     <script>
-      window.addEventListener('login', loginHandler);
-      window.addEventListener('user-created', registerHandler);
-      window.addEventListener('error', errorHandler);
+      var t = document.getElementById('t');
+      
+      t._showUser = function(user) {
+        return JSON.stringify(user);
+      };
 
-      function registerHandler(e) {
+      t._showStatus = function(statusKnown, user) {
+        console.log("computing status...");
+        if (statusKnown && user) {
+          return 'Logged in';
+        }
+        if (statusKnown) {
+          return 'Logged out';
+        }
+        return 'Unknown (checking status...)';
+      };
+
+      t.signUpButton = function() {
+        console.log("Signing Up!");
+        var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
+        firebaseAuthDialog.setAttribute('type', "Register");
+        firebaseAuthDialog.open();
+      };
+
+      t.signInButton = function() {
+        var register = document.getElementById("register");
+        register.innerText = "";
+        console.log("Signing In!");
+        var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
+        firebaseAuthDialog.setAttribute('type', "Login");
+        firebaseAuthDialog.open();
+      };
+
+      t.signOutButton = function() {
+        var register = document.getElementById("register");
+        register.innerText = "";
+        console.log("Signing Out!");
+        var firebaseAuth = document.getElementById("firebaseAuth");
+        firebaseAuth.logout();
+      };
+
+      window.addEventListener('sign-up', signUpHandler);
+      window.addEventListener('sign-in', signInHandler);
+
+      function signUpHandler(e) {
+        console.log("TODO signup");
+        var firebaseAuth = document.getElementById("firebaseAuth");
+        var params = e.detail.params;
+        firebaseAuth.createUser(params.email, params.password);
+
         var register = document.getElementById("register");
         register.innerText = "Registered";
         // FIXME PG: not additional user ID provided in the event...
@@ -97,44 +150,17 @@
         // user.innerHTML = JSON.stringify(e.detail);
       }
 
-      function loginHandler(e) {
-        var login = document.getElementById("login");
-        login.innerText = "Logged In";
-        var user = document.getElementById("user");
-        user.innerHTML = JSON.stringify(e.detail.user);
+      function signInHandler(e) {
+        console.log("TODO signin");
+        var firebaseAuth = document.getElementById("firebaseAuth");
+        firebaseAuth.provider = e.detail.provider;
+        firebaseAuth.login(e.detail.params);
       }
 
       function errorHandler(e) {
-        var error = document.getElementById("error");
-        user.innerHTML = JSON.stringify(e.detail);
+        // TODO...
       }
 
-      function clickHandler(e) {
-        var button = e.target;
-        while (!button.hasAttribute('data-dialog') && button !== document.body) {
-          button = button.parentElement;
-        }
-        if (!button.hasAttribute('data-dialog')) {
-          return;
-        }
-
-        var register = document.getElementById("register");
-        register.innerText = "";
-        var login = document.getElementById("login");
-        login.innerText = "";
-        var user = document.getElementById("user");
-        user.innerHTML = "";
-        var error = document.getElementById("error");
-        user.innerHTML = "";
-
-        var dialog = document.getElementById("firebaseAuthDialog");
-        
-        if (dialog) {
-          var type = button.getAttribute('data-dialog');
-          dialog.setAttribute('type', type);
-          dialog.open();
-        }
-      }
     </script>
 
   </body>

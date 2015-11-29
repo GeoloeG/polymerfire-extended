@@ -1,7 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../firebase-element/firebase-auth.html">
-
 <link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
 <link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
@@ -12,13 +10,13 @@
 
 <!--
 `<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverage firebase authentication in a flexible way. You can setup a 'Register' or 'Login' flavor. You can configure the providers accessible within the dialog.
+
 See `Polymer.PaperDialogBehavior` for specifics.
 
 Example:
 
     <firebase-auth-dialog
       type="Register"
-      location="https://metanov-test.firebaseio.com"
       providers='["facebook", "github", "google"]'
       modal
       with-backdrop
@@ -93,17 +91,10 @@ element.
       }
     </style>
 
-    <!-- TODO PG: set provider on the ontap from the relevant provider button  -->
-    <firebase-auth id="firebaseAuth" 
-      type="Register"
-      location="[[location]]"
-      provider="password">
-    </firebase-auth>
-
     <!-- TODO PG: test with and without backdrop -->
     <h2>[[_computeHeader(type)]]</h2>
 
-    <div id="introduction">-- {{type}} with the following provider(s): --</div>
+    <div id="intro-provider" hidden="_computeHiddenIntroProvider(provider)">-- {{type}} with the following provider(s): --</div>
 
     <div class="services">
       <template is="dom-repeat" items={{providers}} as="provider">
@@ -269,6 +260,10 @@ element.
           // TODO PG: check the list of provider given and filter only the supported one
         },
 
+        _computeHiddenIntroProvider(provider) {
+          return provider.length === 0;
+        },
+
         _computeAutocomplete(type) {
           switch(type) {
             case DialogTypeValue.REGISTER:
@@ -315,16 +310,8 @@ element.
         },
 
         _handleProvider(e) {
-          this.$.firebaseAuth.provider = e.target.getAttribute("provider");
-
-          switch(this.type) {
-            case DialogTypeValue.REGISTER:
-              this.$.firebaseAuth.login();
-              break;
-            case DialogTypeValue.LOGIN:
-              this.$.firebaseAuth.login();
-              break;
-          }
+          this.fire('sign-in', { provider: e.target.getAttribute("provider") });
+          //this.$.firebaseAuth.provider = e.target.getAttribute("provider");
 
           this.close();
         },
@@ -337,10 +324,12 @@ element.
 
           switch(this.type) {
             case DialogTypeValue.REGISTER:
-              this.$.firebaseAuth.createUser(params.email, params.password);
+              this.fire('sign-up', params);
+              //this.$.firebaseAuth.createUser(params.email, params.password);
               break;
             case DialogTypeValue.LOGIN:
-              this.$.firebaseAuth.login(params);
+              this.fire('sign-in', { provider: "password", params: params });
+              //this.$.firebaseAuth.login(params);
               break;
           }
         },
@@ -353,18 +342,13 @@ element.
       });
 
       /*
-      The `error` event is fired whenever the underlying firebase `error` is fired.
-      @event error
+      The `sign-up` event is fired whenever a new user is registering is fired.
+      @event sign-up
       */
 
       /*
-      The `login` event is fired whenever the underlying firebase `login` is fired.
-      @event login
-      */
-
-      /*
-      The `user-created` event is fired whenever the underlying firebase `user-created` is fired.
-      @event user-created
+      The `sign-in` event is fired whenever the underlying firebase `login` is fired.
+      @event sign-in
       */
 
     }());
