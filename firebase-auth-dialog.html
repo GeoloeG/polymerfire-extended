@@ -122,7 +122,6 @@ element.
       <!-- Email input -->
       <gold-email-input id="email"
         invalid="{{emailInvalid}}"
-        required
         auto-validate
         error-message="Please, enter a valid email">
       </gold-email-input>
@@ -130,7 +129,6 @@ element.
       <gold-password-input id="primary"
         value="{{primary}}"
         invalid="{{primaryInvalid}}"
-        required 
         auto-validate 
         minlength="6" 
         error-message="The password must contain at least 6 characters" 
@@ -143,14 +141,13 @@ element.
       </gold-password-input-validator>
       <gold-password-input id="verification"
         invalid="{{verificationInvalid}}"
-        required
         auto-validate
         validator="gold-password-input-validator"
         error-message="The verification password you entered is different!">
       </gold-password-input>
     </div>
 
-    <!-- Add a remember me option -->
+    <!-- TODO PG: Add a remember me option -->
 
     <div class="buttons">
       <paper-button dialog-confirm

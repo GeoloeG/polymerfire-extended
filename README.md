@@ -25,7 +25,7 @@ Import Custom Element:
 And then use it:
 
 ```html
-<firebase-auth-dialog id="firebaseAuthDialog"
+<firebase-auth-dialog
 	entry-animation="scale-up-animation"
 	exit-animation="fade-out-animation"
 	type="Register"
