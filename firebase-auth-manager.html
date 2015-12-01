@@ -4,14 +4,15 @@
 <link rel="import" href="../firebase-element/firebase-auth.html">
 
 <!--
-`<firebase-auth-manager>` is a TODO....
+`<firebase-auth-manager>` is an wrapper element to `<firebase-auth>` that listens to the various `sign-XXX` event and delegate heir execution.
+It also provides the update of the global state used by `<firebase-state>` thanks to `<iron-meta>`.
 
 @group GoogleWebComponents Elements
-@element firebase-auth-dialog
+@element firebase-auth-manager
 @hero hero.svg
 @demo demo/index.html
 -->
-<dom-module id="firebase-auth-dialog">
+<dom-module id="firebase-auth-manager">
   <template>
       <firebase-auth id="firebaseAuth"
         user="{{user}}"
