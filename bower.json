@@ -1,6 +1,6 @@
 {
-  "name": "firebase-auth-dialog",
-  "version": "0.5.0",
+  "name": "firebase-element-extended",
+  "version": "0.6.0",
   "authors": [
     "Pascal Gula aka MeTaNoV"
   ],
@@ -22,14 +22,14 @@
     "sign in",
     "dialog"
   ],
-  "main": "firebase-auth-dialog.html",
+  "main": ["firebase-auth-dialog.html"],
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git://github.com/MeTaNoV/firebase-auth-dialog.git"
+    "url": "git://github.com/MeTaNoV/firebase-element-extended.git"
   },
   "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://metanov.github.io/firebase-auth-dialog/",
+  "homepage": "https://metanov.github.io/firebase-element-extended/",
   "ignore": [],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
@@ -42,10 +42,10 @@
   },
   "devDependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
+    "web-component-tester": "^3.4.0",
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "iron-validator-behavior": "PolymerElements/iron-validator-behavior#^1.0.0",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
-    "web-component-tester": "^3.4.0",
     "firebase-element": "GoogleWebComponents/firebase-element#^1.0.0"
   }
 }

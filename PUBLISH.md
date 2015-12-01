@@ -1,6 +1,6 @@
 ## Registering to Bower
 
-`bower register firebase-auth-dialog git://github.com/MeTaNoV/firebase-auth-dialog.git`
+`bower register firebase-element-extended git://github.com/MeTaNoV/firebase-element-extended.git`
 
 ## Deploying to Github Pages
 

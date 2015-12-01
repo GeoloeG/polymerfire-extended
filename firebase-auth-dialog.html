@@ -18,9 +18,10 @@ Example:
     <firebase-auth-dialog
       type="Register"
       providers='["facebook", "github", "google"]'
-      modal
-      with-backdrop
-      >
+      modal with-backdrop>
+        <span class="introduction">-- Welcome to the FBE Demo: --</span>
+        <span class="provider">-- Login with one of the following provider(s): --</span>
+        <span class="user">-- or provide your email and password : --</span>
     </firebase-auth-dialog>
 
 ### Styling
@@ -65,25 +66,29 @@ element.
         display: block;
       }
 
+      :host > div {
+        text-align: center;
+      }
+
       /*https://developers.facebook.com/docs/facebook-login/best-practices*/
       paper-button.facebook {
         color: white;
-        background-color: #3B5998;        
+        background-color: #3B5998;
       }
       /*https://github.com/logos*/
       paper-button.github {
         color: black;
-        background-color: white;        
+        background-color: white;
       }
       /*https://developers.google.com/+/branding-guidelines?hl=en*/
       paper-button.google {
         color: white;
-        background-color: #DC4E41;        
+        background-color: #DC4E41;
       }
       /*https://dev.twitter.com/web/sign-in/resources*/
       paper-button.twitter {
         color: white;
-        background-color: #4099FF;        
+        background-color: #4099FF;
       }
 
       #introduction, #separation {
@@ -91,25 +96,29 @@ element.
       }
     </style>
 
-    <!-- TODO PG: test with and without backdrop -->
-    <h2>[[_computeHeader(type)]]</h2>
+    <h2>[[_computeHeaderLabel(type)]]</h2>
+    <div id="introduction-section">
+      <content select="[introduction]" id="introduction"></content>
+    </div>
 
-    <div id="intro-provider" hidden="_computeHiddenIntroProvider(provider)">-- {{type}} with the following provider(s): --</div>
-
-    <div class="services">
-      <template is="dom-repeat" items={{providers}} as="provider">
-        <paper-button 
+    <div id="provider-section" hidden="[[_computeProviderHidden(providers)]]">
+      <content select="[provider]" id="provider"></content>
+    </div>
+    <div id="providers">
+      <template is="dom-repeat" items="{{providers}}" as="provider">
+        <!-- TODO PG: add the icon for each provider -->
+        <paper-button
           raised
-          class$="[[provider]]" 
+          class$="[[provider]]"
           provider$="[[provider]]"
-          on-tap="_handleProvider">[[provider]]
+          on-tap="_handleProvider">
+            [[provider]]
         </paper-button>
       </template>
     </div>
 
-    <div class="user-inputs">
-      <div id="separation">-- or with an account: --</div>
-
+    <div id="user-section">
+      <content select="[user]" id="user"></content>
       <!-- Email input -->
       <gold-email-input id="email"
         invalid="{{emailInvalid}}"
@@ -120,11 +129,8 @@ element.
       <gold-password-input id="primary"
         value="{{primary}}"
         invalid="{{primaryInvalid}}"
-        auto-validate 
-        minlength="6" 
-        error-message="The password must contain at least 6 characters" 
-        autocomplete=[[_computeAutocomplete(type)]]
-        strength-meter>
+        auto-validate
+        error-message="The password must contain at least 6 characters">
       </gold-password-input>
       <!-- Verification password input -->
       <gold-password-input-validator
@@ -142,13 +148,12 @@ element.
 
     <div class="buttons">
       <paper-button dialog-confirm
-        disabled="[[_computeConfirmDisabled(type,emailInvalid,primaryInvalid,verificationInvalid)]]"
+        disabled="[[_computeConfirmDisabled(type,emailInvalid,primary,primaryInvalid,verificationInvalid)]]"
         on-tap="_handleConfirm">
           [[_computeConfirm(type)]]
       </paper-button>
-      <paper-button 
+      <paper-button
         dialog-dismiss
-        on-tap="_handleCancel"
         >
         Cancel
       </paper-button>
@@ -180,12 +185,12 @@ element.
           'neon-animation-finish': '_onNeonAnimationFinish'
         },
 
+           // * FIXME PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
+           // * FIXME PG: https://github.com/Polymer/polymer/issues/3099
         properties: {
           /**
-           * `type` indicates the type of authentication dialog to use. It can hold currently two 
+           * `type` indicates the type of authentication dialog to use. It can hold currently two
            * values, namely DialogTypeValue.REGISTER and DialogTypeValue.LOGIN.
-           * FIXME PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
-           * FIXME PG: https://github.com/Polymer/polymer/issues/3099
            *
            * @type {string}
            */
@@ -195,16 +200,7 @@ element.
           },
 
           /**
-           * `location` indicates the Firebase location URL
-           *
-           * @type {string}
-           */
-          location: {
-            type: String
-          },
-
-          /**
-           * `providers` set the list of provider accessible for Register/Login.
+           * `providers` set the list of providers accessible for Register/Login.
            *
            * @type {Array}
            */
@@ -238,16 +234,23 @@ element.
           } else {
             this._finishRenderClosed();
           }
+          this.$.email.value = "";
+          this.$.primary.value = "";
+          this.$.verification.value = "";
         },
 
         _typeChanged: function() {
           switch(this.type) {
             case DialogTypeValue.REGISTER:
               this.$.primary.setAttribute('strength-meter', '');
+              this.$.primary.setAttribute('minlength', '6');
+              this.$.primary.setAttribute('autocomplete', 'new-password');
               this.$.verification.removeAttribute('hidden');
               break;
             case DialogTypeValue.LOGIN:
               this.$.primary.removeAttribute('strength-meter');
+              this.$.primary.removeAttribute('minlength');
+              this.$.primary.setAttribute('autocomplete', 'current-password');
               this.$.verification.setAttribute('hidden', '');
               break;
             default:
@@ -260,26 +263,17 @@ element.
           // TODO PG: check the list of provider given and filter only the supported one
         },
 
-        _computeHiddenIntroProvider(provider) {
-          return provider.length === 0;
-        },
-
-        _computeAutocomplete(type) {
-          switch(type) {
-            case DialogTypeValue.REGISTER:
-              return "new-password";
-            case DialogTypeValue.LOGIN:
-              return "current-password";
-          }
-        },
-
-        _computeHeader(type) {
+        _computeHeaderLabel(type) {
           switch(type) {
             case DialogTypeValue.REGISTER:
               return DialogTypeValue.REGISTER;
             case DialogTypeValue.LOGIN:
               return DialogTypeValue.LOGIN;
           }
+        },
+
+        _computeProviderHidden(provider) {
+          return provider.length === 0;
         },
 
         _computeConfirm(type) {
@@ -291,17 +285,17 @@ element.
           }
         },
 
-        _computeConfirmDisabled(type,emailInvalid,primaryInvalid,verificationInvalid) {
+        _computeConfirmDisabled(type, emailInvalid, primary, primaryInvalid, verificationInvalid) {
           switch(type) {
             case DialogTypeValue.REGISTER:
               if (this.$.verification.value === '' || verificationInvalid) {
-                return true;                
+                return true;
               }
             case DialogTypeValue.LOGIN:
               if (this.$.email.value === '' || emailInvalid) {
                 return true;
               }
-              if (this.$.primary.value === '' || primaryInvalid) {
+              if (primary === '' || primaryInvalid) {
                 return true;
               }
               break;
@@ -311,35 +305,29 @@ element.
 
         _handleProvider(e) {
           this.fire('sign-in', { provider: e.target.getAttribute("provider") });
-          //this.$.firebaseAuth.provider = e.target.getAttribute("provider");
-
           this.close();
         },
 
         _handleConfirm() {
           var params = {};
+
           // TODO PG: check the potential params to add...
           params.email = this.$.email.value;
           params.password = this.$.primary.value;
 
           switch(this.type) {
             case DialogTypeValue.REGISTER:
-              this.fire('sign-up', params);
-              //this.$.firebaseAuth.createUser(params.email, params.password);
+              this.fire('sign-up', { params: params} );
               break;
             case DialogTypeValue.LOGIN:
-              this.fire('sign-in', { provider: "password", params: params });
-              //this.$.firebaseAuth.login(params);
+              this.fire('sign-in', { provider: "password", params: params } );
               break;
           }
-        },
-
-        _handleCancel() {
-          this.$.email.value = "";
-          this.$.primary.value = "";
-          this.$.verification.value = "";
         }
+
       });
+
+      // TODO PG: document the event parameter
 
       /*
       The `sign-up` event is fired whenever a new user is registering is fired.

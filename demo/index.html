@@ -4,11 +4,11 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  
-    <title>firebase-auth-dialog Demo</title>
-  
+
+    <title>firebase-element-extended Demo</title>
+
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  
+
     <link rel="import" href="../../polymer/polymer.html">
 
     <link rel="import" href="../../firebase-element/firebase-auth.html">
@@ -18,10 +18,12 @@
     <link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
     <link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
     <link rel="stylesheet" href="../../paper-styles/demo.css">
-  
+
     <link rel="import" href="../firebase-auth-dialog.html">
 
     <style is="custom-style">
+      /*TODO PG: beautify the dialog... :)*/
+
       section > paper-button {
         background-color: var(--google-grey-300);
         padding: 5px;
@@ -57,13 +59,12 @@
       <paper-button on-tap="signUpButton" disabled="[[user]]">Register Dialog</paper-button>
       <paper-button on-tap="signInButton" disabled="[[user]]">Login Dialog</paper-button>
       <paper-button on-tap="signOutButton" disabled="[[!user]]">Logout</paper-button>
-    
+
       <!-- TODO PG: Add a selection check box to add the services used -->
       <firebase-auth id="firebaseAuth"
         user="{{user}}"
         status-known="{{statusKnown}}"
         location="https://metanov-test.firebaseio.com"
-        error="{{error}}"
         on-error="errorHandler"
         >
       </firebase-auth>
@@ -73,10 +74,13 @@
         exit-animation="fade-out-animation"
         providers='["facebook", "github", "google"]'
         modal with-backdrop>
+        <span introduction>-- Welcome to the FBE Demo: --</span>
+        <span provider>-- Register/Login with one of the following provider(s): --</span>
+        <span user>-- or provide your email and password : --</span>
       </firebase-auth-dialog>
 
-      <!-- TODO PG: add user info report -->
       <h3>Register status:</h3>
+      <!-- TODO PG: add user registered temp message -->
       <p id="register"></p>
 
       <h3>Login status:</h3>
@@ -86,19 +90,18 @@
       <pre id="user">[[_showUser(user)]]</pre>
 
       <h3>Error status:</h3>
-      <pre id="error">[[error]]</pre>
+      <pre id="error-msg"></pre>
 
     </template>
 
     <script>
       var t = document.getElementById('t');
-      
+
       t._showUser = function(user) {
         return JSON.stringify(user);
       };
 
       t._showStatus = function(statusKnown, user) {
-        console.log("computing status...");
         if (statusKnown && user) {
           return 'Logged in';
         }
@@ -109,34 +112,41 @@
       };
 
       t.signUpButton = function() {
-        console.log("Signing Up!");
+        var error = document.getElementById("error-msg");
+        error.innerText = "";
         var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
         firebaseAuthDialog.setAttribute('type', "Register");
         firebaseAuthDialog.open();
       };
 
       t.signInButton = function() {
+        var error = document.getElementById("error-msg");
+        error.innerText = "";
         var register = document.getElementById("register");
         register.innerText = "";
-        console.log("Signing In!");
         var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
         firebaseAuthDialog.setAttribute('type', "Login");
         firebaseAuthDialog.open();
       };
 
       t.signOutButton = function() {
+        var error = document.getElementById("error-msg");
+        error.innerText = "";
         var register = document.getElementById("register");
         register.innerText = "";
-        console.log("Signing Out!");
         var firebaseAuth = document.getElementById("firebaseAuth");
         firebaseAuth.logout();
       };
+
+      t.errorHandler = function(e) {
+        var error = document.getElementById("error-msg");
+        error.innerText = JSON.stringify(e.detail);
+      }
 
       window.addEventListener('sign-up', signUpHandler);
       window.addEventListener('sign-in', signInHandler);
 
       function signUpHandler(e) {
-        console.log("TODO signup");
         var firebaseAuth = document.getElementById("firebaseAuth");
         var params = e.detail.params;
         firebaseAuth.createUser(params.email, params.password);
@@ -151,14 +161,9 @@
       }
 
       function signInHandler(e) {
-        console.log("TODO signin");
         var firebaseAuth = document.getElementById("firebaseAuth");
         firebaseAuth.provider = e.detail.provider;
         firebaseAuth.login(e.detail.params);
-      }
-
-      function errorHandler(e) {
-        // TODO...
       }
 
     </script>
