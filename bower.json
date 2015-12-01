@@ -22,7 +22,7 @@
     "sign in",
     "dialog"
   ],
-  "main": ["firebase-auth-dialog.html"],
+  "main": ["firebase-auth-dialog.html", "firebase-icons.html"],
   "private": false,
   "repository": {
     "type": "git",
