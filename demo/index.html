@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="../../paper-styles/demo.css">
 
     <link rel="import" href="../firebase-auth-dialog.html">
+    <link rel="import" href="../firebase-auth-manager.html">
+    <link rel="import" href="../firebase-state.html">
 
     <style is="custom-style">
       /*TODO PG: beautify the dialog... :)*/
@@ -61,13 +63,9 @@
       <paper-button on-tap="signOutButton" disabled="[[!user]]">Logout</paper-button>
 
       <!-- TODO PG: Add a selection check box to add the services used -->
-      <firebase-auth id="firebaseAuth"
-        user="{{user}}"
-        status-known="{{statusKnown}}"
-        location="https://metanov-test.firebaseio.com"
-        on-error="errorHandler"
-        >
-      </firebase-auth>
+      <firebase-auth-manager
+        location="https://metanov-test.firebaseio.com">
+      </firebase-auth-manager>
 
       <firebase-auth-dialog id="firebaseAuthDialog"
         entry-animation="scale-up-animation"
@@ -79,36 +77,33 @@
         <span user>-- or provide your email and password : --</span>
       </firebase-auth-dialog>
 
+      <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+
       <h3>Register status:</h3>
       <!-- TODO PG: add user registered temp message -->
       <p id="register"></p>
 
       <h3>Login status:</h3>
-      <pre id="login">[[_showStatus(statusKnown,user)]]</pre>
+      <pre id="login">[[_showStatus(logged)]]</pre>
 
       <h3>User</h3>
       <pre id="user">[[_showUser(user)]]</pre>
-
-      <h3>Error status:</h3>
-      <pre id="error-msg"></pre>
 
     </template>
 
     <script>
       var t = document.getElementById('t');
 
-      t._showUser = function(user) {
-        return JSON.stringify(user);
-      };
-
-      t._showStatus = function(statusKnown, user) {
-        if (statusKnown && user) {
+      t._showStatus = function(logged) {
+        if (logged) {
           return 'Logged in';
-        }
-        if (statusKnown) {
+        } else {
           return 'Logged out';
         }
-        return 'Unknown (checking status...)';
+      };
+
+      t._showUser = function(user) {
+        return JSON.stringify(user);
       };
 
       t.signUpButton = function() {
@@ -137,34 +132,6 @@
         var firebaseAuth = document.getElementById("firebaseAuth");
         firebaseAuth.logout();
       };
-
-      t.errorHandler = function(e) {
-        var error = document.getElementById("error-msg");
-        error.innerText = JSON.stringify(e.detail);
-      }
-
-      window.addEventListener('sign-up', signUpHandler);
-      window.addEventListener('sign-in', signInHandler);
-
-      function signUpHandler(e) {
-        var firebaseAuth = document.getElementById("firebaseAuth");
-        var params = e.detail.params;
-        firebaseAuth.createUser(params.email, params.password);
-
-        var register = document.getElementById("register");
-        register.innerText = "Registered";
-        // FIXME PG: not additional user ID provided in the event...
-        // https://github.com/GoogleWebComponents/firebase-element/issues/74
-
-        // var user = document.getElementById("user");
-        // user.innerHTML = JSON.stringify(e.detail);
-      }
-
-      function signInHandler(e) {
-        var firebaseAuth = document.getElementById("firebaseAuth");
-        firebaseAuth.provider = e.detail.provider;
-        firebaseAuth.login(e.detail.params);
-      }
 
     </script>
 

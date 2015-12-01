@@ -1,0 +1,50 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-meta/iron-meta.html">
+
+<!--
+`<firebase-auth-state>` is a TODO....
+
+@group GoogleWebComponents Elements
+@element firebase-auth-dialog
+@hero hero.svg
+@demo demo/index.html
+-->
+<dom-module id="firebase-auth-state">
+  <template>
+      <iron-meta type="firebase" key="logged" value="{{logged}}"></iron-meta>
+      <iron-meta type="firebase" key="user" value="{{user}}"></iron-meta>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'firebase-state',
+
+      properties: {
+
+        /**
+         * Set to `true` if a user is logged in, otherwise `false`
+         */
+        logged: {
+          type: Boolean,
+          // TODO PG: not sure to be readlony...
+          //readOnly: true,
+          notify: true
+        },
+
+        /**
+         * This property reflects the firebase user auth object.
+         */
+        user: {
+          type: Object,
+          // TODO PG: not sure to be readlony...
+          //readOnly: true,
+          notify: true
+        },
+
+      },
+
+    };
+
+  </script>

@@ -1,0 +1,76 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-meta/iron-meta.html">
+<link rel="import" href="../firebase-element/firebase-auth.html">
+
+<!--
+`<firebase-auth-manager>` is a TODO....
+
+@group GoogleWebComponents Elements
+@element firebase-auth-dialog
+@hero hero.svg
+@demo demo/index.html
+-->
+<dom-module id="firebase-auth-dialog">
+  <template>
+      <firebase-auth id="firebaseAuth"
+        user="{{user}}"
+        status-known="{{statusKnown}}"
+        location="[[location]]"
+        >
+      </firebase-auth>
+      <iron-meta type="firebase" key="logged" value="[[_computeLoggedState(statusKnown,user)]]"></iron-meta>
+      <iron-meta type="firebase" key="user" value="[[user]]"></iron-meta>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'firebase-auth-manager',
+
+      properties: {
+
+        /**
+         * Location used for the `<firebase-auth>` inner element
+         */
+        location: {
+          type: String
+        },
+
+      },
+
+      attached: function() {
+        window.addEventListener('sign-up', this._signUpHandler.bind(this));
+        window.addEventListener('sign-in', this._signInHandler.bind(this));
+        window.addEventListener('sign-out', this._signOutHandler.bind(this));
+        window.addEventListener('error', this._errorHandler.bind(this));
+      },
+
+      detached: function() {
+      },
+
+      _signUpHandler(e) {
+        this.$.firebaseAuth.createUser(e.detail.params.email, e.detail.params.password);
+      },
+
+      _signInHandler(e) {
+        this.$.firebaseAuth.provider = e.detail.provider;
+        this.$.firebaseAuth.login(e.detail.params);
+      },
+
+      _signOutHandler(e) {
+        this.$.firebaseAuth.logout();
+      },
+
+      _errorHandler(e) {
+        // TODO PG: implement with proper error dialog!
+        alert(e.detail);
+      },
+
+      _computeLoggedState(statusKnown,user) {
+        return statusKnown && user;
+      }
+
+    };
+
+  </script>
