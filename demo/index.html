@@ -107,16 +107,12 @@
       };
 
       t.signUpButton = function() {
-        var error = document.getElementById("error-msg");
-        error.innerText = "";
         var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
         firebaseAuthDialog.setAttribute('type', "Register");
         firebaseAuthDialog.open();
       };
 
       t.signInButton = function() {
-        var error = document.getElementById("error-msg");
-        error.innerText = "";
         var register = document.getElementById("register");
         register.innerText = "";
         var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
@@ -125,12 +121,7 @@
       };
 
       t.signOutButton = function() {
-        var error = document.getElementById("error-msg");
-        error.innerText = "";
-        var register = document.getElementById("register");
-        register.innerText = "";
-        var firebaseAuth = document.getElementById("firebaseAuth");
-        firebaseAuth.logout();
+        t.fire('sign-out');
       };
 
     </script>

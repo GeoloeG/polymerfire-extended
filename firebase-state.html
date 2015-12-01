@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../iron-meta/iron-meta.html">
+<link rel="import" href="../akc-meta/akc-meta.html">
 
 <!--
 `<firebase-auth-state>` is an element that is sharing globally the `logged` and `user` state of the current user.
@@ -10,10 +10,10 @@
 @hero hero.svg
 @demo demo/index.html
 -->
-<dom-module id="firebase-auth-state">
+<dom-module id="firebase-state">
   <template>
-      <iron-meta type="firebase" key="logged" value="{{logged}}"></iron-meta>
-      <iron-meta type="firebase" key="user" value="{{user}}"></iron-meta>
+    <akc-meta-query type="firebase" key="logged" value="{{logged}}"></akc-meta-query>
+    <akc-meta-query type="firebase" key="user" value="{{user}}"></akc-meta-query>
   </template>
   <script>
 
@@ -28,8 +28,6 @@
          */
         logged: {
           type: Boolean,
-          // TODO PG: not sure to be readlony...
-          //readOnly: true,
           notify: true
         },
 
@@ -38,13 +36,12 @@
          */
         user: {
           type: Object,
-          // TODO PG: not sure to be readlony...
-          //readOnly: true,
           notify: true
-        },
+        }
 
       },
 
-    };
+    });
 
   </script>
+</dom-module>
