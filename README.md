@@ -33,7 +33,7 @@ To use it:
 	type="Register"
 	providers='["facebook", "github", "google"]'
 	modal with-backdrop>
-    <span introduction>-- Welcome to the Firebase Extended Demo: --</span>
+    <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
     <span provider>-- Register with one of the following provider(s): --</span>
     <span user>-- or provide an email and password for registration : --</span>
 </firebase-auth-dialog>
