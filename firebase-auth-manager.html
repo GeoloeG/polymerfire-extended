@@ -1,7 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../akc-meta/akc-meta.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
+
 <link rel="import" href="../firebase-element/firebase-auth.html">
+<link rel="import" href="./firebase-error-dialog.html">
 
 <!--
 `<firebase-auth-manager>` is an wrapper element to `<firebase-auth>` that listens to the various `sign-XXX` event and delegate heir execution.
@@ -22,6 +25,13 @@ It also provides the update of the global state used by `<firebase-state>` thank
         location="[[location]]"
         >
       </firebase-auth>
+      <firebase-error-dialog id="errorDialog"
+        entry-animation="scale-up-animation"
+        exit-animation="fade-out-animation"
+        modal with-backdrop>
+          <span error>[[lastError]]</span>
+      </firebase-error-dialog>
+      <paper-toast id="toast" text="[[toastMessage]]" duration="3000"></paper-toast>
   </template>
   <script>
 
@@ -38,12 +48,28 @@ It also provides the update of the global state used by `<firebase-state>` thank
           type: String
         },
 
+        /**
+         * Last error that occured with one of the auth service
+         */
+        lastError: {
+          type: String
+        },
+
+        /**
+         * Last error that occured with one of the auth service
+         */
+        toastMessage: {
+          type: String
+        },
       },
 
       attached: function() {
         window.addEventListener('sign-up', this._signUpHandler.bind(this));
         window.addEventListener('sign-in', this._signInHandler.bind(this));
         window.addEventListener('sign-out', this._signOutHandler.bind(this));
+        window.addEventListener('user-created', this._userHandler.bind(this));
+        window.addEventListener('login', this._userHandler.bind(this));
+        window.addEventListener('logout', this._userHandler.bind(this));
         window.addEventListener('error', this._errorHandler.bind(this));
       },
 
@@ -63,9 +89,25 @@ It also provides the update of the global state used by `<firebase-state>` thank
         this.$.firebaseAuth.logout();
       },
 
+      _userHandler(e) {
+        switch(e.type) {
+          case "user-created":
+            this.toastMessage = "Registration "
+            break;
+          case "login":
+            this.toastMessage = "Login "
+            break;
+          case "logout":
+            this.toastMessage = "Logout "
+            break;
+        }
+        this.toastMessage += "successful!";
+        this.$.toast.open();
+      },
+
       _errorHandler(e) {
-        // TODO PG: implement with proper error dialog!
-        alert(e.detail);
+        this.lastError = e.detail;
+        this.$.errorDialog.open()
       },
 
       _computeLoggedState(statusKnown,user) {
