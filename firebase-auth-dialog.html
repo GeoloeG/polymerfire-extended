@@ -315,7 +315,6 @@ element.
         _handleConfirm() {
           var params = {};
 
-          // TODO PG: check the potential params to add...
           params.email = this.$.email.value;
           params.password = this.$.primary.value;
 
@@ -331,15 +330,13 @@ element.
 
       });
 
-      // TODO PG: document the event parameter
-
       /*
-      The `sign-up` event is fired whenever a new user is registering is fired.
+      The `sign-up` event is fired whenever a new user register.
       @event sign-up
       */
 
       /*
-      The `sign-in` event is fired whenever the underlying firebase `login` is fired.
+      The `sign-in` event is fired whenever a user login.
       @event sign-in
       */
 
