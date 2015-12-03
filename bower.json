@@ -42,7 +42,8 @@
     "paper-toast": "PolymerElements/paper-toast#^1.0.0",
     "gold-email-input": "PolymerElements/gold-email-input#^1.0.0",
     "gold-password-input": "gold-password-input#^1.0.0",
-    "akc-meta": "akc42/akc-meta#^v1.0.0"
+    "akc-meta": "akc42/akc-meta#^v1.0.0",
+    "jdenticon": "dmester/jdenticon#^1.3.0"
   },
   "devDependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",

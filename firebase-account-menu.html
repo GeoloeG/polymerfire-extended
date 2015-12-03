@@ -7,6 +7,7 @@
 
 <link rel="import" href="./firebase-auth-dialog.html">
 <link rel="import" href="./firebase-icons.html">
+<link rel="import" href="./firebase-identicon.html">
 <link rel="import" href="./firebase-state.html">
 
 <!--
@@ -21,7 +22,7 @@ Example:
     </firebase-account-menu>
 
 @group GoogleWebComponents Elements
-@element simple-login-nav-button
+@element firebase-account-menu
 @demo demo/index.html
 @hero hero.svg
 -->
@@ -30,7 +31,7 @@ Example:
     <style>
       /*TODO PG: beautify the dialog... :)*/
       :host {
-        display: block;
+        display: inline-block;
       }
     </style>
 
@@ -38,7 +39,7 @@ Example:
     <firebase-auth-dialog id="firebaseAuthDialog"
       entry-animation="scale-up-animation"
       exit-animation="fade-out-animation"
-      providers='["facebook", "github", "google", "twitter"]'
+      providers='["facebook", "github", "google"]'
       modal>
       <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
       <span provider>-- Register/Login with one of the following provider(s): --</span>
@@ -46,6 +47,9 @@ Example:
     </firebase-auth-dialog>
 
     <div hidden$="[[!logged]]">
+      <firebase-identicon width="50" height="50"
+        hash="[[_computeHash(user.uid)]]">
+      </firebase-identicon>
       <paper-button on-tap="signOutButton">Logout</paper-button>
     </div>
     <div hidden$="[[logged]]">
@@ -72,6 +76,13 @@ Example:
         t.fire('sign-out');
       },
 
+      _computeHash: function(uid) {
+        // TODO PG: use a hash generator from name
+        if (uid !== undefined) {
+          return uid.split(':')[1]+"1234567890ABCDEF";
+        }
+        return "1234567890ABCDEF";
+      }
       /**
         Fired when a user confirm a registration.
 
