@@ -11,13 +11,10 @@
 
     <link rel="import" href="../../polymer/polymer.html">
 
-    <!-- <link rel="import" href="../../paper-button/paper-button.html"> -->
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
     <link rel="import" href="../../paper-styles/color.html">
-    <link rel="import" href="../../paper-styles/demo-pages.html">
-    <!-- <link rel="import" href="../../neon-animation/animations/scale-up-animation.html"> -->
-    <!-- <link rel="import" href="../../neon-animation/animations/fade-out-animation.html"> -->
-    <link rel="stylesheet" href="../../paper-styles/demo.css">
     <link rel="import" href="../../firebase-element/firebase-auth.html">
 
     <link rel="import" href="../firebase-auth-manager.html">
@@ -25,38 +22,34 @@
     <link rel="import" href="../firebase-state.html">
 
     <style is="custom-style">
-/*      section > paper-button {
-        background-color: var(--google-grey-300);
-        padding: 5px;
-      }
-      section > paper-button:hover {
-        background-color: var(--paper-light-blue-200);
-        padding: 5px;
-      }
-*/    </style>
+    </style>
 
   </head>
   <body unresolved>
     <template id="t" is="dom-bind">
 
-      <paper-toolbar>
-        <paper-icon-button icon="menu"></paper-icon-button>
-        <span class="title">Toolbar</span>
-        <firebase-account-menu></firebase-account-menu>
-      </paper-toolbar>
+<!--       <demo-snippet>
+        <template>
+ -->          <paper-toolbar>
+            <paper-icon-button icon="menu"></paper-icon-button>
+            <span class="title">Firebase Element eXtended Demo</span>
+            <firebase-account-menu></firebase-account-menu>
+          </paper-toolbar>
 
-      <!-- TODO PG: Add a selection check box to add the services used -->
-      <firebase-auth-manager
-        location="https://metanov-test.firebaseio.com">
-      </firebase-auth-manager>
-      <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+          <!-- TODO PG: Add a selection check box to add the services used -->
+          <firebase-auth-manager
+            location="https://metanov-test.firebaseio.com">
+          </firebase-auth-manager>
 
-      <h3>Login status:</h3>
-      <pre id="login">[[_showStatus(logged)]]</pre>
+          <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+          <h3>Login status:</h3>
+          <pre id="login">[[_showStatus(logged)]]</pre>
 
-      <h3>User</h3>
-      <pre id="user">[[_showUser(user)]]</pre>
-
+          <h3>User</h3>
+          <pre id="user">[[_showUser(user)]]</pre>
+<!--         </template>
+      </demo-snippet>
+ -->
     </template>
 
     <script>
