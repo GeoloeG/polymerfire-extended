@@ -12,7 +12,10 @@
 <link rel="import" href="./firebase-icons.html">
 
 <!--
-`<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverage firebase authentication in a flexible way. You can setup a 'Register' or 'Login' flavor. You can configure the providers accessible within the dialog.
+`<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverage firebase authentication in a flexible way. You can:
+- setup a 'Register' or 'Login' flavor.
+- configure the providers accessible within the dialog.
+- congiure different sections: "introduction", "provider" and "user" thanks to the corresponding attribute.
 
 See `Polymer.PaperDialogBehavior` for specifics.
 
@@ -64,37 +67,36 @@ element.
   <template>
     <style include="paper-dialog-shared-styles"></style>
 
-    <style>
+    <style is="custom-style">
       :host {
         display: block;
-      }
-
-      :host > div {
-        text-align: center;
       }
 
       /*https://developers.facebook.com/docs/facebook-login/best-practices*/
       paper-button.facebook {
         color: white;
+        --iron-icon-fill-color: white;
         background-color: #3B5998;
       }
       /*https://github.com/logos*/
-      paper-button.github {
+      .github {
         color: black;
         background-color: white;
       }
       /*https://developers.google.com/+/branding-guidelines?hl=en*/
-      paper-button.google {
+      .google {
         color: white;
+        --iron-icon-fill-color: white;
         background-color: #DC4E41;
       }
       /*https://dev.twitter.com/web/sign-in/resources*/
-      paper-button.twitter {
+      .twitter {
         color: white;
+        --iron-icon-fill-color: white;
         background-color: #4099FF;
       }
 
-      #introduction, #separation {
+      #introduction-section, #provider-section, #user-section {
         text-align: center;
       }
     </style>
@@ -115,7 +117,7 @@ element.
           class$="[[provider]]"
           provider$="[[provider]]"
           on-tap="_handleProvider">
-            <!-- <iron-icon icon="firebase:[[provider]]"></iron-icon> -->
+            <iron-icon class$="[[provider]]" icon="firebase:[[provider]]"></iron-icon>
             [[provider]]
         </paper-button>
       </template>
@@ -189,8 +191,8 @@ element.
           'neon-animation-finish': '_onNeonAnimationFinish'
         },
 
-           // * FIXME PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
-           // * FIXME PG: https://github.com/Polymer/polymer/issues/3099
+         // * FIXME PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
+         // * FIXME PG: https://github.com/Polymer/polymer/issues/3099
         properties: {
           /**
            * `type` indicates the type of authentication dialog to use. It can hold currently two
@@ -267,7 +269,7 @@ element.
           // TODO PG: check the list of provider given and filter only the supported one
         },
 
-        _computeHeaderLabel(type) {
+        _computeHeaderLabel: function(type) {
           switch(type) {
             case DialogTypeValue.REGISTER:
               return DialogTypeValue.REGISTER;
@@ -276,11 +278,11 @@ element.
           }
         },
 
-        _computeProviderHidden(provider) {
+        _computeProviderHidden: function(provider) {
           return provider.length === 0;
         },
 
-        _computeConfirm(type) {
+        _computeConfirm: function(type) {
           switch(type) {
             case DialogTypeValue.REGISTER:
               return DialogTypeValue.REGISTER;
@@ -289,12 +291,13 @@ element.
           }
         },
 
-        _computeConfirmDisabled(type, emailInvalid, primary, primaryInvalid, verificationInvalid) {
+        _computeConfirmDisabled: function(type, emailInvalid, primary, primaryInvalid, verificationInvalid) {
           switch(type) {
             case DialogTypeValue.REGISTER:
               if (this.$.verification.value === '' || verificationInvalid) {
                 return true;
               }
+              break;
             case DialogTypeValue.LOGIN:
               if (this.$.email.value === '' || emailInvalid) {
                 return true;
@@ -307,12 +310,12 @@ element.
           return false;
         },
 
-        _handleProvider(e) {
+        _handleProvider: function(e) {
           this.fire('sign-in', { provider: e.target.getAttribute("provider") });
           this.close();
         },
 
-        _handleConfirm() {
+        _handleConfirm: function() {
           var params = {};
 
           params.email = this.$.email.value;
@@ -330,14 +333,18 @@ element.
 
       });
 
-      /*
-      The `sign-up` event is fired whenever a new user register.
-      @event sign-up
-      */
 
-      /*
-      The `sign-in` event is fired whenever a user login.
-      @event sign-in
+      /**
+        Fired when a user confirm a registration.
+
+        @event sign-up
+        @param {{params: Object}} detail Contains user and password info.
+      */
+      /**
+        Fired when a user confirm a login.
+
+        @event sign-in
+        @param {{ provider: string, params: Object}} detail Contains user and password info.
       */
 
     }());

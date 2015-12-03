@@ -7,8 +7,8 @@
 <link rel="import" href="./firebase-error-dialog.html">
 
 <!--
-`<firebase-auth-manager>` is an wrapper element to `<firebase-auth>` that listens to the various `sign-XXX` event and delegate heir execution.
-It also provides the update of the global state used by `<firebase-state>` thanks to `<iron-meta>`.
+`<firebase-auth-manager>` is a wrapper element to `<firebase-auth>` that listens to the various `sign-XXX` event and delegate their execution.
+It also provides the update of the global variables used by `<firebase-state>`.
 
 @group GoogleWebComponents Elements
 @element firebase-auth-manager
@@ -31,6 +31,7 @@ It also provides the update of the global state used by `<firebase-state>` thank
         modal>
           <span error>[[lastError]]</span>
       </firebase-error-dialog>
+      <!-- TODO PG: eventually write a firebase-toast -->
       <paper-toast id="toast" text="[[toastMessage]]" duration="3000"></paper-toast>
   </template>
   <script>
@@ -76,41 +77,41 @@ It also provides the update of the global state used by `<firebase-state>` thank
       detached: function() {
       },
 
-      _signUpHandler(e) {
+      _signUpHandler: function(e) {
         this.$.firebaseAuth.createUser(e.detail.params.email, e.detail.params.password);
       },
 
-      _signInHandler(e) {
+      _signInHandler: function(e) {
         this.$.firebaseAuth.provider = e.detail.provider;
         this.$.firebaseAuth.login(e.detail.params);
       },
 
-      _signOutHandler(e) {
+      _signOutHandler: function(e) {
         this.$.firebaseAuth.logout();
       },
 
-      _userHandler(e) {
+      _userHandler: function(e) {
         switch(e.type) {
           case "user-created":
-            this.toastMessage = "Registration "
+            this.toastMessage = "Registration ";
             break;
           case "login":
-            this.toastMessage = "Login "
+            this.toastMessage = "Login ";
             break;
           case "logout":
-            this.toastMessage = "Logout "
+            this.toastMessage = "Logout ";
             break;
         }
         this.toastMessage += "successful!";
         this.$.toast.open();
       },
 
-      _errorHandler(e) {
+      _errorHandler: function(e) {
         this.lastError = e.detail;
-        this.$.errorDialog.open()
+        this.$.errorDialog.open();
       },
 
-      _computeLoggedState(statusKnown,user) {
+      _computeLoggedState: function(statusKnown,user) {
         return statusKnown && !!user;
       }
 

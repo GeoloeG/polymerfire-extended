@@ -1,0 +1,97 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="./firebase-auth-dialog.html">
+<link rel="import" href="./firebase-icons.html">
+<link rel="import" href="./firebase-state.html">
+
+<!--
+`<firebase-account-menu>` is a navigation menu to be placed inside a `<paper-toolbar>` that provides and hook the sign-XXX functionnality of `<firebase-auth-manager>`.
+It also provides access to the menu dedicated to account action.
+
+Example:
+
+    <firebase-account-menu
+      logged="[[logged]]"
+      user="[[user]]"
+    </firebase-account-menu>
+
+@group GoogleWebComponents Elements
+@element simple-login-nav-button
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="firebase-account-menu">
+  <template>
+    <style>
+      /*TODO PG: beautify the dialog... :)*/
+      :host {
+        display: block;
+      }
+    </style>
+
+    <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+    <firebase-auth-dialog id="firebaseAuthDialog"
+      entry-animation="scale-up-animation"
+      exit-animation="fade-out-animation"
+      providers='["facebook", "github", "google", "twitter"]'
+      modal>
+      <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
+      <span provider>-- Register/Login with one of the following provider(s): --</span>
+      <span user>-- or provide your email and password : --</span>
+    </firebase-auth-dialog>
+
+    <div hidden$="[[!logged]]">
+      <paper-button on-tap="signOutButton">Logout</paper-button>
+    </div>
+    <div hidden$="[[logged]]">
+      <paper-button on-tap="signUpButton">Register</paper-button>
+      <paper-button on-tap="signInButton">Login</paper-button>
+    </div>
+  </template>
+  <script>
+
+    Polymer({
+      is: 'firebase-account-menu',
+
+      signUpButton: function() {
+        this.$.firebaseAuthDialog.setAttribute('type', "Register");
+        this.$.firebaseAuthDialog.open();
+      },
+
+      signInButton: function() {
+        this.$.firebaseAuthDialog.setAttribute('type', "Login");
+        this.$.firebaseAuthDialog.open();
+      },
+
+      signOutButton: function() {
+        t.fire('sign-out');
+      },
+
+      /**
+        Fired when a user confirm a registration.
+
+        @event sign-up
+        @param {{params: Object}} detail Contains user and password info.
+      */
+      /**
+        Fired when a user confirm a login.
+
+        @event sign-in
+        @param {{ provider: string, params: Object}} detail Contains user and password info.
+      */
+      /**
+        Fired when a user confirm a login.
+
+        @event sign-out
+        @param {{ provider: string, params: Object}} detail Contains user and password info.
+      */
+    });
+
+  </script>
+</dom-module>
+

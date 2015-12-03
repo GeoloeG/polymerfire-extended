@@ -11,72 +11,44 @@
 
     <link rel="import" href="../../polymer/polymer.html">
 
-    <link rel="import" href="../../firebase-element/firebase-auth.html">
-    <link rel="import" href="../../paper-button/paper-button.html">
+    <!-- <link rel="import" href="../../paper-button/paper-button.html"> -->
+    <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
     <link rel="import" href="../../paper-styles/color.html">
     <link rel="import" href="../../paper-styles/demo-pages.html">
-    <link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
-    <link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
+    <!-- <link rel="import" href="../../neon-animation/animations/scale-up-animation.html"> -->
+    <!-- <link rel="import" href="../../neon-animation/animations/fade-out-animation.html"> -->
     <link rel="stylesheet" href="../../paper-styles/demo.css">
+    <link rel="import" href="../../firebase-element/firebase-auth.html">
 
-    <link rel="import" href="../firebase-auth-dialog.html">
     <link rel="import" href="../firebase-auth-manager.html">
+    <link rel="import" href="../firebase-account-menu.html">
     <link rel="import" href="../firebase-state.html">
 
     <style is="custom-style">
-      /*TODO PG: beautify the dialog... :)*/
-
-      section > paper-button {
+/*      section > paper-button {
         background-color: var(--google-grey-300);
         padding: 5px;
       }
-
       section > paper-button:hover {
         background-color: var(--paper-light-blue-200);
         padding: 5px;
       }
-
-      /*TODO PG: check the style...*/
-      firebase-auth-dialog.colored {
-        border: 2px solid;
-        border-color: var(--paper-green-500);
-        background-color: var(--paper-light-green-50);
-        color: var(--paper-green-500);
-      }
-
-      firebase-auth-dialog.size-position {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        width: 300px;
-        height: 300px;
-        overflow: auto;
-      }
-    </style>
+*/    </style>
 
   </head>
   <body unresolved>
     <template id="t" is="dom-bind">
 
-      <paper-button on-tap="signUpButton" disabled="[[user]]">Register Dialog</paper-button>
-      <paper-button on-tap="signInButton" disabled="[[user]]">Login Dialog</paper-button>
-      <paper-button on-tap="signOutButton" disabled="[[!user]]">Logout</paper-button>
+      <paper-toolbar>
+        <paper-icon-button icon="menu"></paper-icon-button>
+        <span class="title">Toolbar</span>
+        <firebase-account-menu></firebase-account-menu>
+      </paper-toolbar>
 
       <!-- TODO PG: Add a selection check box to add the services used -->
       <firebase-auth-manager
         location="https://metanov-test.firebaseio.com">
       </firebase-auth-manager>
-
-      <firebase-auth-dialog id="firebaseAuthDialog"
-        entry-animation="scale-up-animation"
-        exit-animation="fade-out-animation"
-        providers='["facebook", "github", "google"]'
-        modal>
-        <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
-        <span provider>-- Register/Login with one of the following provider(s): --</span>
-        <span user>-- or provide your email and password : --</span>
-      </firebase-auth-dialog>
-
       <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
 
       <h3>Login status:</h3>
@@ -100,22 +72,6 @@
 
       t._showUser = function(user) {
         return JSON.stringify(user);
-      };
-
-      t.signUpButton = function() {
-        var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
-        firebaseAuthDialog.setAttribute('type', "Register");
-        firebaseAuthDialog.open();
-      };
-
-      t.signInButton = function() {
-        var firebaseAuthDialog = document.getElementById("firebaseAuthDialog");
-        firebaseAuthDialog.setAttribute('type', "Login");
-        firebaseAuthDialog.open();
-      };
-
-      t.signOutButton = function() {
-        t.fire('sign-out');
       };
 
     </script>
