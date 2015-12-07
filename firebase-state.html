@@ -12,8 +12,9 @@
 -->
 <dom-module id="firebase-state">
   <template>
-    <akc-meta-query type="firebase" key="logged" value="{{logged}}"></akc-meta-query>
-    <akc-meta-query type="firebase" key="user" value="{{user}}"></akc-meta-query>
+    <akc-meta-query key="logged" value="{{logged}}"></akc-meta-query>
+    <akc-meta-query key="user" value="{{user}}"></akc-meta-query>
+    <akc-meta-query key="profile" value="{{profile}}"></akc-meta-query>
   </template>
   <script>
 
@@ -35,6 +36,14 @@
          * This property reflects the firebase user auth object.
          */
         user: {
+          type: Object,
+          notify: true
+        },
+
+        /**
+         * This property reflects the firebase user auth object.
+         */
+        profile: {
           type: Object,
           notify: true
         }

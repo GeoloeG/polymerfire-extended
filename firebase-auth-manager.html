@@ -4,6 +4,7 @@
 <link rel="import" href="../paper-toast/paper-toast.html">
 
 <link rel="import" href="../firebase-element/firebase-auth.html">
+<link rel="import" href="../firebase-element/firebase-document.html">
 <link rel="import" href="./firebase-error-dialog.html">
 
 <!--
@@ -19,16 +20,23 @@ It also provides the update of the global variables used by `<firebase-state>`.
   <template>
       <akc-meta key="logged" value="[[_computeLoggedState(statusKnown,user)]]"></akc-meta>
       <akc-meta key="user" value="[[user]]"></akc-meta>
+      <akc-meta key="profile" value="[[profile]]"></akc-meta>
+
       <firebase-auth id="firebaseAuth"
-        user="{{user}}"
-        status-known="{{statusKnown}}"
-        location="[[location]]"
-        >
+                    user="{{user}}"
+                    status-known="{{statusKnown}}"
+                    location="[[location]]">
       </firebase-auth>
+      <firebase-document id="firebaseDoc"
+                         location="{{profileLocation}}"
+                         data="{{profile}}"
+                         on-firebase-value="_firebaseProfileLoaded">
+      </firebase-document>
+
       <firebase-error-dialog id="errorDialog"
-        entry-animation="scale-up-animation"
-        exit-animation="fade-out-animation"
-        modal>
+                            entry-animation="scale-up-animation"
+                            exit-animation="fade-out-animation"
+                            modal>
           <span error>[[lastError]]</span>
       </firebase-error-dialog>
       <!-- TODO PG: eventually write a firebase-toast -->
@@ -47,6 +55,29 @@ It also provides the update of the global variables used by `<firebase-state>`.
          */
         location: {
           type: String
+        },
+
+        /**
+         * User used for the `<firebase-auth>` inner element
+         */
+        user: {
+          type: String
+        },
+
+        /**
+         * Computed location used for the profile firebase document
+         */
+        profileLocation: {
+          type: String,
+          computed: 'computeProfileLocation(location,user)',
+          notify: true
+        },
+
+        /**
+         * Value of the profile firebase document
+         */
+        profile: {
+          type: Object
         },
 
         /**
@@ -75,6 +106,43 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       detached: function() {
+        // TODO PG: unregister listeners
+      },
+
+      computeProfileLocation: function(location,user) {
+        if (user) {
+          var result = [location, 'profile', "test"].join('/');
+          console.log("YEAH: " + result);
+          return result;
+        } else {
+          console.log("Shit happened");
+          return '';
+        }
+      },
+
+      _firebaseProfileLoaded: function() {
+        console.log("_firebaseProfileLoaded");
+        this.set('profile', this.profile);
+        if (!this.profile) {
+         this._setDefaultProfile();
+        }
+      },
+
+      _setDefaultProfile: function() {
+        this.profile = {
+          displayName: "default",
+          email: '',
+          picture: '',
+          notification: {
+            message: true,
+            invitation: true,
+            changes: false,
+            login: false,
+            weekly: true,
+            daily: false
+          }
+        };
+        this.set('profile', this.profile);
       },
 
       _signUpHandler: function(e) {

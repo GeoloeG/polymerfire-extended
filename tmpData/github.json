@@ -1,0 +1,50 @@
+{
+  "provider": "github",
+  "uid": "github:11166016",
+  "github": {
+    "id": "11166016",
+    "accessToken": "dafe8385cb5ca85469a8192849ec7fb3afb3f0a8",
+    "displayName": "Pascal Gula",
+    "username": "MeTaNoV",
+    "email": "pascal.gula@gmail.com",
+    "cachedUserProfile": {
+      "login": "MeTaNoV",
+      "id": 11166016,
+      "avatar_url": "https://avatars.githubusercontent.com/u/11166016?v=3",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/MeTaNoV",
+      "html_url": "https://github.com/MeTaNoV",
+      "followers_url": "https://api.github.com/users/MeTaNoV/followers",
+      "following_url": "https://api.github.com/users/MeTaNoV/following{/other_user}",
+      "gists_url": "https://api.github.com/users/MeTaNoV/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/MeTaNoV/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/MeTaNoV/subscriptions",
+      "organizations_url": "https://api.github.com/users/MeTaNoV/orgs",
+      "repos_url": "https://api.github.com/users/MeTaNoV/repos",
+      "events_url": "https://api.github.com/users/MeTaNoV/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/MeTaNoV/received_events",
+      "type": "User",
+      "site_admin": false,
+      "name": "Pascal Gula",
+      "company": null,
+      "blog": null,
+      "location": "Berlin",
+      "email": "pascal.gula@gmail.com",
+      "hireable": true,
+      "bio": null,
+      "public_repos": 18,
+      "public_gists": 2,
+      "followers": 8,
+      "following": 37,
+      "created_at": "2015-02-23T20:47:36Z",
+      "updated_at": "2015-12-06T16:27:26Z"
+    },
+    "profileImageURL": "https://avatars.githubusercontent.com/u/11166016?v=3"
+  },
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2IjowLCJkIjp7InVpZCI6ImdpdGh1YjoxMTE2NjAxNiIsInByb3ZpZGVyIjoiZ2l0aHViIn0sImlhdCI6MTQ0OTQyNTY0OH0.QyeTmENveoMvqWRpjnS3fvo-KHGqv0E_reiMeiUjzTw",
+  "auth": {
+    "uid": "github:11166016",
+    "provider": "github"
+  },
+  "expires": 1449512048
+}

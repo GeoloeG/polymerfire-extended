@@ -25,6 +25,8 @@
     <link rel="import" href="../firebase-identicon.html">
 
     <link rel="stylesheet" href="../../paper-styles/demo.css">
+    
+    <link rel="import" href="x-pretty-json.html">
 
   </head>
   <body unresolved>
@@ -43,12 +45,14 @@
             location="https://metanov-test.firebaseio.com">
           </firebase-auth-manager>
 
-          <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+          <firebase-state logged="{{logged}}" user="{{user}}" profile="{{profile}}"></firebase-state>
           <h3>Login status:</h3>
           <pre id="login">[[_showStatus(logged)]]</pre>
 
           <h3>User</h3>
-          <pre id="user">[[_showUser(user)]]</pre>
+          <x-pretty-json object="[[user]]"></x-pretty-json>
+
+          <x-custom></x-custom>
 
         <!-- </template> -->
       <!-- </demo-snippet> -->
@@ -64,10 +68,6 @@
         } else {
           return 'Logged out';
         }
-      };
-
-      t._showUser = function(user) {
-        return JSON.stringify(user);
       };
 
     </script>
