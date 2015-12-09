@@ -16,30 +16,25 @@ $ bower install firebase-element-extended --save
 
 ## Usage
 
-Import one of the element of the set with the following:
+The elements of this set are designed to play nicely together and with the current [firebase-element](https://elements.polymer-project.org/elements/firebase-element). You can use them together or separately, depending on your need.
 
-```html
-<link rel="import" href="bower_components/firebase-element-extended/firebase-auth-dialog.html">
-```
+The current set includes the following elements:
+- `<firebase-account-menu>`: navigation menu that displays 'signUp', 'signIn' or 'account' button, while 'account' contains a dropdown of accessible actions.
+- `<firebase-auth-dialog>`: is a customizable dialog that leverages firebase authentication in a flexible way.
+- `<firebase-auth-manager>`: is a core element providing the glue to the firebase services like `auth` or `database` access.
+- `<firebase-error-dialog>`: is a customizable dialog that displays error messages.
+- `<firebase-icons>`: is set of icons used by elements.
+- `<firebase-identicon>`: is an identicon generator.
+- `<firebase-state>`: is sharing via data-binding the basic state and profile of a user.
 
-The first component available is `<firebase-auth-dialog>`
+Upcoming element:
+- `<firebase-profile-page>`
 
-To use it:
+See the [Documentation](https://metanov.github.io/firebase-element-extended/) for a more documentation regarding those elements.
 
-```html
-<firebase-auth-dialog
-	entry-animation="scale-up-animation"
-	exit-animation="fade-out-animation"
-	type="Register"
-	providers='["facebook", "github", "google"]'
-	modal with-backdrop>
-    <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
-    <span provider>-- Register with one of the following provider(s): --</span>
-    <span user>-- or provide an email and password for registration : --</span>
-</firebase-auth-dialog>
-```
+## Discussing
 
-See the [Documentation](https://metanov.github.io/firebase-element-extended/) for more options.
+If you have any questions, you can find me on the [Polymer Slack Channel](https://polymer.slack.com/), or just raise an Issue.
 
 ## Contributing
 

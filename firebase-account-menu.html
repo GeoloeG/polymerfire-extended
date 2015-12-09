@@ -20,7 +20,7 @@ It also provides access to the menu dedicated to account action.
 
 Example:
 
-    <firebase-account-menu
+    <firebase-account-menu>
     </firebase-account-menu>
 
 @group GoogleWebComponents Elements
@@ -33,12 +33,16 @@ Example:
     <style>
       /*TODO PG: beautify... :)*/
       :host {
-        display: inline-block;
+        display: block;
       }
 
-      #profileLabel, iron-icon {
-        padding-left: 8px;
-        vertical-align: middle;
+      #signedIn, #signedOut {
+        display: flex;
+        align-items: center;
+      }
+
+      paper-button:hover {
+        opacity: 0.7;
       }
     </style>
 
@@ -48,7 +52,7 @@ Example:
       entry-animation="scale-up-animation"
       exit-animation="fade-out-animation"
       providers='["facebook", "github", "google"]'
-      modal>
+      modal with-backdrop>
       <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
       <span provider>-- Register/Login with one of the following provider(s): --</span>
       <span user>-- or provide your email and password : --</span>
@@ -59,8 +63,8 @@ Example:
                        horizontal-align="right"
                        horizontal-offset="12">
       <paper-button id="signedIn" class="dropdown-trigger">
-        <iron-image src="[[profile.picture]]" width="50" height="50" sizing="cover"></iron-image>
-        <span id="profileLabel">[[profile.displayName]]</span>
+        <iron-image src="[[profile.picture]]" width="45" height="45" sizing="cover"></iron-image>
+        <span>[[profile.displayName]]</span>
         <iron-icon icon="expand-more"></iron-icon>
       </paper-button>
       <paper-menu class="dropdown-content">
