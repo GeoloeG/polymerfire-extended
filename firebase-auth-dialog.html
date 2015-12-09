@@ -154,13 +154,11 @@ element.
 
     <div class="buttons">
       <paper-button dialog-confirm
-        disabled="[[_computeConfirmDisabled(type,emailInvalid,primary,primaryInvalid,verificationInvalid)]]"
-        on-tap="_handleConfirm">
-          [[_computeConfirm(type)]]
+                    disabled="[[_computeConfirmDisabled(type,emailInvalid,primary,primaryInvalid,verificationInvalid)]]"
+                    on-tap="_handleConfirm">
+        [[_computeConfirm(type)]]
       </paper-button>
-      <paper-button
-        dialog-dismiss
-        >
+      <paper-button dialog-dismiss>
         Cancel
       </paper-button>
     </div>

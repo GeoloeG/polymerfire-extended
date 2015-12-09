@@ -25,7 +25,7 @@
     <link rel="import" href="../firebase-identicon.html">
 
     <link rel="stylesheet" href="../../paper-styles/demo.css">
-    
+
     <link rel="import" href="x-pretty-json.html">
 
   </head>
@@ -49,10 +49,19 @@
           <h3>Login status:</h3>
           <pre id="login">[[_showStatus(logged)]]</pre>
 
+          <h3>Profile</h3>
+          <div>Display Name: [[profile.displayName]]</div>
+          <br>
+          <div>First Name: [[profile.firstName]]</div>
+          <br>
+          <div>Last Name: [[profile.lastName]]</div>
+          <br>
+          <div>Email: [[profile.email]]</div>
+          <br>
+          <iron-image src="[[profile.picture]]" preload sizing="cover"></iron-image>
+
           <h3>User</h3>
           <x-pretty-json object="[[user]]"></x-pretty-json>
-
-          <x-custom></x-custom>
 
         <!-- </template> -->
       <!-- </demo-snippet> -->

@@ -19,15 +19,17 @@ It also provides the update of the global variables used by `<firebase-state>`.
 <dom-module id="firebase-auth-manager">
   <template>
       <akc-meta key="logged" value="[[_computeLoggedState(statusKnown,user)]]"></akc-meta>
-      <akc-meta key="user" value="[[user]]"></akc-meta>
-      <akc-meta key="profile" value="[[profile]]"></akc-meta>
+      <akc-meta key="user" value="{{user}}"></akc-meta>
+      <akc-meta key="profile" value="{{profile}}"></akc-meta>
 
       <firebase-auth id="firebaseAuth"
                     user="{{user}}"
                     status-known="{{statusKnown}}"
                     location="[[location]]">
       </firebase-auth>
+
       <firebase-document id="firebaseDoc"
+                         log
                          location="{{profileLocation}}"
                          data="{{profile}}"
                          on-firebase-value="_firebaseProfileLoaded">
@@ -111,38 +113,26 @@ It also provides the update of the global variables used by `<firebase-state>`.
 
       computeProfileLocation: function(location,user) {
         if (user) {
-          var result = [location, 'profile', "test"].join('/');
-          console.log("YEAH: " + result);
-          return result;
+          return [location, 'profile', user.uid].join('/');
         } else {
-          console.log("Shit happened");
           return '';
         }
       },
 
       _firebaseProfileLoaded: function() {
-        console.log("_firebaseProfileLoaded");
-        this.set('profile', this.profile);
         if (!this.profile) {
-         this._setDefaultProfile();
+          var profile = {};
+          var provierInfo = this.user[this.user.provider];
+          profile.displayName = provierInfo.displayName ||
+                                provierInfo.cachedUserProfile.displayName || "";
+          profile.firstName = provierInfo.cachedUserProfile.first_name ||
+                              provierInfo.given_name || "";
+          profile.lastName = provierInfo.cachedUserProfile.last_name ||
+                             provierInfo.family_name || "";
+          profile.email = provierInfo.email || "";
+          profile.picture = provierInfo.profileImageURL || "";
+          this.set('profile', profile);
         }
-      },
-
-      _setDefaultProfile: function() {
-        this.profile = {
-          displayName: "default",
-          email: '',
-          picture: '',
-          notification: {
-            message: true,
-            invitation: true,
-            changes: false,
-            login: false,
-            weekly: true,
-            daily: false
-          }
-        };
-        this.set('profile', this.profile);
       },
 
       _signUpHandler: function(e) {

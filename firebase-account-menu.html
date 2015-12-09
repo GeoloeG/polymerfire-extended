@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-image/iron-image.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-menu/paper-menu.html">
@@ -30,13 +31,18 @@ Example:
 <dom-module id="firebase-account-menu">
   <template>
     <style>
-      /*TODO PG: beautify the dialog... :)*/
+      /*TODO PG: beautify... :)*/
       :host {
         display: inline-block;
       }
+
+      #profileLabel, iron-icon {
+        padding-left: 8px;
+        vertical-align: middle;
+      }
     </style>
 
-    <firebase-state logged="{{logged}}" user="{{user}}" profile="{{profile}}"></firebase-state>
+    <firebase-state logged="{{logged}}" profile="{{profile}}"></firebase-state>
     <!-- TODO PG: re-extract the dialog out and make a mechanism equivalent to the validator... -->
     <firebase-auth-dialog id="firebaseAuthDialog"
       entry-animation="scale-up-animation"
@@ -48,14 +54,18 @@ Example:
       <span user>-- or provide your email and password : --</span>
     </firebase-auth-dialog>
 
-    <paper-menu-button hidden$="[[!logged]]">
+    <paper-menu-button hidden$="[[!logged]]"
+                       vertical-offset="72"
+                       horizontal-align="right"
+                       horizontal-offset="12">
       <paper-button id="signedIn" class="dropdown-trigger">
-        <firebase-identicon width="45" height="45"
-          hash="[[_computeHash(user.uid)]]">
-        </firebase-identicon>
-        <span>[[profile.name]]</saan>
+        <iron-image src="[[profile.picture]]" width="50" height="50" sizing="cover"></iron-image>
+        <span id="profileLabel">[[profile.displayName]]</span>
+        <iron-icon icon="expand-more"></iron-icon>
       </paper-button>
       <paper-menu class="dropdown-content">
+        <!-- TODO PG: here comes the user specific menu... -->
+        <content></content>
         <paper-item>Profile</paper-item>
         <paper-item on-tap="signOutButton">Sign Out</paper-item>
       </paper-menu>
