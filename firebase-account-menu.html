@@ -41,6 +41,16 @@ Example:
         align-items: center;
       }
 
+      iron-image {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+      }
+
+      #profileLabel {
+        padding-left: 8px;
+      }
+
       paper-button:hover {
         opacity: 0.7;
       }
@@ -63,8 +73,8 @@ Example:
                        horizontal-align="right"
                        horizontal-offset="12">
       <paper-button id="signedIn" class="dropdown-trigger">
-        <iron-image src="[[profile.picture]]" width="45" height="45" sizing="cover"></iron-image>
-        <span>[[profile.displayName]]</span>
+        <iron-image src="[[profile.picture]]" sizing="cover"></iron-image>
+        <span id="profileLabel">[[profile.displayName]]</span>
         <iron-icon icon="expand-more"></iron-icon>
       </paper-button>
       <paper-menu class="dropdown-content">
