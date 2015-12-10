@@ -18,31 +18,33 @@ It also provides the update of the global variables used by `<firebase-state>`.
 -->
 <dom-module id="firebase-auth-manager">
   <template>
-      <akc-meta key="logged" value="[[_computeLoggedState(statusKnown,user)]]"></akc-meta>
-      <akc-meta key="user" value="{{user}}"></akc-meta>
-      <akc-meta key="profile" value="{{profile}}"></akc-meta>
+      <akc-meta key="logged" value="[[_computeLoggedState(statusKnown,_user)]]"></akc-meta>
+      <akc-meta key="user" value="{{_user}}"></akc-meta>
+      <akc-meta key="profile" value="{{_profile}}"></akc-meta>
 
       <firebase-auth id="firebaseAuth"
-                    user="{{user}}"
+                    user="{{_user}}"
                     status-known="{{statusKnown}}"
                     location="[[location]]">
       </firebase-auth>
 
-      <firebase-document id="firebaseDoc"
-                         log
-                         location="{{profileLocation}}"
-                         data="{{profile}}"
+      <!-- TODO PG: remove log when test are finished... -->
+      <firebase-document log
+                         location="{{_profileLocation}}"
+                         data="{{_profile}}"
                          on-firebase-value="_firebaseProfileLoaded">
       </firebase-document>
 
+
+      <!-- TODO PG: extract the rrorDialog like the auth dialog -->
       <firebase-error-dialog id="errorDialog"
                             entry-animation="scale-up-animation"
                             exit-animation="fade-out-animation"
                             modal>
-          <span error>[[lastError]]</span>
+          <span error>[[_lastError]]</span>
       </firebase-error-dialog>
-      <!-- TODO PG: eventually write a firebase-toast -->
-      <paper-toast id="toast" text="[[toastMessage]]" duration="3000"></paper-toast>
+      <!-- TODO PG: eventually write a firebase-toast and extract it-->
+      <paper-toast id="toast" text="[[_toastMessage]]" duration="3000"></paper-toast>
   </template>
   <script>
 
@@ -62,37 +64,37 @@ It also provides the update of the global variables used by `<firebase-state>`.
         /**
          * User used for the `<firebase-auth>` inner element
          */
-        user: {
+        _user: {
           type: String
         },
 
         /**
          * Computed location used for the profile firebase document
          */
-        profileLocation: {
+        _profileLocation: {
           type: String,
-          computed: 'computeProfileLocation(location,user)',
+          computed: '_computeProfileLocation(location,_user)',
           notify: true
         },
 
         /**
          * Value of the profile firebase document
          */
-        profile: {
+        _profile: {
           type: Object
         },
 
         /**
          * Last error that occured with one of the auth service
          */
-        lastError: {
+        _lastError: {
           type: String
         },
 
         /**
-         * Last error that occured with one of the auth service
+         * Text message of the toast
          */
-        toastMessage: {
+        _toastMessage: {
           type: String
         },
       },
@@ -111,7 +113,11 @@ It also provides the update of the global variables used by `<firebase-state>`.
         // TODO PG: unregister listeners
       },
 
-      computeProfileLocation: function(location,user) {
+      _computeLoggedState: function(statusKnown,user) {
+        return statusKnown && !!user;
+      },
+
+      _computeProfileLocation: function(location,user) {
         if (user) {
           return [location, 'profile', user.uid].join('/');
         } else {
@@ -122,7 +128,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       _firebaseProfileLoaded: function() {
         if (!this.profile) {
           var profile = {};
-          var provierInfo = this.user[this.user.provider];
+          var provierInfo = this._user[this._user.provider];
           profile.displayName = provierInfo.displayName ||
                                 provierInfo.cachedUserProfile.displayName || "";
           profile.firstName = provierInfo.cachedUserProfile.first_name ||
@@ -151,26 +157,22 @@ It also provides the update of the global variables used by `<firebase-state>`.
       _userHandler: function(e) {
         switch(e.type) {
           case "user-created":
-            this.toastMessage = "Registration ";
+            this._toastMessage = "Registration ";
             break;
           case "login":
-            this.toastMessage = "Login ";
+            this._toastMessage = "Login ";
             break;
           case "logout":
-            this.toastMessage = "Logout ";
+            this._toastMessage = "Logout ";
             break;
         }
-        this.toastMessage += "successful!";
+        this._toastMessage += "successful!";
         this.$.toast.open();
       },
 
       _errorHandler: function(e) {
-        this.lastError = e.detail;
+        this._lastError = e.detail;
         this.$.errorDialog.open();
-      },
-
-      _computeLoggedState: function(statusKnown,user) {
-        return statusKnown && !!user;
       }
 
     });

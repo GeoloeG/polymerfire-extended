@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../iron-meta/iron-meta.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
 <link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
@@ -213,6 +214,15 @@ element.
             value: function() { return []; },
             observer: "_providersChanged"
           }
+        },
+
+        //
+        // Lifecycle API
+        //
+        ready: function() {
+          // Register the dialog in meta to be accessible from anywhere
+          // TODO PG: add doc for this mechanism
+          new Polymer.IronMeta({type: "firebaseExtended", key: "firebaseAuthDialog", value: this});
         },
 
         //

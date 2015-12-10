@@ -21,6 +21,7 @@ It also provides access to the menu dedicated to account action.
 Example:
 
     <firebase-account-menu>
+      TODO PG: add paper-item item
     </firebase-account-menu>
 
 @group GoogleWebComponents Elements
@@ -57,16 +58,6 @@ Example:
     </style>
 
     <firebase-state logged="{{logged}}" profile="{{profile}}"></firebase-state>
-    <!-- TODO PG: re-extract the dialog out and make a mechanism equivalent to the validator... -->
-    <firebase-auth-dialog id="firebaseAuthDialog"
-      entry-animation="scale-up-animation"
-      exit-animation="fade-out-animation"
-      providers='["facebook", "github", "google"]'
-      modal with-backdrop>
-      <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
-      <span provider>-- Register/Login with one of the following provider(s): --</span>
-      <span user>-- or provide your email and password : --</span>
-    </firebase-auth-dialog>
 
     <paper-menu-button hidden$="[[!logged]]"
                        vertical-offset="72"
@@ -94,44 +85,40 @@ Example:
     Polymer({
       is: 'firebase-account-menu',
 
+      get _firebaseAuthDialog() {
+        return this._firebaseMeta && this._firebaseMeta.byKey("firebaseAuthDialog");
+      },
+
+      ready: function() {
+        this._firebaseMeta = new Polymer.IronMeta({type: "firebaseExtended"});
+      },
+
       signUpButton: function() {
-        this.$.firebaseAuthDialog.setAttribute('type', "Register");
-        this.$.firebaseAuthDialog.open();
+        if (this._firebaseAuthDialog) {
+          this._firebaseAuthDialog.setAttribute('type', "Register");
+          this._firebaseAuthDialog.open();
+        } else {
+          console.warn("Missing registered firebaseAuthDialog");
+        }
       },
 
       signInButton: function() {
-        this.$.firebaseAuthDialog.setAttribute('type', "Login");
-        this.$.firebaseAuthDialog.open();
+        if (this._firebaseAuthDialog) {
+          this._firebaseAuthDialog.setAttribute('type', "Login");
+          this._firebaseAuthDialog.open();
+        } else {
+          console.warn("Missing registered firebaseAuthDialog");
+        }
       },
 
       signOutButton: function() {
-        t.fire('sign-out');
-      },
-
-      _computeHash: function(uid) {
-        // TODO PG: use a hash generator from name with md5
-        if (uid !== undefined) {
-          return uid.split(':')[1]+"1234567890ABCDEF";
-        }
-        return "1234567890ABCDEF";
+        this.fire('sign-out');
       }
-      /**
-        Fired when a user confirm a registration.
 
-        @event sign-up
-        @param {{params: Object}} detail Contains user and password info.
-      */
       /**
-        Fired when a user confirm a login.
-
-        @event sign-in
-        @param {{ provider: string, params: Object}} detail Contains user and password info.
-      */
-      /**
-        Fired when a user confirm a login.
+        Fired when a user sign-out.
 
         @event sign-out
-        @param {{ provider: string, params: Object}} detail Contains user and password info.
       */
     });
 
