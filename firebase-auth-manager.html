@@ -126,7 +126,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       _firebaseProfileLoaded: function() {
-        if (!this.profile) {
+        if (!this._profile) {
           var profile = {};
           var provierInfo = this._user[this._user.provider];
           profile.displayName = provierInfo.displayName ||
@@ -137,7 +137,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
                              provierInfo.family_name || "";
           profile.email = provierInfo.email || "";
           profile.picture = provierInfo.profileImageURL || "";
-          this.set('profile', profile);
+          this.set('_profile', profile);
         }
       },
 
