@@ -172,7 +172,11 @@ It also provides the update of the global variables used by `<firebase-state>`.
 
       _errorHandler: function(e) {
         this._lastError = e.detail;
-        this.$.errorDialog.open();
+        if (this._lastError) {
+          this.$.errorDialog.open();          
+        } else {
+          console.error("Unknown error: " + JSON.stringify(e));
+        }
       }
 
     });
