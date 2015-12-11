@@ -1,0 +1,65 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../akc-meta/akc-meta.html">
+<link rel="import" href="../firebase-element/firebase-document.html">
+
+<!--
+`<firebase-profile>` is an element that is giving access to the profile object of the current user wherever instantiated.
+
+Example:
+
+    <firebase-profile profile="{{profile}}"></firebase-profile>
+
+@group GoogleWebComponents Elements
+@element firebase-profile
+@hero hero.svg
+@demo demo/index.html
+-->
+<dom-module id="firebase-profile">
+  <template>
+    <akc-meta-query key="logged" value="{{_logged}}"></akc-meta-query>
+    <akc-meta-query key="profileLocation" value="{{_profileLocation}}"></akc-meta-query>
+
+    <firebase-document log
+                       location="{{_profileLocation}}"
+                       data="{{profile}}">
+    </firebase-document>      
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'firebase-profile',
+
+      properties: {
+
+        /**
+         * This property reflects the firebase user auth object.
+         */
+        profile: {
+          type: Object,
+          notify: true
+        },
+
+        /**
+         * Profile location used for the profile firebase document
+         */
+        _logged: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Profile location used for the profile firebase document
+         */
+        _profileLocation: {
+          type: String,
+          value: ""
+        },
+
+      },
+
+    });
+
+  </script>
+</dom-module>
