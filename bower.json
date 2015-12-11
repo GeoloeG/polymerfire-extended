@@ -60,6 +60,7 @@
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
     "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.0",
+    "paper-input": "PolymerElements/paper-input#^1.0.0",
     "firebase-element": "GoogleWebComponents/firebase-element#^1.0.0"
   }
 }

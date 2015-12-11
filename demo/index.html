@@ -15,6 +15,7 @@
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
     <link rel="import" href="../../paper-styles/color.html">
     <link rel="import" href="../../paper-styles/default-theme.html">
     <link rel="import" href="../../paper-styles/typography.html">
@@ -27,6 +28,12 @@
     <link rel="stylesheet" href="../../paper-styles/demo.css">
 
     <link rel="import" href="x-pretty-json.html">
+
+    <style is="custom-style">
+      paper-input {
+        width: 240px;
+      }
+    </style>
 
   </head>
   <body unresolved>
@@ -60,13 +67,21 @@
           <pre id="login">[[_showStatus(logged)]]</pre>
 
           <h3>Profile</h3>
-          <div>Display Name: [[profile.displayName]]</div>
+          <div>
+            <paper-input label="Display Name" value="{{profile.displayName}}"></paper-input>
+          </div>
           <br>
-          <div>First Name: [[profile.firstName]]</div>
+          <div>
+            <paper-input label="First Name" value="{{profile.firstName}}"></paper-input>
+          </div>
           <br>
-          <div>Last Name: [[profile.lastName]]</div>
+          <div>
+            <paper-input label="Last Name" value="{{profile.lastName}}"></paper-input>
+          </div>
           <br>
-          <div>Email: [[profile.email]]</div>
+          <div>
+            <paper-input label="Email" value="{{profile.email}}"></paper-input>
+          </div>
           <br>
           <iron-image src="[[profile.picture]]" hidden$="{{!logged}}"></iron-image>
 
