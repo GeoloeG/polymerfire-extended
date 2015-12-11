@@ -23,7 +23,7 @@
     <link rel="import" href="../firebase-auth-manager.html">
     <link rel="import" href="../firebase-account-menu.html">
     <link rel="import" href="../firebase-state.html">
-    <link rel="import" href="../firebase-identicon.html">
+    <link rel="import" href="../firebase-profile.html">
 
     <link rel="stylesheet" href="../../paper-styles/demo.css">
 
@@ -61,32 +61,37 @@
             <span user>-- or provide your email and password : --</span>
           </firebase-auth-dialog>
 
-          <firebase-state logged="{{logged}}" user="{{user}}" profile="{{profile}}"></firebase-state>
+          <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+          <firebase-profile profile="{{profile}}"></firebase-profile>
 
-          <h3>Login status:</h3>
+          <h3>Simply Register and/or Login and modify dynamically the information of your profile!</h3>
+
+          <h2>Login status:</h2>
           <pre id="login">[[_showStatus(logged)]]</pre>
 
-          <h3>Profile</h3>
-          <div>
-            <paper-input label="Display Name" value="{{profile.displayName}}"></paper-input>
-          </div>
-          <br>
-          <div>
-            <paper-input label="First Name" value="{{profile.firstName}}"></paper-input>
-          </div>
-          <br>
-          <div>
-            <paper-input label="Last Name" value="{{profile.lastName}}"></paper-input>
-          </div>
-          <br>
-          <div>
-            <paper-input label="Email" value="{{profile.email}}"></paper-input>
-          </div>
-          <br>
-          <iron-image src="[[profile.picture]]" hidden$="{{!logged}}"></iron-image>
+          <div hidden$="{{!logged}}">
+            <h2>Profile</h2>
+            <div>
+              <paper-input label="Display Name" value="{{profile.displayName}}"></paper-input>
+            </div>
+            <br>
+            <div>
+              <paper-input label="First Name" value="{{profile.firstName}}"></paper-input>
+            </div>
+            <br>
+            <div>
+              <paper-input label="Last Name" value="{{profile.lastName}}"></paper-input>
+            </div>
+            <br>
+            <div>
+              <paper-input label="Email" value="{{profile.email}}"></paper-input>
+            </div>
+            <br>
+            <iron-image src="[[profile.picture]]"></iron-image>
 
-          <h3>User</h3>
-          <x-pretty-json object="[[user]]"></x-pretty-json>
+            <h2>User</h2>
+            <x-pretty-json object="[[user]]"></x-pretty-json>            
+          </div>
 
         <!-- </template> -->
       <!-- </demo-snippet> -->

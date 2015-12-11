@@ -3,7 +3,14 @@
 <link rel="import" href="../akc-meta/akc-meta.html">
 
 <!--
-`<firebase-auth-state>` is an element that is sharing globally the `logged` and `user` state of the current user.
+`<firebase-auth-state>` is an element that is sharing globally the `logged`, `user` and `profile` value in read mode of the current user.
+
+Example:
+
+    <firebase-state 
+      logged="{{logged}}"
+      user="{{user}}">
+    </firebase-profile>
 
 @group GoogleWebComponents Elements
 @element firebase-state
@@ -29,6 +36,7 @@
          */
         logged: {
           type: Boolean,
+          readonly: true,
           notify: true
         },
 
@@ -37,6 +45,7 @@
          */
         user: {
           type: Object,
+          readonly: true,
           notify: true
         },
 
@@ -45,6 +54,7 @@
          */
         profile: {
           type: Object,
+          readonly: true,
           notify: true
         }
 

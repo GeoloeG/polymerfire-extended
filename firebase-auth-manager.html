@@ -5,6 +5,7 @@
 
 <link rel="import" href="../firebase-element/firebase-auth.html">
 <link rel="import" href="../firebase-element/firebase-document.html">
+
 <link rel="import" href="./firebase-error-dialog.html">
 
 <!--
@@ -21,6 +22,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       <akc-meta key="logged" value="[[_computeLoggedState(statusKnown,_user)]]"></akc-meta>
       <akc-meta key="user" value="{{_user}}"></akc-meta>
       <akc-meta key="profile" value="{{_profile}}"></akc-meta>
+      <akc-meta key="profileLocation" value="{{_profileLocation}}"></akc-meta>
 
       <firebase-auth id="firebaseAuth"
                     user="{{_user}}"
@@ -35,14 +37,14 @@ It also provides the update of the global variables used by `<firebase-state>`.
                          on-firebase-value="_firebaseProfileLoaded">
       </firebase-document>
 
-
-      <!-- TODO PG: extract the rrorDialog like the auth dialog -->
+      <!-- TODO PG: extract the errorDialog like the auth dialog -->
       <firebase-error-dialog id="errorDialog"
                             entry-animation="scale-up-animation"
                             exit-animation="fade-out-animation"
                             modal>
           <span error>[[_lastError]]</span>
       </firebase-error-dialog>
+
       <!-- TODO PG: eventually write a firebase-toast and extract it-->
       <paper-toast id="toast" text="[[_toastMessage]]" duration="3000"></paper-toast>
   </template>
@@ -58,7 +60,8 @@ It also provides the update of the global variables used by `<firebase-state>`.
          * Location used for the `<firebase-auth>` inner element
          */
         location: {
-          type: String
+          type: String,
+          value: ""
         },
 
         /**
@@ -74,7 +77,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         _profileLocation: {
           type: String,
           computed: '_computeProfileLocation(location,_user)',
-          notify: true
+          value: ""
         },
 
         /**
@@ -121,7 +124,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         if (user) {
           return [location, 'profile', user.uid].join('/');
         } else {
-          return '';
+          return "";
         }
       },
 
