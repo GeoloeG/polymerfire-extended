@@ -6,8 +6,6 @@
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
 
-<link rel="import" href="./firebase-icons.html">
-
 <!--
 `<firebase-error-dialog>` is a dialog with Material Design styling and optional animations that leverage firebase error message.
 
@@ -62,22 +60,23 @@ element.
         display: block;
       }
 
-      :host > div {
-        text-align: center;
-      }
-
       #error {
         text-align: center;
+        padding-left: 24px;
+      }
+
+      iron-icon {
+        --iron-icon-fill-color: red;
       }
     </style>
 
-    <!-- TODO PG: add an error icon -->
     <h2>Error</h2>
     <div id="error">
-      <content select="[error]"></content>
+      <iron-icon icon="error"></iron-icon>
+      <b><content select="[error]"></content></b>
     </div>
     <div class="buttons">
-      <paper-button dialog-confirm>OK</paper-button>
+      <paper-button dialog-confirm raised>OK</paper-button>
     </div>
 
   </template>

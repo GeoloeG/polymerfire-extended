@@ -24,11 +24,11 @@ The current set includes the following elements:
 - `<firebase-auth-manager>`: is a core element providing the glue to the firebase services like `auth` or `database` access.
 - `<firebase-error-dialog>`: is a customizable dialog that displays error messages.
 - `<firebase-icons>`: is set of icons used by elements.
-- `<firebase-identicon>`: is an identicon generator.
-- `<firebase-state>`: is sharing via data-binding the basic state and profile of a user.
+- `<firebase-state>`: is sharing in read-only mode via data-binding the basic state and profile of a user.
+- `<firebase-profile>`: is sharing in 2-way data-binding the profile information.
+- `<firebase-profile-page>`: is an extensible page enabling the edition of profile information.
 
 Upcoming element:
-- `<firebase-profile-page>`
 
 See the [Documentation](https://metanov.github.io/firebase-element-extended/) for a more documentation regarding those elements.
 

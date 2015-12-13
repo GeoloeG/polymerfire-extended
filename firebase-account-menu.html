@@ -11,12 +11,12 @@
 
 <link rel="import" href="./firebase-auth-dialog.html">
 <link rel="import" href="./firebase-icons.html">
-<link rel="import" href="./firebase-identicon.html">
 <link rel="import" href="./firebase-state.html">
 
 <!--
-`<firebase-account-menu>` is a navigation menu to be placed inside a `<paper-toolbar>` that provides and hook the sign-XXX functionnality of `<firebase-auth-manager>`.
-It also provides access to the menu dedicated to account action.
+`<firebase-account-menu>` is a navigation menu to be placed inside a `<paper-toolbar>` that provides and hook the authentication functionnality of `<firebase-auth-manager>`.
+Signing up and signing in is done thanks to a self-registered `<firebase-auth-dialog>` declared somewhere else. 
+It also provides access to the menu dedicated to account actions with a default logout action.
 
 Example:
 
@@ -32,7 +32,7 @@ Example:
 <dom-module id="firebase-account-menu">
   <template>
     <style>
-      /*TODO PG: beautify... :)*/
+      /* TODO PG: beautify and provide styling hook? */
       :host {
         display: block;
       }
@@ -71,7 +71,6 @@ Example:
       <paper-menu class="dropdown-content">
         <!-- TODO PG: here comes the user specific menu... -->
         <content></content>
-        <paper-item>Profile</paper-item>
         <paper-item on-tap="signOutButton">Sign Out</paper-item>
       </paper-menu>
     </paper-menu-button>
@@ -86,7 +85,7 @@ Example:
       is: 'firebase-account-menu',
 
       get _firebaseAuthDialog() {
-        return this._firebaseMeta && this._firebaseMeta.byKey("firebaseAuthDialog");
+        return this._firebaseMeta && this._firebaseMeta.byKey("authDialog");
       },
 
       ready: function() {

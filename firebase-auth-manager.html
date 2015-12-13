@@ -10,6 +10,7 @@
 
 <!--
 `<firebase-auth-manager>` is a wrapper element to `<firebase-auth>` that listens to the various `sign-XXX` event and delegate their execution.
+Whenever an error occurs during a firebase operation, it displays an error dialog with the corresponding error message. For successful operation, it shows a toast.
 It also provides the update of the global variables used by `<firebase-state>`.
 
 @group GoogleWebComponents Elements
@@ -113,7 +114,13 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       detached: function() {
-        // TODO PG: unregister listeners
+        window.removeEventListener('sign-up', this._signUpHandler.bind(this));
+        window.removeEventListener('sign-in', this._signInHandler.bind(this));
+        window.removeEventListener('sign-out', this._signOutHandler.bind(this));
+        window.removeEventListener('user-created', this._userHandler.bind(this));
+        window.removeEventListener('login', this._userHandler.bind(this));
+        window.removeEventListener('logout', this._userHandler.bind(this));
+        window.removeEventListener('error', this._errorHandler.bind(this));
       },
 
       _computeLoggedState: function(statusKnown,user) {

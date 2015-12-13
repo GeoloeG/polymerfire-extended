@@ -12,26 +12,47 @@
     <link rel="import" href="../../polymer/polymer.html">
 
     <link rel="import" href="../../iron-image/iron-image.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
     <link rel="import" href="../../paper-input/paper-input.html">
+    <link rel="import" href="../../paper-material/paper-material.html">
+
+    <link rel="import" href="../firebase-auth-manager.html">
+    <link rel="import" href="../firebase-auth-dialog.html">
+    <link rel="import" href="../firebase-account-menu.html">
+    <link rel="import" href="../firebase-state.html">
+    <link rel="import" href="../firebase-profile-page.html">
+
+    <link rel="import" href="x-pretty-json.html">
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="stylesheet" href="../../paper-styles/demo.css">
     <link rel="import" href="../../paper-styles/color.html">
     <link rel="import" href="../../paper-styles/default-theme.html">
     <link rel="import" href="../../paper-styles/typography.html">
 
-    <link rel="import" href="../firebase-auth-manager.html">
-    <link rel="import" href="../firebase-account-menu.html">
-    <link rel="import" href="../firebase-state.html">
-    <link rel="import" href="../firebase-profile.html">
-
-    <link rel="stylesheet" href="../../paper-styles/demo.css">
-
-    <link rel="import" href="x-pretty-json.html">
 
     <style is="custom-style">
-      paper-input {
-        width: 240px;
+      #intro {
+        margin-top: 24px;
+      }
+
+      h3 {
+        padding-top: 24px;
+        padding-left: 24px;
+      }
+
+      #container {
+        padding: 0px 24px 24px 24px;
+      }
+
+      * {
+        --paper-dialog-title: {
+          margin-top: 0px;
+          padding-top: 24px;
+          padding-bottom: 24px;
+          background-color: #3f51b5;
+          color: white;
+        };
       }
     </style>
 
@@ -39,62 +60,46 @@
   <body unresolved>
     <template id="t" is="dom-bind">
 
-      <!-- <demo-snippet> -->
-        <!-- <template> -->
-          <paper-toolbar>
-            <paper-icon-button icon="menu"></paper-icon-button>
-            <span class="title">Firebase Element eXtended Demo</span>
-            <firebase-account-menu></firebase-account-menu>
-          </paper-toolbar>
+      <paper-toolbar>
+        <paper-icon-button icon="menu"></paper-icon-button>
+        <span class="title">Firebase Element eXtended Demo</span>
+        <firebase-account-menu></firebase-account-menu>
+      </paper-toolbar>
 
-          <firebase-auth-manager
-            location="https://metanov-test.firebaseio.com">
-          </firebase-auth-manager>
+      <firebase-auth-manager
+        location="https://metanov-test.firebaseio.com">
+      </firebase-auth-manager>
 
-          <firebase-auth-dialog
-            entry-animation="scale-up-animation"
-            exit-animation="fade-out-animation"
-            providers='["facebook", "github", "google"]'
-            modal>
-            <span introduction>-- Welcome to the Firebase Element eXtended Demo: --</span>
-            <span provider>-- Register/Login with one of the following provider(s): --</span>
-            <span user>-- or provide your email and password : --</span>
-          </firebase-auth-dialog>
+      <firebase-auth-dialog entry-animation="scale-up-animation"
+                            exit-animation="fade-out-animation"
+                            providers='["facebook", "github", "google"]'
+                            modal>
+        <h2 title>Register / Login</h2>
+        <b introduction>-- Welcome to the Firebase Element eXtended Demo: --</b>
+        <b provider>-- Register/Login with one of the following provider(s): --</b>
+        <b user>-- or provide your email and password : --</b>
+      </firebase-auth-dialog>
 
-          <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
-          <firebase-profile profile="{{profile}}"></firebase-profile>
+      <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+      
+      <br>
+      <span>Simply Register and/or Login and modify dynamically the information of your profile!</span>
 
-          <h3>Simply Register and/or Login and modify dynamically the information of your profile!</h3>
+      <h2>Login status:</h2>
+      <pre id="login">[[_showStatus(logged)]]</pre>
 
-          <h2>Login status:</h2>
-          <pre id="login">[[_showStatus(logged)]]</pre>
-
-          <div hidden$="{{!logged}}">
-            <h2>Profile</h2>
-            <div>
-              <paper-input label="Display Name" value="{{profile.displayName}}"></paper-input>
+      <div hidden$="{{!logged}}">
+        <h2>Profile</h2>
+        <firebase-profile-page profile="{{profile}}">
+          <paper-material elevation="1">
+            <h3>Additional Information</h3>
+            <div id="container">
+              <paper-input label="Information 1" value="{{profile.info1}}"></paper-input>
+              <paper-input label="Information 2" value="{{profile.info2}}"></paper-input>
             </div>
-            <br>
-            <div>
-              <paper-input label="First Name" value="{{profile.firstName}}"></paper-input>
-            </div>
-            <br>
-            <div>
-              <paper-input label="Last Name" value="{{profile.lastName}}"></paper-input>
-            </div>
-            <br>
-            <div>
-              <paper-input label="Email" value="{{profile.email}}"></paper-input>
-            </div>
-            <br>
-            <iron-image src="[[profile.picture]]"></iron-image>
-
-            <h2>User</h2>
-            <x-pretty-json object="[[user]]"></x-pretty-json>            
-          </div>
-
-        <!-- </template> -->
-      <!-- </demo-snippet> -->
+          </paper-material>
+        </firebase-profile-page>
+      </div>
 
     </template>
 

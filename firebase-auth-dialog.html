@@ -16,7 +16,8 @@
 `<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverages firebase authentication in a flexible way. You can:
 - setup a 'Register' or 'Login' flavor.
 - configure the providers accessible within the dialog.
-- congiure different sections: "introduction", "provider" and "user" thanks to the corresponding attribute.
+- configure the Header e.g. a <h2></h2> with a "header" attribute
+- configure different sections: "introduction", "provider" and "user" thanks to the corresponding attribute.
 
 See `Polymer.PaperDialogBehavior` for specifics.
 
@@ -26,6 +27,7 @@ Example:
       type="Register"
       providers='["facebook", "github", "google"]'
       modal with-backdrop>
+        <h2 header>FBE Demo<h2>
         <span introduction>-- Welcome to the FBE Demo: --</span>
         <span provider>-- Login with one of the following provider(s): --</span>
         <span user>-- or provide your email and password : --</span>
@@ -73,24 +75,20 @@ element.
         display: block;
       }
 
-      /*https://developers.facebook.com/docs/facebook-login/best-practices*/
-      paper-button.facebook {
+      .facebook {
         color: white;
         --iron-icon-fill-color: white;
         background-color: #3B5998;
       }
-      /*https://github.com/logos*/
       .github {
         color: black;
         background-color: white;
       }
-      /*https://developers.google.com/+/branding-guidelines?hl=en*/
       .google {
         color: white;
         --iron-icon-fill-color: white;
         background-color: #DC4E41;
       }
-      /*https://dev.twitter.com/web/sign-in/resources*/
       .twitter {
         color: white;
         --iron-icon-fill-color: white;
@@ -100,9 +98,15 @@ element.
       #introduction-section, #provider-section, #user-section {
         text-align: center;
       }
+
+      #providers {
+        display: flex;
+        justify-content: space-between;
+      }
     </style>
 
-    <h2>[[_computeHeaderLabel(type)]]</h2>
+    <content select="[title]"></content>
+
     <div id="introduction-section">
       <content select="[introduction]" id="introduction"></content>
     </div>
@@ -112,14 +116,12 @@ element.
     </div>
     <div id="providers">
       <template is="dom-repeat" items="{{providers}}" as="provider">
-        <!-- TODO PG: add the icon for each provider -->
-        <paper-button
-          raised
-          class$="[[provider]]"
-          provider$="[[provider]]"
-          on-tap="_handleProvider">
-            <iron-icon class$="[[provider]]" icon="firebase:[[provider]]"></iron-icon>
-            [[provider]]
+        <paper-button raised
+                      class$="[[provider]]"
+                      provider$="[[provider]]"
+                      on-tap="_handleProvider">
+          <iron-icon class$="[[provider]]" icon="firebase:[[provider]]"></iron-icon>
+          [[provider]]
         </paper-button>
       </template>
     </div>
@@ -151,15 +153,13 @@ element.
       </gold-password-input>
     </div>
 
-    <!-- TODO PG: Add a remember me option -->
-
     <div class="buttons">
-      <paper-button dialog-confirm
+      <paper-button dialog-confirm raised
                     disabled="[[_computeConfirmDisabled(type,emailInvalid,primary,primaryInvalid,verificationInvalid)]]"
                     on-tap="_handleConfirm">
         [[_computeConfirm(type)]]
       </paper-button>
-      <paper-button dialog-dismiss>
+      <paper-button dialog-dismiss raised>
         Cancel
       </paper-button>
     </div>
@@ -221,8 +221,7 @@ element.
         //
         ready: function() {
           // Register the dialog in meta to be accessible from anywhere
-          // TODO PG: add doc for this mechanism
-          new Polymer.IronMeta({type: "firebaseExtended", key: "firebaseAuthDialog", value: this});
+          new Polymer.IronMeta({type: "firebaseExtended", key: "authDialog", value: this});
         },
 
         //
