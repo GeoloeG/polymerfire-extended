@@ -14,7 +14,7 @@
 
 <!--
 `<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverages firebase authentication in a flexible way. You can:
-- setup a 'Register' or 'Login' flavor.
+- setup a 'Sign-Up' or 'Sign-In' flavor.
 - configure the providers accessible within the dialog.
 - configure the Header e.g. a <h2></h2> with a "header" attribute
 - configure different sections: "introduction", "provider" and "user" thanks to the corresponding attribute.
@@ -24,12 +24,12 @@ See `Polymer.PaperDialogBehavior` for specifics.
 Example:
 
     <firebase-auth-dialog
-      type="Register"
       providers='["facebook", "github", "google"]'
       modal with-backdrop>
-        <h2 header>FBE Demo<h2>
+        <h2 title-sign-up>Sing-Up Dialog</h2>
+        <h2 title-sign-in>Sign-In Dialog</h2>
         <span introduction>-- Welcome to the FBE Demo: --</span>
-        <span provider>-- Login with one of the following provider(s): --</span>
+        <span provider>-- Sign-In with one of the following provider(s): --</span>
         <span user>-- or provide your email and password : --</span>
     </firebase-auth-dialog>
 
@@ -105,7 +105,12 @@ element.
       }
     </style>
 
-    <content select="[title]"></content>
+    <template is="dom-if" if="[[_isSignUp(type)]]" restamp>
+      <content select="[title-sign-up]"></content>
+    </template>
+    <template is="dom-if" if="[[_isSignIn(type)]]" restamp>
+      <content select="[title-sign-in]"></content>
+    </template>
 
     <div id="introduction-section">
       <content select="[introduction]" id="introduction"></content>
@@ -173,8 +178,8 @@ element.
        * @enum {string}
        */
       var DialogTypeValue = {
-          REGISTER: 'Register',
-          LOGIN: 'Login'
+          SIGNUP: 'SignUp',
+          SIGNIN: 'SignIn'
       };
 
       Polymer({
@@ -195,7 +200,7 @@ element.
         properties: {
           /**
            * `type` indicates the type of authentication dialog to use. It can hold currently two
-           * values, namely DialogTypeValue.REGISTER and DialogTypeValue.LOGIN.
+           * values, namely DialogTypeValue.SIGNUP and DialogTypeValue.SIGNIN.
            *
            * @type {string}
            */
@@ -205,7 +210,7 @@ element.
           },
 
           /**
-           * `providers` set the list of providers accessible for Register/Login.
+           * `providers` set the list of providers accessible for SignUp/SignIn.
            *
            * @type {Array}
            */
@@ -254,21 +259,20 @@ element.
 
         _typeChanged: function() {
           switch(this.type) {
-            case DialogTypeValue.REGISTER:
+            case DialogTypeValue.SIGNUP:
               this.$.primary.setAttribute('strength-meter', '');
               this.$.primary.setAttribute('minlength', '6');
               this.$.primary.setAttribute('autocomplete', 'new-password');
               this.$.verification.removeAttribute('hidden');
               break;
-            case DialogTypeValue.LOGIN:
+            case DialogTypeValue.SIGNIN:
               this.$.primary.removeAttribute('strength-meter');
               this.$.primary.removeAttribute('minlength');
               this.$.primary.setAttribute('autocomplete', 'current-password');
               this.$.verification.setAttribute('hidden', '');
               break;
             default:
-              this.type = DialogTypeValue.REGISTER;
-              console.warn("invalid type, switching to default: " + DialogTypeValue.REGISTER);
+              console.error("Invalid dialog type!");
           }
         },
 
@@ -276,13 +280,12 @@ element.
           // TODO PG: check the list of provider given and filter only the supported one
         },
 
-        _computeHeaderLabel: function(type) {
-          switch(type) {
-            case DialogTypeValue.REGISTER:
-              return DialogTypeValue.REGISTER;
-            case DialogTypeValue.LOGIN:
-              return DialogTypeValue.LOGIN;
-          }
+        _isSignUp: function(type) {
+          return type === DialogTypeValue.SIGNUP;
+        },
+
+        _isSignIn: function(type) {
+          return type === DialogTypeValue.SIGNIN;
         },
 
         _computeProviderHidden: function(provider) {
@@ -291,21 +294,22 @@ element.
 
         _computeConfirm: function(type) {
           switch(type) {
-            case DialogTypeValue.REGISTER:
-              return DialogTypeValue.REGISTER;
-            case DialogTypeValue.LOGIN:
-              return DialogTypeValue.LOGIN;
+            case DialogTypeValue.SIGNUP:
+            case DialogTypeValue.SIGNIN:
+              return type;
+            default:
+              console.error("Invalid dialog type!");
           }
         },
 
         _computeConfirmDisabled: function(type, emailInvalid, primary, primaryInvalid, verificationInvalid) {
           switch(type) {
-            case DialogTypeValue.REGISTER:
+            case DialogTypeValue.SIGNUP:
               if (this.$.verification.value === '' || verificationInvalid) {
                 return true;
               }
               break;
-            case DialogTypeValue.LOGIN:
+            case DialogTypeValue.SIGNIN:
               if (this.$.email.value === '' || emailInvalid) {
                 return true;
               }
@@ -329,10 +333,10 @@ element.
           params.password = this.$.primary.value;
 
           switch(this.type) {
-            case DialogTypeValue.REGISTER:
+            case DialogTypeValue.SIGNUP:
               this.fire('sign-up', { params: params} );
               break;
-            case DialogTypeValue.LOGIN:
+            case DialogTypeValue.SIGNIN:
               this.fire('sign-in', { provider: "password", params: params } );
               break;
           }
@@ -342,13 +346,13 @@ element.
 
 
       /**
-        Fired when a user confirm a registration.
+        Fired when a user confirm a Sign-Up.
 
         @event sign-up
         @param {{params: Object}} detail Contains user and password info.
       */
       /**
-        Fired when a user confirm a login.
+        Fired when a user confirm a Sign-In.
 
         @event sign-in
         @param {{ provider: string, params: Object}} detail Contains user and password info.

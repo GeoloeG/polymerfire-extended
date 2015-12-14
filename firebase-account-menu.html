@@ -75,8 +75,8 @@ Example:
       </paper-menu>
     </paper-menu-button>
     <div id="signedOut" hidden$="[[logged]]">
-      <paper-button on-tap="signUpButton">Register</paper-button>
-      <paper-button on-tap="signInButton">Login</paper-button>
+      <paper-button on-tap="signUpButton">Sign-Up</paper-button>
+      <paper-button on-tap="signInButton">Sign-In</paper-button>
     </div>
   </template>
   <script>
@@ -94,7 +94,7 @@ Example:
 
       signUpButton: function() {
         if (this._firebaseAuthDialog) {
-          this._firebaseAuthDialog.setAttribute('type', "Register");
+          this._firebaseAuthDialog.setAttribute('type', "SignUp");
           this._firebaseAuthDialog.open();
         } else {
           console.warn("Missing registered firebaseAuthDialog");
@@ -103,7 +103,7 @@ Example:
 
       signInButton: function() {
         if (this._firebaseAuthDialog) {
-          this._firebaseAuthDialog.setAttribute('type', "Login");
+          this._firebaseAuthDialog.setAttribute('type', "SignIn");
           this._firebaseAuthDialog.open();
         } else {
           console.warn("Missing registered firebaseAuthDialog");

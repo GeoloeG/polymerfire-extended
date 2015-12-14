@@ -74,18 +74,19 @@
                             exit-animation="fade-out-animation"
                             providers='["facebook", "github", "google"]'
                             modal>
-        <h2 title>Register / Login</h2>
+        <h2 title-sign-up>Sign-Up Dialog</h2>
+        <h2 title-sign-in>Sign-In Dialog</h2>
         <b introduction>-- Welcome to the Firebase Element eXtended Demo: --</b>
-        <b provider>-- Register/Login with one of the following provider(s): --</b>
+        <b provider>-- Sign-In with one of the following provider(s): --</b>
         <b user>-- or provide your email and password : --</b>
       </firebase-auth-dialog>
 
       <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
       
       <br>
-      <span>Simply Register and/or Login and modify dynamically the information of your profile!</span>
+      <span>Simply Sign-Up and/or Sign-In and modify dynamically the information of your profile!</span>
 
-      <h2>Login status:</h2>
+      <h2>Sign-In status:</h2>
       <pre id="login">[[_showStatus(logged)]]</pre>
 
       <div hidden$="{{!logged}}">

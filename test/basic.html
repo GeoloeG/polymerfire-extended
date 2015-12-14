@@ -21,7 +21,7 @@
   <test-fixture id="basic-register-only-password">
     <template>
       <firebase-auth-dialog
-        type="Register"
+        type="SignUp"
         >
       </firebase-auth-dialog>
     </template>
@@ -30,7 +30,7 @@
   <test-fixture id="basic-login-only-password">
     <template>
       <firebase-auth-dialog
-        type="Login"
+        type="SignIn"
         >
       </firebase-auth-dialog>
     </template>
@@ -39,7 +39,7 @@
   <test-fixture id="basic-register-with-providers">
     <template>
       <firebase-auth-dialog
-        type="Register"
+        type="SignUp"
         providers='["facebook", "github", "google"]'
         >
       </firebase-auth-dialog>
@@ -49,7 +49,7 @@
   <test-fixture id="basic-login-with-providers">
     <template>
       <firebase-auth-dialog
-        type="Login"
+        type="SignIn"
         providers='["facebook", "github", "google"]'
         >
       </firebase-auth-dialog>

@@ -167,13 +167,13 @@ It also provides the update of the global variables used by `<firebase-state>`.
       _userHandler: function(e) {
         switch(e.type) {
           case "user-created":
-            this._toastMessage = "Registration ";
+            this._toastMessage = "Sign-Up ";
             break;
           case "login":
-            this._toastMessage = "Login ";
+            this._toastMessage = "Sign-In ";
             break;
           case "logout":
-            this._toastMessage = "Logout ";
+            this._toastMessage = "Sign-Out ";
             break;
         }
         this._toastMessage += "successful!";
