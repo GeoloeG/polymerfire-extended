@@ -20,14 +20,14 @@ It also provides the update of the global variables used by `<firebase-state>`.
 -->
 <dom-module id="firebase-auth-manager">
   <template>
-      <akc-meta key="logged" value="[[_computeLoggedState(statusKnown,_user)]]"></akc-meta>
+      <akc-meta key="logged" value="[[_computeLoggedState(_statusKnown,_user)]]"></akc-meta>
       <akc-meta key="user" value="{{_user}}"></akc-meta>
       <akc-meta key="profile" value="{{_profile}}"></akc-meta>
       <akc-meta key="profileLocation" value="{{_profileLocation}}"></akc-meta>
 
       <firebase-auth id="firebaseAuth"
                     user="{{_user}}"
-                    status-known="{{statusKnown}}"
+                    status-known="{{_statusKnown}}"
                     location="[[location]]">
       </firebase-auth>
 
@@ -65,10 +65,19 @@ It also provides the update of the global variables used by `<firebase-state>`.
         },
 
         /**
+         * Statusknown used for the `<firebase-auth>` inner element
+         */
+        _statusKnown: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
          * User used for the `<firebase-auth>` inner element
          */
         _user: {
-          type: String
+          type: Object,
+          value: function() { return {}; }
         },
 
         /**
@@ -182,7 +191,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       _errorHandler: function(e) {
         this._lastError = e.detail;
         if (this._lastError) {
-          this.$.errorDialog.open();          
+          this.$.errorDialog.open();
         } else {
           console.error("Unknown error: " + JSON.stringify(e));
         }
