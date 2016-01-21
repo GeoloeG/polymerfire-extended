@@ -61,7 +61,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
          */
         location: {
           type: String,
-          value: ""
+          value: ''
         },
 
         /**
@@ -86,7 +86,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         _profileLocation: {
           type: String,
           computed: '_computeProfileLocation(location,_user)',
-          value: ""
+          value: ''
         },
 
         /**
@@ -148,13 +148,16 @@ It also provides the update of the global variables used by `<firebase-state>`.
           var profile = {};
           var provierInfo = this._user[this._user.provider];
           profile.displayName = provierInfo.displayName ||
-                                provierInfo.cachedUserProfile.displayName || "";
-          profile.firstName = provierInfo.cachedUserProfile.first_name ||
-                              provierInfo.given_name || "";
-          profile.lastName = provierInfo.cachedUserProfile.last_name ||
-                             provierInfo.family_name || "";
-          profile.email = provierInfo.email || "";
-          profile.picture = provierInfo.profileImageURL || "";
+                                (provierInfo.cachedUserProfile) ? provierInfo.cachedUserProfile.displayName : '' ||
+                                '';
+          profile.firstName = provierInfo.given_name ||
+                              (provierInfo.cachedUserProfile) ? provierInfo.cachedUserProfile.first_name : '' ||
+                              '';
+          profile.lastName = provierInfo.family_name ||
+                             (provierInfo.cachedUserProfile) ? provierInfo.cachedUserProfile.last_name : '' ||
+                             '';
+          profile.email = provierInfo.email || '';
+          profile.picture = provierInfo.profileImageURL || '';
           this.set('_profile', profile);
         }
       },
