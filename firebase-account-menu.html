@@ -84,6 +84,12 @@ Example:
     Polymer({
       is: 'firebase-account-menu',
 
+      properties: {
+        profile: {
+          type: Object
+        }
+      },
+
       get _firebaseAuthDialog() {
         return this._firebaseMeta && this._firebaseMeta.byKey("authDialog");
       },

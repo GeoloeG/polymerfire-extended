@@ -22,8 +22,8 @@ It also provides the update of the global variables used by `<firebase-state>`.
   <template>
       <akc-meta key="logged" value="[[_computeLoggedState(_statusKnown,_user)]]"></akc-meta>
       <akc-meta key="user" value="{{_user}}"></akc-meta>
-      <akc-meta key="profile" value="{{_profile}}"></akc-meta>
-      <akc-meta key="profileLocation" value="{{_profileLocation}}"></akc-meta>
+      <akc-meta key="profile" value="[[_profile]]"></akc-meta>
+      <akc-meta key="profileLocation" value="[[_profileLocation]]"></akc-meta>
 
       <firebase-auth id="firebaseAuth"
                     user="{{_user}}"
@@ -32,17 +32,19 @@ It also provides the update of the global variables used by `<firebase-state>`.
       </firebase-auth>
 
       <!-- TODO PG: remove log when test are finished... -->
-      <firebase-document log
-                         location="{{_profileLocation}}"
-                         data="{{_profile}}"
-                         on-firebase-value="_firebaseProfileLoaded">
-      </firebase-document>
+      <template is="dom-if" if="[[_computeLoggedState(_statusKnown,_user)]]" restamp>
+        <firebase-document log
+                           location="{{_profileLocation}}"
+                           data="{{_profile}}"
+                           on-firebase-value="_firebaseProfileLoaded">
+        </firebase-document>        
+      </template>
 
       <firebase-error-dialog id="errorDialog"
                             entry-animation="scale-up-animation"
                             exit-animation="fade-out-animation"
                             modal>
-          <span error>[[_lastError]]</span>
+        <span error>[[_lastError]]</span>
       </firebase-error-dialog>
 
       <!-- TODO PG: eventually write a firebase-toast and extract it-->
@@ -76,8 +78,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
          * User used for the `<firebase-auth>` inner element
          */
         _user: {
-          type: Object,
-          value: function() { return {}; }
+          type: Object
         },
 
         /**
@@ -173,6 +174,9 @@ It also provides the update of the global variables used by `<firebase-state>`.
 
       _signOutHandler: function(e) {
         this.$.firebaseAuth.logout();
+        this.async(function() {
+          this.set('_profile', undefined);
+        });
       },
 
       _userHandler: function(e) {

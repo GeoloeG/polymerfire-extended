@@ -20,10 +20,12 @@ Example:
     <akc-meta-query key="logged" value="{{_logged}}"></akc-meta-query>
     <akc-meta-query key="profileLocation" value="{{_profileLocation}}"></akc-meta-query>
 
-    <firebase-document log
-                       location="{{_profileLocation}}"
-                       data="{{profile}}">
-    </firebase-document>      
+    <template is="dom-if" if="[[_logged]]" restamp>
+      <firebase-document log
+                         location="{{_profileLocation}}"
+                         data="{{profile}}">
+      </firebase-document>      
+    </template>
   </template>
   <script>
 
@@ -46,7 +48,8 @@ Example:
          */
         _logged: {
           type: Boolean,
-          value: false
+          value: false,
+          observer: "_checkLogged"
         },
 
         /**
@@ -58,6 +61,14 @@ Example:
         },
 
       },
+
+      _checkLogged: function(newLogged) {
+        if(!newLogged) {
+          this.async(function() {
+            this.set('profile', undefined);
+          });
+        }
+      }
 
     });
 
