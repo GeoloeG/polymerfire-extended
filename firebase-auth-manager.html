@@ -147,18 +147,27 @@ It also provides the update of the global variables used by `<firebase-state>`.
       _firebaseProfileLoaded: function() {
         if (!this._profile) {
           var profile = {};
-          var provierInfo = this._user[this._user.provider];
-          profile.displayName = provierInfo.displayName ||
-                                (provierInfo.cachedUserProfile) ? provierInfo.cachedUserProfile.displayName : '' ||
-                                '';
-          profile.firstName = provierInfo.given_name ||
-                              (provierInfo.cachedUserProfile) ? provierInfo.cachedUserProfile.first_name : '' ||
-                              '';
-          profile.lastName = provierInfo.family_name ||
-                             (provierInfo.cachedUserProfile) ? provierInfo.cachedUserProfile.last_name : '' ||
-                             '';
-          profile.email = provierInfo.email || '';
-          profile.picture = provierInfo.profileImageURL || '';
+          var providerInfo = this._user[this._user.provider];
+          profile.displayName = providerInfo.displayName;
+          if (!profile.displayName) {
+            profile.displayName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.name : '';
+            profile.displayName = profile.displayName || (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.displayName : '';
+            profile.displayName = profile.displayName || '';
+          }
+          profile.firstName = providerInfo.given_name;
+          if (!profile.firstName) {
+            profile.firstName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.given_name : '';
+            profile.firstName = profile.firstName || ((providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.first_name : '');
+            profile.firstName = profile.firstName || '';
+          }
+          profile.lastName = providerInfo.family_name;
+          if (!profile.lastName) {
+            profile.lastName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.family_name : '';
+            profile.lastName = profile.lastName || ((providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.last_name : '');
+            profile.lastName = profile.lastName || '';
+          }
+          profile.email = providerInfo.email || '';
+          profile.picture = providerInfo.profileImageURL || '';
           this.set('_profile', profile);
         }
       },
