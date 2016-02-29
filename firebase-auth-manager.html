@@ -132,11 +132,11 @@ It also provides the update of the global variables used by `<firebase-state>`.
         window.removeEventListener('error', this._errorHandler.bind(this));
       },
 
-      _computeLoggedState: function(statusKnown,user) {
+      _computeLoggedState: function(statusKnown, user) {
         return statusKnown && !!user;
       },
 
-      _computeProfileLocation: function(location,user) {
+      _computeProfileLocation: function(location, user) {
         if (user && user.uid) {
           return [location, 'profile', user.uid].join('/');
         } else {
@@ -189,7 +189,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       _userHandler: function(e) {
-        switch(e.type) {
+        switch (e.type) {
           case 'user-created':
             this._toastMessage = 'Sign-Up ';
             break;
