@@ -37,7 +37,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
                            location="{{_profileLocation}}"
                            data="{{_profile}}"
                            on-firebase-value="_firebaseProfileLoaded">
-        </firebase-document>        
+        </firebase-document>
       </template>
 
       <firebase-error-dialog id="errorDialog"
@@ -190,17 +190,17 @@ It also provides the update of the global variables used by `<firebase-state>`.
 
       _userHandler: function(e) {
         switch(e.type) {
-          case "user-created":
-            this._toastMessage = "Sign-Up ";
+          case 'user-created':
+            this._toastMessage = 'Sign-Up ';
             break;
-          case "login":
-            this._toastMessage = "Sign-In ";
+          case 'login':
+            this._toastMessage = 'Sign-In ';
             break;
-          case "logout":
-            this._toastMessage = "Sign-Out ";
+          case 'logout':
+            this._toastMessage = 'Sign-Out ';
             break;
         }
-        this._toastMessage += "successful!";
+        this._toastMessage += 'successful!';
         this.$.toast.open();
       },
 
@@ -209,7 +209,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         if (this._lastError) {
           this.$.errorDialog.open();
         } else {
-          console.error("Unknown error: " + JSON.stringify(e));
+          console.error('Unknown error: ' + JSON.stringify(e));
         }
       }
 

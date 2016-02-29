@@ -15,7 +15,7 @@
 
 <!--
 `<firebase-account-menu>` is a navigation menu to be placed inside a `<paper-toolbar>` that provides and hook the authentication functionnality of `<firebase-auth-manager>`.
-Signing up and signing in is done thanks to a self-registered `<firebase-auth-dialog>` declared somewhere else. 
+Signing up and signing in is done thanks to a self-registered `<firebase-auth-dialog>` declared somewhere else.
 It also provides access to the menu dedicated to account actions with a default logout action.
 
 Example:
@@ -91,28 +91,28 @@ Example:
       },
 
       get _firebaseAuthDialog() {
-        return this._firebaseMeta && this._firebaseMeta.byKey("authDialog");
+        return this._firebaseMeta && this._firebaseMeta.byKey('authDialog');
       },
 
       ready: function() {
-        this._firebaseMeta = new Polymer.IronMeta({type: "firebaseExtended"});
+        this._firebaseMeta = new Polymer.IronMeta({type: 'firebaseExtended'});
       },
 
       signUpButton: function() {
         if (this._firebaseAuthDialog) {
-          this._firebaseAuthDialog.setAttribute('type', "SignUp");
+          this._firebaseAuthDialog.setAttribute('type', 'SignUp');
           this._firebaseAuthDialog.open();
         } else {
-          console.warn("Missing registered firebaseAuthDialog");
+          console.warn('Missing registered firebaseAuthDialog');
         }
       },
 
       signInButton: function() {
         if (this._firebaseAuthDialog) {
-          this._firebaseAuthDialog.setAttribute('type', "SignIn");
+          this._firebaseAuthDialog.setAttribute('type', 'SignIn');
           this._firebaseAuthDialog.open();
         } else {
-          console.warn("Missing registered firebaseAuthDialog");
+          console.warn('Missing registered firebaseAuthDialog');
         }
       },
 
@@ -129,4 +129,3 @@ Example:
 
   </script>
 </dom-module>
-
