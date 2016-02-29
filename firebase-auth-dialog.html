@@ -116,7 +116,7 @@ element.
       <content select="[introduction]" id="introduction"></content>
     </div>
 
-    <div id="provider-section" hidden="[[_computeProviderHidden(providers)]]">
+    <div id="provider-section" hidden$="[[_computeProviderHidden(providers)]]">
       <content select="[provider]" id="provider"></content>
     </div>
     <div id="providers">
@@ -206,7 +206,7 @@ element.
            */
           type: {
             type: String,
-            observer: "_typeChanged"
+            observer: '_typeChanged'
           },
 
           /**
@@ -217,7 +217,7 @@ element.
           providers: {
             type: Array,
             value: function() { return []; },
-            observer: "_providersChanged"
+            observer: '_providersChanged'
           }
         },
 
@@ -226,7 +226,7 @@ element.
         //
         ready: function() {
           // Register the dialog in meta to be accessible from anywhere
-          new Polymer.IronMeta({type: "firebaseExtended", key: "authDialog", value: this});
+          new Polymer.IronMeta({type: 'firebaseExtended', key: 'authDialog', value: this});
         },
 
         //
@@ -252,9 +252,9 @@ element.
           } else {
             this._finishRenderClosed();
           }
-          this.$.email.value = "";
-          this.$.primary.value = "";
-          this.$.verification.value = "";
+          this.$.email.value = '';
+          this.$.primary.value = '';
+          this.$.verification.value = '';
         },
 
         _typeChanged: function() {
@@ -272,7 +272,7 @@ element.
               this.$.verification.setAttribute('hidden', '');
               break;
             default:
-              console.error("Invalid dialog type!");
+              console.error('Invalid dialog type!');
           }
         },
 
@@ -298,7 +298,7 @@ element.
             case DialogTypeValue.SIGNIN:
               return type;
             default:
-              console.error("Invalid dialog type!");
+              console.error('Invalid dialog type!');
           }
         },
 
@@ -322,7 +322,7 @@ element.
         },
 
         _handleProvider: function(e) {
-          this.fire('sign-in', { provider: e.target.getAttribute("provider") });
+          this.fire('sign-in', { provider: e.target.getAttribute('provider') });
           this.close();
         },
 
@@ -337,7 +337,7 @@ element.
               this.fire('sign-up', { params: params} );
               break;
             case DialogTypeValue.SIGNIN:
-              this.fire('sign-in', { provider: "password", params: params } );
+              this.fire('sign-in', { provider: 'password', params: params } );
               break;
           }
         }
@@ -361,4 +361,3 @@ element.
     }());
   </script>
 </dom-module>
-

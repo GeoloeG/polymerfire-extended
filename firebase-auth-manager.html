@@ -37,7 +37,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
                            location="{{_profileLocation}}"
                            data="{{_profile}}"
                            on-firebase-value="_firebaseProfileLoaded">
-        </firebase-document>        
+        </firebase-document>
       </template>
 
       <firebase-error-dialog id="errorDialog"
@@ -109,7 +109,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
          */
         _toastMessage: {
           type: String
-        },
+        }
       },
 
       attached: function() {
@@ -132,11 +132,11 @@ It also provides the update of the global variables used by `<firebase-state>`.
         window.removeEventListener('error', this._errorHandler.bind(this));
       },
 
-      _computeLoggedState: function(statusKnown,user) {
+      _computeLoggedState: function(statusKnown, user) {
         return statusKnown && !!user;
       },
 
-      _computeProfileLocation: function(location,user) {
+      _computeProfileLocation: function(location, user) {
         if (user && user.uid) {
           return [location, 'profile', user.uid].join('/');
         } else {
@@ -181,7 +181,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         this.$.firebaseAuth.login(e.detail.params);
       },
 
-      _signOutHandler: function(e) {
+      _signOutHandler: function() {
         this.$.firebaseAuth.logout();
         this.async(function() {
           this.set('_profile', undefined);
@@ -189,18 +189,18 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       _userHandler: function(e) {
-        switch(e.type) {
-          case "user-created":
-            this._toastMessage = "Sign-Up ";
+        switch (e.type) {
+          case 'user-created':
+            this._toastMessage = 'Sign-Up ';
             break;
-          case "login":
-            this._toastMessage = "Sign-In ";
+          case 'login':
+            this._toastMessage = 'Sign-In ';
             break;
-          case "logout":
-            this._toastMessage = "Sign-Out ";
+          case 'logout':
+            this._toastMessage = 'Sign-Out ';
             break;
         }
-        this._toastMessage += "successful!";
+        this._toastMessage += 'successful!';
         this.$.toast.open();
       },
 
@@ -209,7 +209,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         if (this._lastError) {
           this.$.errorDialog.open();
         } else {
-          console.error("Unknown error: " + JSON.stringify(e));
+          console.error('Unknown error: ' + JSON.stringify(e));
         }
       }
 
