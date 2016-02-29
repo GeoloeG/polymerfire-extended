@@ -181,7 +181,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         this.$.firebaseAuth.login(e.detail.params);
       },
 
-      _signOutHandler: function(e) {
+      _signOutHandler: function() {
         this.$.firebaseAuth.logout();
         this.async(function() {
           this.set('_profile', undefined);
