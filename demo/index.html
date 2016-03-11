@@ -11,8 +11,8 @@
 
     <link rel="import" href="../../polymer/polymer.html">
 
-    <link rel="import" href="../../iron-image/iron-image.html">
     <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
+    <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
     <link rel="import" href="../../paper-input/paper-input.html">
     <link rel="import" href="../../paper-material/paper-material.html">
 
@@ -30,6 +30,10 @@
 
 
     <style is="custom-style">
+      body {
+        padding: 0;        
+      }
+
       #intro {
         margin-top: 24px;
       }
@@ -52,18 +56,17 @@
           color: white;
         };
       }
+
+      /* Provied mobile friendly view */
+      @media (max-width: 600px) {
+      }
+
     </style>
 
   </head>
   <body unresolved>
     <template id="t" is="dom-bind">
-
-      <paper-toolbar>
-        <paper-icon-button icon="menu"></paper-icon-button>
-        <span class="title">Firebase Element eXtended Demo</span>
-        <firebase-account-menu></firebase-account-menu>
-      </paper-toolbar>
-
+      <!-- Firebase related element -->
       <firebase-auth-manager
         location="https://metanov-test.firebaseio.com">
       </firebase-auth-manager>
@@ -81,6 +84,15 @@
 
       <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
 
+      <!-- App Toolbar -->
+      <paper-toolbar>
+        <paper-icon-button icon="menu"></paper-icon-button>
+        <paper-icon-button icon="info"></paper-icon-button>
+        <span class="title">Firebase Element eXtended Demo</span>
+        <firebase-account-menu></firebase-account-menu>
+      </paper-toolbar>
+
+      <!-- App Content -->
       <br>
       <span>Simply <b>Sign-Up</b> and/or <b>Sign-In</b> and modify dynamically the information of your profile!</span>
 
