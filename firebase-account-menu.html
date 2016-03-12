@@ -2,50 +2,62 @@
 
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-item/paper-item.html">
+
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 
-<link rel="import" href="./firebase-auth-dialog.html">
-<link rel="import" href="./firebase-icons.html">
 <link rel="import" href="./firebase-state.html">
 
 <!--
 `<firebase-account-menu>` is a navigation menu to be placed inside a `<paper-toolbar>` that provides and hook the authentication functionnality of `<firebase-auth-manager>`.
-Signing up and signing in is done thanks to a self-registered `<firebase-auth-dialog>` declared somewhere else.
+Signing Up and Signing In is done thanks to a self-registered `<firebase-auth-dialog>` declared somewhere else.
 It also provides access to the menu dedicated to account actions with a default logout action.
 
 Example:
 
     <firebase-account-menu>
-      TODO PG: add paper-item item
+      <paper-item on-tap="menu1Open">Menu 1</paper-item>
+      <paper-item on-tap="menu2Open">Menu 2</paper-item>
     </firebase-account-menu>
 
-@group GoogleWebComponents Elements
-@element firebase-account-menu
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--firebase-account-menu` | Mixin applied to the account menu | `{}`
+`--firebase-account-menu-image` | Mixin applied to the iron-image | `{}`
+
 @demo demo/index.html
-@hero hero.svg
 -->
 <dom-module id="firebase-account-menu">
   <template>
     <style>
-      /* TODO PG: beautify and provide styling hook? */
       :host {
         display: block;
+
+        @apply(--firebase-account-menu);
       }
 
       #signedIn, #signedOut {
-        display: flex;
-        align-items: center;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
       }
 
       iron-image {
-        width: 45px;
-        height: 45px;
-        border-radius: 10px;
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+
+        @apply(--firebase-account-menu-image);
       }
 
       #profileLabel {
@@ -57,24 +69,26 @@ Example:
       }
     </style>
 
-    <firebase-state logged="{{logged}}" profile="{{profile}}"></firebase-state>
+    <firebase-state logged="{{_logged}}" profile="{{_profile}}"></firebase-state>
 
-    <paper-menu-button hidden$="[[!logged]]"
+    <iron-media-query query="(max-width: 600px)" query-matches="{{_isMobile}}"></iron-media-query>
+
+    <paper-menu-button hidden$="[[!_logged]]"
                        vertical-offset="72"
                        horizontal-align="right"
                        horizontal-offset="12">
       <paper-button id="signedIn" class="dropdown-trigger">
-        <iron-image src="[[profile.picture]]" sizing="cover"></iron-image>
-        <span id="profileLabel">[[profile.displayName]]</span>
+        <iron-image src="[[_profile.picture]]" sizing="cover"></iron-image>
+        <span id="profileLabel" hidden$="[[_isMobile]]">[[_profile.displayName]]</span>
         <iron-icon icon="expand-more"></iron-icon>
       </paper-button>
       <paper-menu class="dropdown-content">
-        <!-- TODO PG: here comes the user specific menu... -->
         <content></content>
         <paper-item on-tap="signOutButton">Sign Out</paper-item>
       </paper-menu>
     </paper-menu-button>
-    <div id="signedOut" hidden$="[[logged]]">
+
+    <div id="signedOut" hidden$="[[_logged]]">
       <paper-button on-tap="signUpButton">Sign-Up</paper-button>
       <paper-button on-tap="signInButton">Sign-In</paper-button>
     </div>
@@ -85,9 +99,15 @@ Example:
       is: 'firebase-account-menu',
 
       properties: {
-        profile: {
+        _logged: {
+          type: Boolean
+        },
+        _profile: {
           type: Object
-        }
+        },
+        _isMobile: {
+          type: Boolean
+        },
       },
 
       get _firebaseAuthDialog() {

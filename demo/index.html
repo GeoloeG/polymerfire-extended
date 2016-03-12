@@ -55,10 +55,9 @@
           background-color: #3f51b5;
           color: white;
         };
-      }
-
-      /* Provied mobile friendly view */
-      @media (max-width: 600px) {
+        --paper-toolbar-content: {
+          padding: 0;
+        };
       }
 
     </style>
@@ -87,7 +86,6 @@
       <!-- App Toolbar -->
       <paper-toolbar>
         <paper-icon-button icon="menu"></paper-icon-button>
-        <paper-icon-button icon="info"></paper-icon-button>
         <span class="title">Firebase Element eXtended Demo</span>
         <firebase-account-menu></firebase-account-menu>
       </paper-toolbar>
