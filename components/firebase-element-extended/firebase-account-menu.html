@@ -1,0 +1,151 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
+<link rel="import" href="../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="./firebase-state.html">
+
+<!--
+`<firebase-account-menu>` is a navigation menu to be placed inside a `<paper-toolbar>` that provides and hook the authentication functionnality of `<firebase-auth-manager>`.
+Signing Up and Signing In is done thanks to a self-registered `<firebase-auth-dialog>` declared somewhere else.
+It also provides access to the menu dedicated to account actions with a default logout action.
+
+Example:
+
+    <firebase-account-menu>
+      <paper-item on-tap="menu1Open">Menu 1</paper-item>
+      <paper-item on-tap="menu2Open">Menu 2</paper-item>
+    </firebase-account-menu>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--firebase-account-menu` | Mixin applied to the account menu | `{}`
+`--firebase-account-menu-image` | Mixin applied to the iron-image | `{}`
+
+@demo demo/index.html
+-->
+<dom-module id="firebase-account-menu">
+  <template>
+    <style>
+      :host {
+        display: block;
+
+        @apply(--firebase-account-menu);
+      }
+
+      #signedIn, #signedOut {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+
+      iron-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+
+        @apply(--firebase-account-menu-image);
+      }
+
+      #profileLabel {
+        padding-left: 8px;
+      }
+
+      paper-button:hover {
+        opacity: 0.7;
+      }
+    </style>
+
+    <firebase-state logged="{{_logged}}" profile="{{_profile}}"></firebase-state>
+
+    <iron-media-query query="(max-width: 600px)" query-matches="{{_isMobile}}"></iron-media-query>
+
+    <paper-menu-button hidden$="[[!_logged]]"
+                       vertical-offset="72"
+                       horizontal-align="right"
+                       horizontal-offset="12">
+      <paper-button id="signedIn" class="dropdown-trigger">
+        <iron-image src="[[_profile.picture]]" sizing="cover"></iron-image>
+        <span id="profileLabel" hidden$="[[_isMobile]]">[[_profile.displayName]]</span>
+        <iron-icon icon="expand-more"></iron-icon>
+      </paper-button>
+      <paper-menu class="dropdown-content">
+        <content></content>
+        <paper-item on-tap="signOutButton">Sign Out</paper-item>
+      </paper-menu>
+    </paper-menu-button>
+
+    <div id="signedOut" hidden$="[[_logged]]">
+      <paper-button on-tap="signUpButton">Sign-Up</paper-button>
+      <paper-button on-tap="signInButton">Sign-In</paper-button>
+    </div>
+  </template>
+  <script>
+
+    Polymer({
+      is: 'firebase-account-menu',
+
+      properties: {
+        _logged: {
+          type: Boolean
+        },
+        _profile: {
+          type: Object
+        },
+        _isMobile: {
+          type: Boolean
+        },
+      },
+
+      get _firebaseAuthDialog() {
+        return this._firebaseMeta && this._firebaseMeta.byKey('authDialog');
+      },
+
+      ready: function() {
+        this._firebaseMeta = new Polymer.IronMeta({type: 'firebaseExtended'});
+      },
+
+      signUpButton: function() {
+        if (this._firebaseAuthDialog) {
+          this._firebaseAuthDialog.setAttribute('type', 'SignUp');
+          this._firebaseAuthDialog.open();
+        } else {
+          console.warn('Missing registered firebaseAuthDialog');
+        }
+      },
+
+      signInButton: function() {
+        if (this._firebaseAuthDialog) {
+          this._firebaseAuthDialog.setAttribute('type', 'SignIn');
+          this._firebaseAuthDialog.open();
+        } else {
+          console.warn('Missing registered firebaseAuthDialog');
+        }
+      },
+
+      signOutButton: function() {
+        this.fire('sign-out');
+      }
+
+      /**
+        Fired when a user sign-out.
+
+        @event sign-out
+      */
+    });
+
+  </script>
+</dom-module>

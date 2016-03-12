@@ -1,0 +1,219 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../akc-meta/akc-meta.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
+
+<link rel="import" href="../firebase-element/firebase-auth.html">
+<link rel="import" href="../firebase-element/firebase-document.html">
+
+<link rel="import" href="./firebase-error-dialog.html">
+
+<!--
+`<firebase-auth-manager>` is a wrapper element to `<firebase-auth>` that listens to the various `sign-XXX` event and delegate their execution.
+Whenever an error occurs during a firebase operation, it displays an error dialog with the corresponding error message. For successful operation, it shows a toast.
+It also provides the update of the global variables used by `<firebase-state>`.
+
+@group GoogleWebComponents Elements
+@element firebase-auth-manager
+@hero hero.svg
+@demo demo/index.html
+-->
+<dom-module id="firebase-auth-manager">
+  <template>
+      <akc-meta key="logged" value="[[_computeLoggedState(_statusKnown,_user)]]"></akc-meta>
+      <akc-meta key="user" value="{{_user}}"></akc-meta>
+      <akc-meta key="profile" value="[[_profile]]"></akc-meta>
+      <akc-meta key="profileLocation" value="[[_profileLocation]]"></akc-meta>
+
+      <firebase-auth id="firebaseAuth"
+                    user="{{_user}}"
+                    status-known="{{_statusKnown}}"
+                    location="[[location]]">
+      </firebase-auth>
+
+      <!-- TODO PG: remove log when test are finished... -->
+      <template is="dom-if" if="[[_computeLoggedState(_statusKnown,_user)]]" restamp>
+        <firebase-document log
+                           location="{{_profileLocation}}"
+                           data="{{_profile}}"
+                           on-firebase-value="_firebaseProfileLoaded">
+        </firebase-document>
+      </template>
+
+      <firebase-error-dialog id="errorDialog"
+                            entry-animation="scale-up-animation"
+                            exit-animation="fade-out-animation"
+                            modal>
+        <span error>[[_lastError]]</span>
+      </firebase-error-dialog>
+
+      <!-- TODO PG: eventually write a firebase-toast and extract it-->
+      <paper-toast id="toast" text="[[_toastMessage]]" duration="3000"></paper-toast>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'firebase-auth-manager',
+
+      properties: {
+
+        /**
+         * Location used for the `<firebase-auth>` inner element
+         */
+        location: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * Statusknown used for the `<firebase-auth>` inner element
+         */
+        _statusKnown: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * User used for the `<firebase-auth>` inner element
+         */
+        _user: {
+          type: Object
+        },
+
+        /**
+         * Computed location used for the profile firebase document
+         */
+        _profileLocation: {
+          type: String,
+          computed: '_computeProfileLocation(location,_user)',
+          value: ''
+        },
+
+        /**
+         * Value of the profile firebase document
+         */
+        _profile: {
+          type: Object
+        },
+
+        /**
+         * Last error that occured with one of the auth service
+         */
+        _lastError: {
+          type: String
+        },
+
+        /**
+         * Text message of the toast
+         */
+        _toastMessage: {
+          type: String
+        }
+      },
+
+      attached: function() {
+        window.addEventListener('sign-up', this._signUpHandler.bind(this));
+        window.addEventListener('sign-in', this._signInHandler.bind(this));
+        window.addEventListener('sign-out', this._signOutHandler.bind(this));
+        window.addEventListener('user-created', this._userHandler.bind(this));
+        window.addEventListener('login', this._userHandler.bind(this));
+        window.addEventListener('logout', this._userHandler.bind(this));
+        window.addEventListener('error', this._errorHandler.bind(this));
+      },
+
+      detached: function() {
+        window.removeEventListener('sign-up', this._signUpHandler.bind(this));
+        window.removeEventListener('sign-in', this._signInHandler.bind(this));
+        window.removeEventListener('sign-out', this._signOutHandler.bind(this));
+        window.removeEventListener('user-created', this._userHandler.bind(this));
+        window.removeEventListener('login', this._userHandler.bind(this));
+        window.removeEventListener('logout', this._userHandler.bind(this));
+        window.removeEventListener('error', this._errorHandler.bind(this));
+      },
+
+      _computeLoggedState: function(statusKnown, user) {
+        return statusKnown && !!user;
+      },
+
+      _computeProfileLocation: function(location, user) {
+        if (user && user.uid) {
+          return [location, 'profile', user.uid].join('/');
+        } else {
+          return '';
+        }
+      },
+
+      _firebaseProfileLoaded: function() {
+        if (!this._profile) {
+          var profile = {};
+          var providerInfo = this._user[this._user.provider];
+          profile.displayName = providerInfo.displayName;
+          if (!profile.displayName) {
+            profile.displayName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.name : '';
+            profile.displayName = profile.displayName || (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.displayName : '';
+            profile.displayName = profile.displayName || '';
+          }
+          profile.firstName = providerInfo.given_name;
+          if (!profile.firstName) {
+            profile.firstName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.given_name : '';
+            profile.firstName = profile.firstName || ((providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.first_name : '');
+            profile.firstName = profile.firstName || '';
+          }
+          profile.lastName = providerInfo.family_name;
+          if (!profile.lastName) {
+            profile.lastName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.family_name : '';
+            profile.lastName = profile.lastName || ((providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.last_name : '');
+            profile.lastName = profile.lastName || '';
+          }
+          profile.email = providerInfo.email || '';
+          profile.picture = providerInfo.profileImageURL || '';
+          this.set('_profile', profile);
+        }
+      },
+
+      _signUpHandler: function(e) {
+        this.$.firebaseAuth.createUser(e.detail.params.email, e.detail.params.password);
+      },
+
+      _signInHandler: function(e) {
+        this.$.firebaseAuth.provider = e.detail.provider;
+        this.$.firebaseAuth.login(e.detail.params);
+      },
+
+      _signOutHandler: function() {
+        this.$.firebaseAuth.logout();
+        this.async(function() {
+          this.set('_profile', undefined);
+        });
+      },
+
+      _userHandler: function(e) {
+        switch (e.type) {
+          case 'user-created':
+            this._toastMessage = 'Sign-Up ';
+            break;
+          case 'login':
+            this._toastMessage = 'Sign-In ';
+            break;
+          case 'logout':
+            this._toastMessage = 'Sign-Out ';
+            break;
+        }
+        this._toastMessage += 'successful!';
+        this.$.toast.open();
+      },
+
+      _errorHandler: function(e) {
+        this._lastError = e.detail;
+        if (this._lastError) {
+          this.$.errorDialog.open();
+        } else {
+          console.error('Unknown error: ' + JSON.stringify(e));
+        }
+      }
+
+    });
+
+  </script>
+</dom-module>

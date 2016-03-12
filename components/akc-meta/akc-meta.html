@@ -1,0 +1,261 @@
+<!--
+@licence MIT
+Copyright (c) 2015 Alan Chandler
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+
+
+<script>
+/**
+* A pair of element for sharing data across the dom tree based on the use of a key.
+*
+* The element <akc-meta> is for publishing the value whereas <akc-meta-query> is an element
+* to query the published value and retrieve it. The pair have been designed to use databinding
+*
+*
+*
+*  Example:
+*
+*      <akc-meta key="abc" value="[[inputvalue]]"></akc-meta>
+*     <akc-meta-query key="abc" value="{{outputvalue}}"></akc-meta-query>
+*
+*  @group Alan Chandler's Elements
+*  @element akc-meta
+*  @demo demo/index.html
+*/
+(function(){
+
+function clone(objectToBeCloned) {
+  // Basis.
+  if (!(objectToBeCloned instanceof Object)) {
+    return objectToBeCloned;
+  }
+
+  if(typeof objectToBeCloned.then === 'function') {
+    return Promise.resolve(objectToBeCloned);
+  }
+
+  var objectClone;
+
+  // Filter out special objects.
+  var Constructor = objectToBeCloned.constructor;
+  switch (Constructor) {
+    // Implement other special objects here.
+    case RegExp:
+      objectClone = new Constructor(objectToBeCloned);
+      break;
+    case Date:
+      objectClone = new Constructor(objectToBeCloned.getTime());
+      break;
+    default:
+      objectClone = new Constructor();
+  }
+
+  // Clone each property.
+  for (var prop in objectToBeCloned) {
+    objectClone[prop] = clone(objectToBeCloned[prop]);
+  }
+
+  return objectClone;
+}
+
+var queries = {};
+
+var metas = {}
+
+var values = {};
+
+  Polymer({
+    /**
+    * <akc-meta> is an element for publishing data into the global repository
+    */
+    is: 'akc-meta',
+
+    properties: {
+
+      /**
+       * `key` is a string to identify the data that is being stored and replicated
+       * @attribute key
+       * @type string
+       */
+      key: {
+        type:String,
+        observer:'_keyChanged',
+        value:'default'
+      },
+
+      /**
+       * This is a value that will be replicated to all elements.
+       * @attribute @value
+       * @type Any
+       *
+       */
+      value: {
+        type: Object,
+        observer:'_valueChanged',
+        value:{},
+        notify:true
+      }
+
+    },
+    created:function(){
+      this.isAttached = false;
+    },
+    attached:function() {
+      this.isAttached = true;
+      this._registerElement(this.key);
+    },
+    detached:function() {
+      this._unregisterElement(this.key);
+      this.isAttached = false;
+    },
+    _valueChanged: function(value) {
+      var index, len;
+      if(this.isAttached) {
+        if(typeof value === 'undefined') {
+          value={};
+        }
+        values[this.key] = clone(value);
+        if(metas[this.key].length > 1) { //check if other metas with same key
+          for(index = 0, len=metas[this.key].length; index < len;++index) {
+            if(metas[this.key][index] !== this) {
+              metas[this.key][index].value = this.value;
+            }
+          }
+        }
+        if (this.key in queries) {
+          for(index = 0, len = queries[this.key].length; index < len; ++index) {
+            queries[this.key][index]._setValue(values[this.key]);  //set the value of every item referenced
+
+          }
+        }
+      }
+    },
+    _keyChanged:function(newKey,oldKey) {
+      if(this.isAttached) {
+        this._unregisterElement(oldKey);
+        this._registerElement(newKey);
+      }
+    },
+    _unregister:function(key) {
+      var foundElement = false;
+      if (key in queries) {
+        var index,len;
+        for(index = 0, len = queries[key].length; index < len;++index) {
+          queries[key][index]._setValue({});
+          foundElement = true;
+        }
+      }
+      if(foundElement) {
+        values[key] = {};
+      } else {
+        delete values[key];
+      }
+
+    },
+    _registerElement:function(key) {
+       if(!(key in metas)){
+        metas[key] = [];
+        metas[key].push(this);
+        this._valueChanged(this.value); //i'm the first meta with this key, so I set the value
+      } else {
+        metas[key].push(this); //add this element to the metas list
+        this.value = values[this.key];  //get the common value for this key
+      }
+    },
+    _unregisterElement:function(key) {
+      if (key in metas) {
+        if(metas[key].indexOf(this) > -1) {
+          metas[key].splice(metas[key].indexOf(this),1);  //remove self from meta list
+          if(metas[key].length == 0) {
+            //I was the last one with this key
+            delete metas[key];
+            this._unregister(key);
+          }
+        }
+      }
+    }
+  });
+  Polymer({
+    /**
+    * <akc-meta-query> is an element to query the data in the global repository
+    */
+    is: 'akc-meta-query',
+
+    properties: {
+      /**
+      * key is key to the global repository to say which data you wish to extract
+      *
+      * @attribute key
+      * @type String
+      */
+      key: {
+        type:String,
+        observer:'_keyChanged',
+        value:'default'
+      },
+      /**
+      * value is a value that is read out of the repository
+      *
+      * @attribute value
+      * @type any
+      */
+      value: {
+        type:Object,
+        notify:true,
+        readOnly:true,
+        value:{}
+      }
+    },
+    attached: function() {
+      this._registerElement(this.key);
+    },
+
+    detached: function() {
+      this._unregisterElement(this.key);
+
+    },
+    _keyChanged:function(newKey,oldKey) {
+      this._unregisterElement(oldKey);
+      this._registerElement(newKey);
+    },
+    _registerElement:function(key) {
+       if(!(key in queries)){
+        queries[key] = [];
+      }
+      queries[key].push(this); //add this element to the query list
+      this._setValue((key in values)?clone(values[key]):{});
+    },
+    _unregisterElement:function(key) {
+      if (key in queries) {
+        if(queries[key].indexOf(this) > -1) {
+          queries[key].splice(queries[key].indexOf(this),1);  //remove self from query list
+
+        }
+      }
+    }
+  });
+
+}());
+
+</script>

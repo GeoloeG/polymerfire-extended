@@ -1,0 +1,90 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-material/paper-material.html">
+
+<link rel="import" href="./firebase-profile.html">
+
+<!--
+`<firebase-profile-page>` is an element that provides basic profile information to be edited as well as custom profile information.
+
+Example:
+
+    <firebase-profile-page profile="{{profile}}">
+      ...
+    </firebase-profile-page>
+
+@group GoogleWebComponents Elements
+@element firebase-profile-page
+@hero hero.svg
+@demo demo/index.html
+-->
+<dom-module id="firebase-profile-page">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      h3 {
+        padding-top: 24px;
+        padding-left: 24px;
+      }
+
+      #container {
+        display: flex;
+        padding: 0px 24px 24px 24px;
+      }
+
+      #info {
+        padding-left: 24px;
+        flex-grow: 1;
+      }
+
+      iron-image {
+        width: 240px;
+        height: 240px;
+        border-radius: 10px;
+      }
+
+    </style>
+
+    <firebase-profile profile="{{profile}}"></firebase-profile>
+    <paper-material elevation="1">
+      <h3>General Information</h3>
+      <div id="container">
+        <iron-image src="[[profile.picture]]" sizing="cover"></iron-image>
+        <div id="info">
+          <paper-input label="Display Name" value="{{profile.displayName}}"></paper-input>
+          <paper-input label="First Name" value="{{profile.firstName}}"></paper-input>
+          <paper-input label="Last Name" value="{{profile.lastName}}"></paper-input>
+          <paper-input label="Email" value="{{profile.email}}"></paper-input>
+        </div>
+      </div>
+    </paper-material>
+    <content></content>
+    <!-- TOGO PG: hook the change password and delete accound services -->
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'firebase-profile-page',
+
+      properties: {
+
+        /**
+         * This property reflects the firebase user auth object.
+         */
+        profile: {
+          type: Object,
+          notify: true
+        }
+
+      }
+
+    });
+
+  </script>
+</dom-module>

@@ -1,0 +1,72 @@
+<!doctype html>
+<!--
+@licence MIT
+Copyright (c) 2015 Alan Chandler
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>akc-meta Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../../paper-card/paper-card.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
+    <link rel="import" href="../akc-meta.html">
+    <link rel="import" href="x-element.html">
+  </head>
+  <body unresolved>
+  <template is="dom-bind">
+  <!-- This is a unchanged value -->
+
+  <akc-meta key="demo1" value="A Demo string"></akc-meta>
+  <paper-card heading="Static Value Passing" >
+    <div class="card-content">
+      <akc-meta-query key="demo1" value="{{demovalue}}"></akc-meta-query>
+      <span>[[demovalue]]</span>
+    </div>
+    <div class="card-actions">
+
+    </div>
+  </paper-card>
+  <paper-card heading="Dynamic Value Passing" image="" elevation="1" animated-shadow="false">
+    <div class="card-content">
+      <akc-meta-query key="demo2" value="{{avalue}}"></akc-meta-query>
+      <span>[[avalue]]</span>
+    </div>
+    <div class="card-actions">
+      <akc-meta key="demo2" value="[[demo2value]]"></akc-meta>
+      <paper-input label="Value for demo 2" value="{{demo2value}}"></paper-input>
+    </div>
+  </paper-card>
+
+  <paper-card heading="Passing Values in and out of Elements" image="" elevation="1" animated-shadow="false">
+    <akc-meta-query key="demo3" value="{{demo3Value}}"></akc-meta-query>
+    <div class="card-content">[[demo3Value]]</div>
+    <div class="card-actions">
+      <x-element></x-element>
+    </div>
+  </paper-card>
+  </template>
+  </body>
+</html>

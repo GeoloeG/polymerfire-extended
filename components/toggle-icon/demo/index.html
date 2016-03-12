@@ -1,0 +1,460 @@
+<!doctype html>
+<html>
+  <head>
+    <title>paper-icon-button</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-icons/iron-icons.html">
+    <link rel="import" href="../../iron-icons/communication-icons.html">
+    <link rel="import" href="../../paper-styles/color.html">
+    <link rel="import" href="../../paper-styles/demo-pages.html">
+    <link rel="import" href="../toggle-icon.html">
+
+    <style is="custom-style">
+      .vertical-section-container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .horizontal-section {
+        text-align: center;
+        width: calc(100% - 48px);
+        margin: 0;
+      }
+
+      .horizontal-section div {
+        margin: 0 1em;
+        width: 100px;
+        min-width: 100px;
+      }
+
+      toggle-icon /deep/ paper-icon-button {
+        padding: 16px;
+        width: 80px;
+        height: 80px;
+      }
+
+      .active-red {
+        --toggle-icon-active: {
+          color: var(--paper-red-500);
+        };
+      }
+      .active-indigo {
+        --toggle-icon-active: {
+          color: var(--paper-indigo-500);
+        };
+      }
+      .active-green {
+        --toggle-icon-active: {
+          color: var(--paper-green-500);
+        };
+      }
+      .active-orange {
+        --toggle-icon-active: {
+          color: var(--paper-orange-500);
+        };
+      }
+      .active-cyan {
+        --toggle-icon-active: {
+          color: var(--paper-cyan-500);
+        };
+      }
+
+      .all1,
+      .all4 {
+        --toggle-icon: {
+          color: var(--paper-green-500);
+        };
+        --toggle-icon-active: {
+          color: var(--paper-red-500);
+        };
+      }
+      .all2 {
+        --toggle-icon: {
+          color: var(--paper-indigo-500);
+        };
+      }
+      .all3 {
+        --toggle-icon-active: {
+          color: var(--paper-orange-500);
+        };
+      }
+      .all5 {
+        --iron-icon-width: 36px;
+        --iron-icon-height: 36px;
+        --toggle-icon: {
+          background: var(--paper-green-500);
+          border-radius: 50%;
+          color: #fff;
+        };
+        --toggle-icon-active: {
+          background: var(--paper-red-500);
+        };
+      }
+    </style>
+
+  </head>
+
+  <body unresolved>
+
+    <div class="vertical-section-container">
+      <div>
+        <h4>Animations</h4>
+
+        <div class="horizontal-section horizontal-section-container">
+
+          <div>
+            <toggle-icon
+              animation="flip-vertical"
+              icon="trending-up">
+            </toggle-icon>
+            <h4>flip-vertical</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-vertical"
+              icon="arrow-forward">
+            </toggle-icon>
+            <h4>flip-vertical</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-vertical"
+              icon="star">
+            </toggle-icon>
+            <h4>flip-vertical</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-vertical"
+              icon="thumb-up">
+            </toggle-icon>
+            <h4>flip-vertical</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-vertical"
+              icon="communication:call">
+            </toggle-icon>
+            <h4>flip-vertical</h4>
+          </div>
+        </div>
+
+        <div class="horizontal-section horizontal-section-container">
+          <div>
+            <toggle-icon
+              animation="flip-horizontal"
+              icon="trending-up">
+            </toggle-icon>
+            <h4>flip-horizontal</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-horizontal"
+              icon="arrow-forward">
+            </toggle-icon>
+            <h4>flip-horizontal</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-horizontal"
+              icon="star">
+            </toggle-icon>
+            <h4>flip-horizontal</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-horizontal"
+              icon="thumb-up">
+            </toggle-icon>
+            <h4>flip-horizontal</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="flip-horizontal"
+              icon="communication:call">
+            </toggle-icon>
+            <h4>flip-horizontal</h4>
+          </div>
+        </div>
+
+        <div class="horizontal-section horizontal-section-container">
+          <div>
+            <toggle-icon
+              animation="rotate"
+              icon="trending-up">
+            </toggle-icon>
+            <h4>rotate</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="rotate"
+              icon="arrow-forward">
+            </toggle-icon>
+            <h4>rotate</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="rotate"
+              icon="star">
+            </toggle-icon>
+            <h4>rotate</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="rotate"
+              icon="thumb-up">
+            </toggle-icon>
+            <h4>rotate</h4>
+          </div>
+          <div>
+            <toggle-icon
+              animation="rotate"
+              icon="communication:call">
+            </toggle-icon>
+            <h4>rotate</h4>
+          </div>
+        </div>
+
+        <div class="horizontal-section">
+          <button class="toggle-all" onclick="toggleAll(this)">Toggle all!</button> Or click on the individual toggle-icons themselves.
+        </div>
+
+      </div>
+
+      <div>
+        <h4>Active icon</h4>
+
+        <div class="horizontal-section horizontal-section-container">
+          <div>
+            <toggle-icon
+              icon="cloud-queue"
+              icon-active="cloud">
+            </toggle-icon>
+            <h4>cloud</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="error-outline"
+              icon-active="error">
+            </toggle-icon>
+            <h4>error</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="star-border"
+              icon-active="star">
+            </toggle-icon>
+            <h4>star</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="favorite-border"
+              icon-active="favorite">
+            </toggle-icon>
+            <h4>favorite</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="lock-open"
+              icon-active="lock">
+            </toggle-icon>
+            <h4>lock</h4>
+          </div>
+        </div>
+
+        <div class="horizontal-section">
+          <button class="toggle-all" onclick="toggleAll(this)">Toggle all!</button> Or click on the individual toggle-icons themselves.
+        </div>
+
+      </div>
+
+      <div>
+        <h4>Color</h4>
+
+        <div class="horizontal-section horizontal-section-container">
+          <div>
+            <toggle-icon
+              class="active-red"
+              icon="trending-up">
+            </toggle-icon>
+            <h4>red</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="active-indigo"
+              icon="arrow-forward">
+            </toggle-icon>
+            <h4>indigo</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="active-green"
+              icon="star">
+            </toggle-icon>
+            <h4>green</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="active-orange"
+              icon="thumb-up">
+            </toggle-icon>
+            <h4>orange</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="active-cyan"
+              icon="communication:call">
+            </toggle-icon>
+            <h4>cyan</h4>
+          </div>
+        </div>
+
+        <div class="horizontal-section">
+          <button class="toggle-all" onclick="toggleAll(this)">Toggle all!</button> Or click on the individual toggle-icons themselves.
+        </div>
+
+      </div>
+
+      <div>
+        <h4>Putting it all together!</h4>
+
+        <div class="horizontal-section horizontal-section-container">
+          <div>
+            <toggle-icon
+              class="all1"
+              icon="trending-up"
+              animation="flip-vertical">
+            </toggle-icon>
+            <h4>flip-vertical</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="all2"
+              icon="arrow-forward"
+              animation="rotate">
+            </toggle-icon>
+            <h4>rotate</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="all3"
+              icon="star-border"
+              icon-active="star">
+            </toggle-icon>
+            <h4>icon-active</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="all4"
+              icon="thumb-up"
+              animation="flip-vertical flip-horizontal">
+            </toggle-icon>
+            <h4>flip-vertical, flip-horizontal</h4>
+          </div>
+          <div>
+            <toggle-icon
+              class="all5"
+              icon="communication:call"
+              animation="rotate"
+              rotation="135">
+            </toggle-icon>
+            <h4>rotate 135deg</h4>
+          </div>
+        </div>
+
+        <div class="horizontal-section">
+          <button class="toggle-all" onclick="toggleAll(this)">Toggle all!</button> Or click on the individual toggle-icons themselves.
+        </div>
+
+      </div>
+
+      <div>
+        <h4>Disabled</h4>
+
+        <div class="horizontal-section horizontal-section-container">
+          <div>
+            <toggle-icon
+              icon="trending-up"
+              animation="flip-vertical"
+              disabled>
+            </toggle-icon>
+            <h4>disabled</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="arrow-forward"
+              animation="rotate"
+              disabled>
+            </toggle-icon>
+            <h4>disabled</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="star-border"
+              icon-active="star"
+              disabled>
+            </toggle-icon>
+            <h4>disabled</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="thumb-up"
+              animation="flip-vertical flip-horizontal"
+              disabled>
+            </toggle-icon>
+            <h4>disabled</h4>
+          </div>
+          <div>
+            <toggle-icon
+              icon="communication:call"
+              animation="rotate"
+              rotation="135"
+              disabled>
+            </toggle-icon>
+            <h4>disabled</h4>
+          </div>
+        </div>
+
+        <div class="horizontal-section">
+          <button class="toggle-all" onclick="toggleAll(this)">Toggle all!</button> It's not possible to click on the individual toggle-icons themselves (but you can change their <code>active</code> properties).
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('WebComponentsReady', function(e) {
+        setTimeout(function() {
+          toggleAll(document.querySelector('.toggle-all'))
+        }, 300);
+      })
+
+      function toggleAll(button) {
+        var toggles = button.parentNode.parentNode.querySelectorAll('toggle-icon');
+        for (i = 0; i < toggles.length; i++) {
+          setToggleTimeout(toggles, i);
+        }
+      }
+
+      function setToggleTimeout(toggles, i) {
+        var animationOrderPosition = getChildIndex(toggles[i].parentNode) + 
+          getChildIndex(toggles[i].parentNode.parentNode) - 3;
+
+        window.setTimeout(function() {
+          toggles[i].active = !toggles[i].active;
+        }, animationOrderPosition*75);
+      }
+
+      function getChildIndex(node) {
+        var i = 1;
+        while (node = node.previousSibling) {
+          if (node.nodeType === 1) { ++i }
+        }
+        return i;
+      }
+    </script>
+  </body>
+</html>

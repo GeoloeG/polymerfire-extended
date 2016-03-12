@@ -1,0 +1,125 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
+
+<!--
+`<firebase-error-dialog>` is a dialog with Material Design styling and optional animations that leverage firebase error message.
+
+See `Polymer.PaperDialogBehavior` for specifics.
+
+Example:
+
+    <firebase-error-dialog
+      modal with-backdrop>
+        <span error>Bad error!</span>
+    </firebase-error-dialog>
+
+### Styling
+
+See the docs of `Polymer.PaperDialogBehavior` for the custom properties available for styling
+this element.
+
+### Animations
+
+Set the `entry-animation` and/or `exit-animation` attributes to add an animation when the dialog
+is opened or closed. See the documentation in
+[PolymerElements/neon-animation](https://github.com/PolymerElements/neon-animation) for more info.
+
+For example:
+
+    <link rel="import" href="components/neon-animation/animations/scale-up-animation.html">
+    <link rel="import" href="components/neon-animation/animations/fade-out-animation.html">
+
+    <firebase-error-dialog
+      entry-animation="scale-up-animation"
+      exit-animation="fade-out-animation"
+      ...
+      >
+    </firebase-error-dialog>
+
+### Accessibility
+
+See the docs of `Polymer.PaperDialogBehavior` for accessibility features implemented by this
+element.
+
+@group GoogleWebComponents Elements
+@element firebase-error-dialog
+@hero hero.svg
+@demo demo/index.html
+-->
+<dom-module id="firebase-error-dialog">
+  <template>
+    <style include="paper-dialog-shared-styles"></style>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      #error {
+        text-align: center;
+        padding-left: 24px;
+      }
+
+      iron-icon {
+        --iron-icon-fill-color: red;
+      }
+    </style>
+
+    <h2>Error</h2>
+    <div id="error">
+      <iron-icon icon="error"></iron-icon>
+      <b><content select="[error]"></content></b>
+    </div>
+    <div class="buttons">
+      <paper-button dialog-confirm raised>OK</paper-button>
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+
+      is: 'firebase-error-dialog',
+
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+      //
+      // Element Behavior
+      //
+      _renderOpened: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.open();
+        }
+        this.playAnimation('entry');
+      },
+
+      _renderClosed: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.close();
+        }
+        this.playAnimation('exit');
+      },
+
+      _onNeonAnimationFinish: function() {
+        if (this.opened) {
+          this._finishRenderOpened();
+        } else {
+          this._finishRenderClosed();
+        }
+      }
+
+    });
+
+  </script>
+</dom-module>

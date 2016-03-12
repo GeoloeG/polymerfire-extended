@@ -1,0 +1,39 @@
+{
+  "name": "akc-meta",
+  "version": "1.0.4",
+  "authors": [
+    "Alan Chandler <alan@chandlerfamily.org.uk>"
+  ],
+  "description": "An experiment for a better iron-meta",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "iron-meta"
+  ],
+  "main": "akc-meta.html",
+  "license": "http://akc42.github.io/LICENSE.md",
+  "homepage": "https://github.com/akc42/akc-meta/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*",
+    "paper-card": "PolymerElements/paper-card#~1.0.7",
+    "paper-input": "PolymerElements/paper-input#~1.0.18",
+    "test-fixture": "PolymerElements/test-fixture#~1.0.0"
+  },
+  "_release": "1.0.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.4",
+    "commit": "53e32c19e5ae214d28b21627da124e19b0e910a5"
+  },
+  "_source": "git://github.com/akc42/akc-meta.git",
+  "_target": "^v1.0.0",
+  "_originalSource": "akc42/akc-meta"
+}

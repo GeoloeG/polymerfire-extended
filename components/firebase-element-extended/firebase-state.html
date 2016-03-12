@@ -1,0 +1,66 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../akc-meta/akc-meta.html">
+
+<!--
+`<firebase-auth-state>` is an element that is sharing globally the `logged`, `user` and `profile` value in read mode of the current user.
+
+Example:
+
+    <firebase-state
+      logged="{{logged}}"
+      user="{{user}}">
+    </firebase-profile>
+
+@group GoogleWebComponents Elements
+@element firebase-state
+@hero hero.svg
+@demo demo/index.html
+-->
+<dom-module id="firebase-state">
+  <template>
+    <akc-meta-query key="logged" value="{{logged}}"></akc-meta-query>
+    <akc-meta-query key="user" value="{{user}}"></akc-meta-query>
+    <akc-meta-query key="profile" value="{{profile}}"></akc-meta-query>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'firebase-state',
+
+      properties: {
+
+        /**
+         * Set to `true` if a user is logged in, otherwise `false`
+         */
+        logged: {
+          type: Boolean,
+          readonly: true,
+          notify: true
+        },
+
+        /**
+         * This property reflects the firebase user auth object.
+         */
+        user: {
+          type: Object,
+          readonly: true,
+          notify: true
+        },
+
+        /**
+         * This property reflects the firebase user auth object.
+         */
+        profile: {
+          type: Object,
+          readonly: true,
+          notify: true
+        }
+
+      }
+
+    });
+
+  </script>
+</dom-module>
