@@ -2,6 +2,7 @@
 
 <link rel="import" href="../iron-meta/iron-meta.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
 <link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
@@ -107,8 +108,8 @@ element.
       }
 
       #providers {
-        display: flex;
-        justify-content: space-between;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
       }
     </style>
 
