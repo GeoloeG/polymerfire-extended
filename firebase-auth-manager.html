@@ -138,7 +138,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
 
       _computeProfileLocation: function(location, user) {
         if (user && user.uid) {
-          return [location, 'profile', user.uid].join('/');
+          return [location, 'profiles', user.uid].join('/');
         } else {
           return '';
         }
