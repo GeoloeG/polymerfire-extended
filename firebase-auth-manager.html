@@ -21,7 +21,8 @@ It also provides the update of the global variables used by `<firebase-state>`.
 <dom-module id="firebase-auth-manager">
   <template>
       <akc-meta key="logged" value="[[_computeLoggedState(_statusKnown,_user)]]"></akc-meta>
-      <akc-meta key="user" value="{{_user}}"></akc-meta>
+      <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
+      <akc-meta key="user" value="[[_user]]"></akc-meta>
       <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
       <akc-meta key="profile" value="[[_profile]]"></akc-meta>
       <akc-meta key="profileLocation" value="[[_profileLocation]]"></akc-meta>
