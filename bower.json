@@ -59,7 +59,7 @@
     "neon-animation": "PolymerElements/neon-animation#^1.0.0",
     "gold-email-input": "PolymerElements/gold-email-input#^1.0.0",
     "gold-password-input": "gold-password-input#^1.0.0",
-    "firebase-element": "GoogleWebComponents/firebase-element#^1.0.0",
+    "firebase-element": "GoogleWebComponents/firebase-element#master",
     "akc-meta": "akc42/akc-meta#^v1.0.0"
   },
   "devDependencies": {
