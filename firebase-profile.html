@@ -63,6 +63,7 @@ Example:
       },
 
       _checkLogged: function(newLogged) {
+        // TODO PG: it should be worth proposing to set data to undefined when the query is undefined
         if (!newLogged) {
           this.async(function() {
             this.set('profile', undefined);

@@ -22,6 +22,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
   <template>
       <akc-meta key="logged" value="[[_computeLoggedState(_statusKnown,_user)]]"></akc-meta>
       <akc-meta key="user" value="{{_user}}"></akc-meta>
+      <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
       <akc-meta key="profile" value="[[_profile]]"></akc-meta>
       <akc-meta key="profileLocation" value="[[_profileLocation]]"></akc-meta>
 
@@ -32,13 +33,11 @@ It also provides the update of the global variables used by `<firebase-state>`.
       </firebase-auth>
 
       <!-- TODO PG: remove log when test are finished... -->
-      <template is="dom-if" if="[[_computeLoggedState(_statusKnown,_user)]]" restamp>
-        <firebase-document log
-                           location="{{_profileLocation}}"
-                           data="{{_profile}}"
-                           on-firebase-value="_firebaseProfileLoaded">
-        </firebase-document>
-      </template>
+      <firebase-document log
+                         location="{{_profileLocation}}"
+                         data="{{_profile}}"
+                         on-firebase-value="_firebaseProfileLoaded">
+      </firebase-document>
 
       <firebase-error-dialog id="errorDialog"
                             entry-animation="scale-up-animation"

@@ -98,13 +98,20 @@
       <pre id="login">[[_showStatus(logged)]]</pre>
 
       <div hidden$="{{!logged}}">
-        <h2>Profile</h2>
-        <firebase-profile-page profile="{{profile}}">
+        <h2>Profile Raw Info</h2>
+        <firebase-profile profile="{{profile}}"></firebase-profile>
+        <div>{{profile.displayName}}</div>
+        <div>{{profile.firstName}}</div>
+        <div>{{profile.lastName}}</div>
+        <div>{{profile.email}}</div>
+
+        <h2>Profile Page</h2>
+        <firebase-profile-page profile="{{profile_from_page}}">
           <paper-material elevation="1">
             <h3>Additional Information</h3>
             <div id="container">
-              <paper-input label="Information 1" value="{{profile.info1}}"></paper-input>
-              <paper-input label="Information 2" value="{{profile.info2}}"></paper-input>
+              <paper-input label="Information 1" value="{{profile_from_page.info1}}"></paper-input>
+              <paper-input label="Information 2" value="{{profile_from_page.info2}}"></paper-input>
             </div>
           </paper-material>
         </firebase-profile-page>
