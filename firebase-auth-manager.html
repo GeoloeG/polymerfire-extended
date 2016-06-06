@@ -43,6 +43,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       </firebase-document>
 
       <firebase-error-dialog id="errorDialog"
+                             hidden$="{{!_lastError}}"
                              entry-animation="scale-up-animation"
                              exit-animation="fade-out-animation"
                              modal>
