@@ -22,8 +22,8 @@ It also provides the update of the global variables used by `<firebase-state>`.
   <template>
       <akc-meta key="logged" value="[[_logged]]"></akc-meta>
       <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
-      <akc-meta key="user" value="[[_user]]"></akc-meta>
-      <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
+      <akc-meta key="user" value="[[_deepClone(_user)]]"></akc-meta>
+      <!-- akc-meta is not compatible with the user object from firebase -->
       <akc-meta key="profile" value="[[_profile]]"></akc-meta>
       <akc-meta key="profilePath" value="[[_profilePath]]"></akc-meta>
       <akc-meta key="appName" value="[[appName]]"></akc-meta>
@@ -36,10 +36,10 @@ It also provides the update of the global variables used by `<firebase-state>`.
 
       <!-- TODO PG: remove log when test are finished... -->
       <firebase-document log
+                         id="firebaseAuthDoc"
                          app-name="[[appName]]"
                          path="{{_profilePath}}"
-                         data="{{_profile}}"
-                         on-firebase-value="_firebaseProfileLoaded">
+                         data="{{_profile}}">
       </firebase-document>
 
       <firebase-error-dialog id="errorDialog"
@@ -90,8 +90,9 @@ It also provides the update of the global variables used by `<firebase-state>`.
          */
         _profilePath: {
           type: String,
-          computed: '_computeProfilePath(_user)',
-          value: '/profiles/undefined'
+          value: '/profiles/undefined',
+          notify: true,
+          readOnly: true
         },
 
         /**
@@ -118,6 +119,10 @@ It also provides the update of the global variables used by `<firebase-state>`.
         }
       },
 
+      observers: [
+        '_profileChanged(_profile, _user)'
+      ],
+
       attached: function() {
         window.addEventListener('sign-up', this._signUpHandler.bind(this));
         window.addEventListener('sign-in', this._signInHandler.bind(this));
@@ -138,7 +143,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         window.removeEventListener('error', this._errorHandler.bind(this));
       },
 
-      _computeProfilePath: function(user) {
+      _calcProfilePath: function(user) {
         console.log("compute profile path");
         if (user && user.uid) {
           console.log(['/profiles', user.uid].join('/'));
@@ -148,11 +153,23 @@ It also provides the update of the global variables used by `<firebase-state>`.
         }
       },
 
-      _firebaseProfileLoaded: function() {
+      _deepClone: function(obj) {
+        console.log(obj);
+        return JSON.parse(JSON.stringify(obj, function(key, val) {
+          if (key.length > 0 && key.length < 4) {
+            return undefined;
+          }
+          return val;
+        }));
+      },
+
+      _profileChanged: function(profile, user) {
         console.log("Profile loaded");
-        if (this._user && !this._profile) {
-          var profile = {};
-          var user = this._user;
+        console.log("User:");
+        console.log(user);
+        console.log("Profile:");
+        console.log(profile);
+        if (user && Object.keys(profile).length === 0) {
           var providerInfo = user.providerData;
           var i;
 
@@ -180,8 +197,12 @@ It also provides the update of the global variables used by `<firebase-state>`.
             }
             profile.picture = profile.picture || '';
           }
+          console.log(profile);
+          this.$.firebaseAuthDoc.save('/profiles', user.uid);
           this.set('_profile', profile);
         }
+        this.set(_profilePath, this._calcProfilePath())
+
       },
 
       _signUpHandler: function(e) {
@@ -208,7 +229,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       _signOutHandler: function() {
         this.$.firebaseAuth.signOut();
         this.async(function() {
-          this.set('_profile', undefined);
+          // this.set('_profile', undefined);
         });
       },
 
