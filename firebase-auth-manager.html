@@ -74,7 +74,8 @@ It also provides the update of the global variables used by `<firebase-state>`.
          */
         _logged: {
           type: Boolean,
-          value: false
+          value: false,
+          observer: '_notifyStatus'
         },
 
         /**
@@ -91,8 +92,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
         _profilePath: {
           type: String,
           value: '/profiles/undefined',
-          notify: true,
-          readOnly: true
+          notify: true
         },
 
         /**
@@ -144,9 +144,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       _calcProfilePath: function(user) {
-        console.log("compute profile path");
         if (user && user.uid) {
-          console.log(['/profiles', user.uid].join('/'));
           return ['/profiles', user.uid].join('/');
         } else {
           return '/profiles/undefined';
@@ -154,22 +152,26 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       _deepClone: function(obj) {
-        console.log(obj);
-        return JSON.parse(JSON.stringify(obj, function(key, val) {
-          if (key.length > 0 && key.length < 4) {
+        var newUser = JSON.parse(JSON.stringify(obj, function(key, val) {
+          if (key.length > 0 && key.length < 3) {
             return undefined;
           }
           return val;
         }));
+        return newUser;
+      },
+
+      _notifyStatus: function(newStatus, oldStatus) {
+        if (oldStatus && !newStatus) {
+          this.fire('logout');
+        }
+        if (newStatus && !oldStatus) {
+          this.fire('login');
+        }
       },
 
       _profileChanged: function(profile, user) {
-        console.log("Profile loaded");
-        console.log("User:");
-        console.log(user);
-        console.log("Profile:");
-        console.log(profile);
-        if (user && Object.keys(profile).length === 0) {
+        if (user && profile && Object.keys(profile).length === 0) {
           var providerInfo = user.providerData;
           var i;
 
@@ -197,12 +199,10 @@ It also provides the update of the global variables used by `<firebase-state>`.
             }
             profile.picture = profile.picture || '';
           }
-          console.log(profile);
           this.$.firebaseAuthDoc.save('/profiles', user.uid);
           this.set('_profile', profile);
         }
-        this.set(_profilePath, this._calcProfilePath())
-
+        this.set('_profilePath', this._calcProfilePath())
       },
 
       _signUpHandler: function(e) {
@@ -214,7 +214,6 @@ It also provides the update of the global variables used by `<firebase-state>`.
 
       _signInHandler: function(e) {
         this.$.firebaseAuth.provider = e.detail.provider;
-        console.log("Provider: " + this.$.firebaseAuth.provider);
         if (e.detail.provider == "password") {
           this.$.firebaseAuth.signInWithEmailAndPassword(
             e.detail.params.email,
