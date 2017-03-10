@@ -18,7 +18,7 @@
 
 <!--
 `<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverages firebase authentication in a flexible way. You can:
-- setup a 'Sign-Up' or 'Sign-In' flavor.
+- setup a 'Sign-Up' or 'Login' flavor.
 - configure the providers accessible within the dialog.
 - configure the Header e.g. a <h2></h2> with a "header" attribute
 - configure different sections: "introduction", "provider" and "user" thanks to the corresponding attribute.
@@ -31,9 +31,9 @@ Example:
       providers='["facebook", "github", "google"]'
       modal with-backdrop>
         <h2 title-sign-up>Sing-Up Dialog</h2>
-        <h2 title-sign-in>Sign-In Dialog</h2>
+        <h2 title-sign-in>Login Dialog</h2>
         <span introduction>-- Welcome to the FBE Demo: --</span>
-        <span provider>-- Sign-In with one of the following provider(s): --</span>
+        <span provider>-- Login with one of the following provider(s): --</span>
         <span user>-- or provide your email and password : --</span>
     </firebase-auth-dialog>
 
@@ -330,8 +330,10 @@ element.
         },
 
         _handleProvider: function(e) {
-          this.fire('sign-in', { provider: e.target.getAttribute('provider') });
-          this.close();
+          if (e && e.target && e.target.getAttribute('provider')) {
+            this.fire('sign-in', { provider: e.target.getAttribute('provider') });
+            this.close();
+          }
         },
 
         _handleConfirm: function() {
@@ -360,7 +362,7 @@ element.
         @param {{params: Object}} detail Contains user and password info.
       */
       /**
-        Fired when a user confirm a Sign-In.
+        Fired when a user confirm a Login.
 
         @event sign-in
         @param {{ provider: string, params: Object}} detail Contains user and password info.

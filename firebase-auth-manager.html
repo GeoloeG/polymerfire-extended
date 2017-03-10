@@ -3,8 +3,8 @@
 <link rel="import" href="../akc-meta/akc-meta.html">
 <link rel="import" href="../paper-toast/paper-toast.html">
 
-<link rel="import" href="../firebase-element/firebase-auth.html">
-<link rel="import" href="../firebase-element/firebase-document.html">
+<link rel="import" href="../polymerfire/firebase-auth.html">
+<link rel="import" href="../polymerfire/firebase-document.html">
 
 <link rel="import" href="./firebase-error-dialog.html">
 
@@ -20,30 +20,33 @@ It also provides the update of the global variables used by `<firebase-state>`.
 -->
 <dom-module id="firebase-auth-manager">
   <template>
-      <akc-meta key="logged" value="[[_computeLoggedState(_statusKnown,_user)]]"></akc-meta>
+      <akc-meta key="logged" value="[[_logged]]"></akc-meta>
       <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
-      <akc-meta key="user" value="[[_user]]"></akc-meta>
-      <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
+      <akc-meta key="user" value="[[_deepClone(_user)]]"></akc-meta>
+      <!-- akc-meta is not compatible with the user object from firebase -->
       <akc-meta key="profile" value="[[_profile]]"></akc-meta>
-      <akc-meta key="profileLocation" value="[[_profileLocation]]"></akc-meta>
+      <akc-meta key="profilePath" value="[[_profilePath]]"></akc-meta>
+      <akc-meta key="appName" value="[[appName]]"></akc-meta>
 
-      <firebase-auth id="firebaseAuth"
-                    user="{{_user}}"
-                    status-known="{{_statusKnown}}"
-                    location="[[location]]">
+      <firebase-auth app-name="[[appName]]"
+                     id="firebaseAuth"
+                     user="{{_user}}"
+                     signed-in="{{_logged}}">
       </firebase-auth>
 
       <!-- TODO PG: remove log when test are finished... -->
       <firebase-document log
-                         location="{{_profileLocation}}"
-                         data="{{_profile}}"
-                         on-firebase-value="_firebaseProfileLoaded">
+                         id="firebaseAuthDoc"
+                         app-name="[[appName]]"
+                         path="{{_profilePath}}"
+                         data="{{_profile}}">
       </firebase-document>
 
       <firebase-error-dialog id="errorDialog"
-                            entry-animation="scale-up-animation"
-                            exit-animation="fade-out-animation"
-                            modal>
+                             hidden$="{{!_lastError}}"
+                             entry-animation="scale-up-animation"
+                             exit-animation="fade-out-animation"
+                             modal>
         <span error>[[_lastError]]</span>
       </firebase-error-dialog>
 
@@ -59,49 +62,53 @@ It also provides the update of the global variables used by `<firebase-state>`.
       properties: {
 
         /**
-         * Location used for the `<firebase-auth>` inner element
-         */
-        location: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * Statusknown used for the `<firebase-auth>` inner element
-         */
-        _statusKnown: {
-          type: Boolean,
-          value: false
-        },
-
-        /**
          * User used for the `<firebase-auth>` inner element
          */
         _user: {
-          type: Object
+          type: Object,
+          value: null
         },
 
         /**
-         * Computed location used for the profile firebase document
+         * Logged used for the `<firebase-auth>` inner element
          */
-        _profileLocation: {
+        _logged: {
+          type: Boolean,
+          value: false,
+          observer: '_notifyStatus'
+        },
+
+        /**
+         * AppName used for `<firebase-auth>` inner element
+         */
+        appName: {
           type: String,
-          computed: '_computeProfileLocation(location,_user)',
-          value: ''
+          value: null
+        },
+
+        /**
+         * Computed path used for the profile firebase document
+         */
+        _profilePath: {
+          type: String,
+          value: '/profiles/undefined',
+          notify: true
         },
 
         /**
          * Value of the profile firebase document
          */
         _profile: {
-          type: Object
+          type: Object,
+          value: null
         },
 
         /**
          * Last error that occured with one of the auth service
          */
         _lastError: {
-          type: String
+          type: String,
+          value: ''
         },
 
         /**
@@ -111,6 +118,10 @@ It also provides the update of the global variables used by `<firebase-state>`.
           type: String
         }
       },
+
+      observers: [
+        '_profileChanged(_profile, _user)'
+      ],
 
       attached: function() {
         window.addEventListener('sign-up', this._signUpHandler.bind(this));
@@ -132,59 +143,92 @@ It also provides the update of the global variables used by `<firebase-state>`.
         window.removeEventListener('error', this._errorHandler.bind(this));
       },
 
-      _computeLoggedState: function(statusKnown, user) {
-        return statusKnown && !!user;
-      },
-
-      _computeProfileLocation: function(location, user) {
+      _calcProfilePath: function(user) {
         if (user && user.uid) {
-          return [location, 'profiles', user.uid].join('/');
+          return ['/profiles', user.uid].join('/');
         } else {
-          return '';
+          return '/profiles/undefined';
         }
       },
 
-      _firebaseProfileLoaded: function() {
-        if (!this._profile) {
-          var profile = {};
-          var providerInfo = this._user[this._user.provider];
-          profile.displayName = providerInfo.displayName;
+      _deepClone: function(obj) {
+        var newUser = JSON.parse(JSON.stringify(obj, function(key, val) {
+          if (key.length > 0 && key.length < 3) {
+            return undefined;
+          }
+          return val;
+        }));
+        return newUser;
+      },
+
+      _notifyStatus: function(newStatus, oldStatus) {
+        if (oldStatus && !newStatus) {
+          this.fire('logout');
+        }
+        if (newStatus && !oldStatus) {
+          this.fire('login');
+        }
+      },
+
+      _profileChanged: function(profile, user) {
+        if (user && profile && Object.keys(profile).length === 0) {
+          var providerInfo = user.providerData;
+          var i;
+
+          profile.displayName = user.displayName;
           if (!profile.displayName) {
-            profile.displayName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.name : '';
-            profile.displayName = profile.displayName || (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.displayName : '';
+            for (i=0; i<providerInfo.length; i++) {
+              profile.displayName = providerInfo[i].displayName;
+              if (profile.displayName) break;
+            }
             profile.displayName = profile.displayName || '';
           }
-          profile.firstName = providerInfo.given_name;
-          if (!profile.firstName) {
-            profile.firstName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.given_name : '';
-            profile.firstName = profile.firstName || ((providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.first_name : '');
-            profile.firstName = profile.firstName || '';
+          profile.email = user.email;
+          if (!profile.email) {
+            for (i=0; i<providerInfo.length; i++) {
+              profile.email = providerInfo[i].email;
+              if (profile.email) break;
+            }
+            profile.email = profile.email || '';
           }
-          profile.lastName = providerInfo.family_name;
-          if (!profile.lastName) {
-            profile.lastName = (providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.family_name : '';
-            profile.lastName = profile.lastName || ((providerInfo.cachedUserProfile) ? providerInfo.cachedUserProfile.last_name : '');
-            profile.lastName = profile.lastName || '';
+          profile.picture = user.photoURL;
+          if (!profile.picture) {
+            for (i=0; i<providerInfo.length; i++) {
+              profile.picture = providerInfo[i].photoURL;
+              if (profile.picture) break;
+            }
+            profile.picture = profile.picture || '';
           }
-          profile.email = providerInfo.email || '';
-          profile.picture = providerInfo.profileImageURL || '';
+          this.$.firebaseAuthDoc.save('/profiles', user.uid);
           this.set('_profile', profile);
         }
+        this.set('_profilePath', this._calcProfilePath())
       },
 
       _signUpHandler: function(e) {
-        this.$.firebaseAuth.createUser(e.detail.params.email, e.detail.params.password);
+        this.$.firebaseAuth.createUserWithEmailAndPassword(
+          e.detail.params.email,
+          e.detail.params.password
+        );
       },
 
       _signInHandler: function(e) {
         this.$.firebaseAuth.provider = e.detail.provider;
-        this.$.firebaseAuth.login(e.detail.params);
+        if (e.detail.provider == "password") {
+          this.$.firebaseAuth.signInWithEmailAndPassword(
+            e.detail.params.email,
+            e.detail.params.password
+          );
+        }
+        else {
+          this.$.firebaseAuth.signInWithPopup();
+        }
       },
 
       _signOutHandler: function() {
-        this.$.firebaseAuth.logout();
+        this.$.firebaseAuth.signOut();
         this.async(function() {
-          this.set('_profile', undefined);
+          // this.set('_profile', undefined);
         });
       },
 
@@ -205,6 +249,10 @@ It also provides the update of the global variables used by `<firebase-state>`.
       },
 
       _errorHandler: function(e) {
+        if (e.detail && e.detail.code == 'auth/popup-blocked') {
+          this.$.firebaseAuth.signInWithRedirect();
+          return;
+        }
         this._lastError = e.detail;
         if (this._lastError) {
           this.$.errorDialog.open();

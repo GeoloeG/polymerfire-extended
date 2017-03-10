@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="../akc-meta/akc-meta.html">
-<link rel="import" href="../firebase-element/firebase-document.html">
+<link rel="import" href="../polymerfire/firebase-document.html">
 
 <!--
 `<firebase-profile>` is an element that is giving access to the profile object of the current user wherever instantiated.
@@ -18,11 +18,13 @@ Example:
 <dom-module id="firebase-profile">
   <template>
     <akc-meta-query key="logged" value="{{_logged}}"></akc-meta-query>
-    <akc-meta-query key="profileLocation" value="{{_profileLocation}}"></akc-meta-query>
+    <akc-meta-query key="profilePath" value="{{_profilePath}}"></akc-meta-query>
+    <akc-meta-query key="appName" value="{{_appName}}"></akc-meta-query>
 
     <template is="dom-if" if="[[_logged]]" restamp>
       <firebase-document log
-                         location="{{_profileLocation}}"
+                         app-name="[[_appName]]"
+                         path="[[_profilePath]]"
                          data="{{profile}}">
       </firebase-document>
     </template>
@@ -53,9 +55,17 @@ Example:
         },
 
         /**
-         * Profile location used for the profile firebase document
+         * AppName used for `<firebase-auth>` inner element
          */
-        _profileLocation: {
+        _appName: {
+          type: String,
+          value: null
+        },
+
+        /**
+         * Profile path used for the profile firebase document
+         */
+        _profilePath: {
           type: String,
           value: ''
         }
@@ -66,7 +76,7 @@ Example:
         // TODO PG: it should be worth proposing to set data to undefined when the query is undefined
         if (!newLogged) {
           this.async(function() {
-            this.set('profile', undefined);
+            // this.set('profile', undefined);
           });
         }
       }
