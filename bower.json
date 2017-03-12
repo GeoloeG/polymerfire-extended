@@ -1,6 +1,6 @@
 {
-  "name": "firebase-element-extended",
-  "version": "1.1.0",
+  "name": "polymerfire-extended",
+  "version": "1.2.0",
   "authors": [
     "Pascal Gula aka MeTaNoV <pascal.gula@gmail.com>"
   ],
@@ -26,14 +26,14 @@
     "profile",
     "page"
   ],
-  "main": ["firebase-element-extended.html"],
+  "main": ["polymerfire-extended.html"],
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git://github.com/MeTaNoV/firebase-element-extended.git"
+    "url": "git://github.com/GeoloeG/polymerfire-extended.git"
   },
   "license": "MIT",
-  "homepage": "https://metanov.github.io/firebase-element-extended/",
+  "homepage": "https://geoloeg.github.io/polymerfire-extended/",
   "ignore": [
     "/.*",
     "/test/",

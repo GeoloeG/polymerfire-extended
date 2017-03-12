@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
-    <title>firebase-element-extended Demo</title>
+    <title>polymerfire-extended Demo</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
@@ -15,6 +15,9 @@
     <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
     <link rel="import" href="../../paper-input/paper-input.html">
     <link rel="import" href="../../paper-material/paper-material.html">
+
+    <link rel="import" href="../../polymerfire/polymerfire.html">
+    <link rel="import" href="../../polymerfire/firebase-app.html">
 
     <link rel="import" href="../firebase-auth-manager.html">
     <link rel="import" href="../firebase-auth-dialog.html">
@@ -27,7 +30,6 @@
     <link rel="import" href="../../paper-styles/color.html">
     <link rel="import" href="../../paper-styles/default-theme.html">
     <link rel="import" href="../../paper-styles/typography.html">
-
 
     <style is="custom-style">
       body {
@@ -66,11 +68,20 @@
   <body unresolved>
     <template id="t" is="dom-bind">
       <!-- Firebase related element -->
+      <firebase-app
+          name="notes"
+          api-key="AIzaSyB7WY29KGjK-2Cns28hq2r0wJs2Mm45zic"
+          auth-domain="metanov-test.firebaseapp.com"
+          database-url="https://metanov-test.firebaseio.com"
+          storage-bucket="firebase-metanov-test.appspot.com"
+          messaging-sender-id="239043141373">
+      </firebase-app>
+
       <firebase-auth-manager
         location="https://metanov-test.firebaseio.com">
       </firebase-auth-manager>
 
-      <firebase-auth-dialog entry-animation="scale-up-animation"
+      <!--<firebase-auth-dialog entry-animation="scale-up-animation"
                             exit-animation="fade-out-animation"
                             providers='["facebook", "github", "google"]'
                             modal>
@@ -79,15 +90,15 @@
         <b introduction>-- Welcome to the Firebase Element eXtended Demo: --</b>
         <b provider>-- Sign-In with one of the following provider(s): --</b>
         <b user>-- or provide your email and password : --</b>
-      </firebase-auth-dialog>
+      </firebase-auth-dialog>-->
 
-      <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+      <!--<firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>-->
 
       <!-- App Toolbar -->
       <paper-toolbar>
         <paper-icon-button icon="menu"></paper-icon-button>
         <span class="title">Firebase Element eXtended Demo</span>
-        <firebase-account-menu></firebase-account-menu>
+        <!--<firebase-account-menu></firebase-account-menu>-->
       </paper-toolbar>
 
       <!-- App Content -->
@@ -95,10 +106,10 @@
       <span>Simply <b>Sign-Up</b> and/or <b>Sign-In</b> and modify dynamically the information of your profile!</span>
 
       <h2>Sign-In status:</h2>
-      <pre id="login">[[_showStatus(logged)]]</pre>
+      <!--<pre id="login">[[_showStatus(logged)]]</pre>-->
 
       <div hidden$="{{!logged}}">
-        <h2>Profile Raw Info</h2>
+        <!--<h2>Profile Raw Info</h2>
         <firebase-profile profile="{{profile}}"></firebase-profile>
         <div>{{profile.displayName}}</div>
         <div>{{profile.firstName}}</div>
@@ -114,7 +125,7 @@
               <paper-input label="Information 2" value="{{profile_from_page.info2}}"></paper-input>
             </div>
           </paper-material>
-        </firebase-profile-page>
+        </firebase-profile-page>-->
       </div>
 
     </template>

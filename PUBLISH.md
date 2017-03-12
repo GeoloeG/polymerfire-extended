@@ -1,6 +1,6 @@
 ## Registering to Bower
 
-`bower register firebase-element-extended git://github.com/MeTaNoV/firebase-element-extended.git`
+`bower register polymerfire-extended git://github.com/GeoloeG/polymerfire-extended.git`
 
 ## Registering to Gemnasium
 
@@ -8,7 +8,7 @@ https://gemnasium.com/MeTaNoV/
 
 ## Registering to Waffle
 
-https://waffle.io/MeTaNoV/firebase-element-extended
+https://waffle.io/MeTaNoV/polymerfire-extended
 
 ## Registering to Travis
 
