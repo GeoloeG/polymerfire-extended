@@ -34,9 +34,7 @@ It also provides the update of the global variables used by `<firebase-state>`.
                      signed-in="{{_logged}}">
       </firebase-auth>
 
-      <!-- TODO PG: remove log when test are finished... -->
-      <firebase-document log
-                         id="firebaseAuthDoc"
+      <firebase-document id="firebaseAuthDoc"
                          app-name="[[appName]]"
                          path="{{_profilePath}}"
                          data="{{_profile}}">
