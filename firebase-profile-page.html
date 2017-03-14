@@ -4,7 +4,7 @@
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-material/paper-material.html">
 
-<link rel="import" href="./firebase-profile.html">
+<link rel="import" href="./firebase-state.html">
 
 <!--
 `<firebase-profile-page>` is an element that provides basic profile information to be edited as well as custom profile information.
@@ -50,16 +50,17 @@ Example:
 
     </style>
 
-    <firebase-profile profile="{{profile}}"></firebase-profile>
+    <firebase-state logged="{{_logged}}" profile="{{_profile}}"></firebase-state>
+
     <paper-material elevation="1">
       <h3>General Information</h3>
       <div id="container">
-        <iron-image src="[[profile.picture]]" sizing="cover"></iron-image>
+        <iron-image src="[[_profile.picture]]" sizing="cover"></iron-image>
         <div id="info">
-          <paper-input label="Display Name" value="{{profile.displayName}}"></paper-input>
-          <paper-input label="First Name" value="{{profile.firstName}}"></paper-input>
-          <paper-input label="Last Name" value="{{profile.lastName}}"></paper-input>
-          <paper-input label="Email" value="{{profile.email}}"></paper-input>
+          <paper-input label="Display Name" value="{{_profile.displayName}}"></paper-input>
+          <paper-input label="First Name" value="{{_profile.firstName}}"></paper-input>
+          <paper-input label="Last Name" value="{{_profile.lastName}}"></paper-input>
+          <paper-input label="Email" value="{{_profile.email}}"></paper-input>
         </div>
       </div>
     </paper-material>
@@ -77,7 +78,7 @@ Example:
         /**
          * This property reflects the firebase user auth object.
          */
-        profile: {
+        _profile: {
           type: Object,
           notify: true
         }

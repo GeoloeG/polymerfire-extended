@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../akc-meta/akc-meta.html">
+<link rel="import" href="../iron-meta/iron-meta.html">
 <link rel="import" href="../polymerfire/firebase-document.html">
 
 <!--
@@ -17,13 +17,12 @@ Example:
 -->
 <dom-module id="firebase-profile">
   <template>
-    <akc-meta-query key="logged" value="{{_logged}}"></akc-meta-query>
-    <akc-meta-query key="profilePath" value="{{_profilePath}}"></akc-meta-query>
-    <akc-meta-query key="appName" value="{{_appName}}"></akc-meta-query>
+    <iron-meta-query key="logged" value="{{_logged}}"></iron-meta-query>
+    <iron-meta-query key="profilePath" value="{{_profilePath}}"></iron-meta-query>
+    <iron-meta-query key="appName" value="{{_appName}}"></iron-meta-query>
 
     <template is="dom-if" if="[[_logged]]" restamp>
-      <firebase-document log
-                         app-name="[[_appName]]"
+      <firebase-document app-name="[[_appName]]"
                          path="[[_profilePath]]"
                          data="{{profile}}">
       </firebase-document>
