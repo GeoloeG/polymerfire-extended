@@ -1,10 +1,9 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 
 <link rel="import" href="../iron-image/iron-image.html">
+
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-material/paper-material.html">
-
-<link rel="import" href="./firebase-state.html">
 
 <!--
 `<firebase-profile-page>` is an element that provides basic profile information to be edited as well as custom profile information.
@@ -50,42 +49,44 @@ Example:
 
     </style>
 
-    <firebase-state logged="{{_logged}}" profile="{{_profile}}"></firebase-state>
-
     <paper-material elevation="1">
       <h3>General Information</h3>
       <div id="container">
-        <iron-image src="[[_profile.picture]]" sizing="cover"></iron-image>
+        <iron-image src="[[_computeSrc(profile)]]" sizing="cover"></iron-image>
         <div id="info">
-          <paper-input label="Display Name" value="{{_profile.displayName}}"></paper-input>
-          <paper-input label="First Name" value="{{_profile.firstName}}"></paper-input>
-          <paper-input label="Last Name" value="{{_profile.lastName}}"></paper-input>
-          <paper-input label="Email" value="{{_profile.email}}"></paper-input>
+          <paper-input label="Display Name" value="{{profile.displayName}}"></paper-input>
+          <paper-input label="First Name" value="{{profile.firstName}}"></paper-input>
+          <paper-input label="Last Name" value="{{profile.lastName}}"></paper-input>
+          <paper-input label="Email" value="{{profile.email}}"></paper-input>
         </div>
       </div>
     </paper-material>
-    <content></content>
-    <!-- TOGO PG: hook the change password and delete account services -->
+    <slot></slot>
   </template>
   <script>
 
-    Polymer({
+    class FirebaseProfilePage extends Polymer.Element {
 
-      is: 'firebase-profile-page',
+      static get is() { return 'firebase-profile-page' }
 
-      properties: {
-
-        /**
-         * This property reflects the firebase user auth object.
-         */
-        _profile: {
-          type: Object,
-          notify: true
+      static get properties() {
+        return {
+          /**
+          * This property reflects the firebase user auth object.
+          */
+          profile: {
+            type: Object,
+            notify: true
+          }
         }
-
       }
 
-    });
+      _computeSrc(profile) {
+        return profile.picture || ''
+      }
+    }
+
+    customElements.define(FirebaseProfilePage.is, FirebaseProfilePage);
 
   </script>
 </dom-module>

@@ -10,137 +10,155 @@
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <link rel="import" href="../../polymer/polymer.html">
+    <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
+    <link rel="import" href="../../polymer/lib/elements/dom-if.html">
 
-    <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
+    <link rel="import" href="../../iron-icons/iron-icons.html">
+    <link rel="import" href="../../iron-pages/iron-pages.html">
+
     <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
     <link rel="import" href="../../paper-input/paper-input.html">
     <link rel="import" href="../../paper-material/paper-material.html">
+
+    <link rel="import" href="../../app-layout/app-toolbar/app-toolbar.html">
 
     <link rel="import" href="../../polymerfire/polymerfire.html">
     <link rel="import" href="../../polymerfire/firebase-app.html">
 
     <link rel="import" href="../firebase-auth-manager.html">
-    <link rel="import" href="../firebase-auth-dialog.html">
-    <link rel="import" href="../firebase-account-menu.html">
-    <link rel="import" href="../firebase-state.html">
+    <link rel="import" href="../firebase-auth-page.html">
+    <link rel="import" href="../firebase-profile-menu.html">
     <link rel="import" href="../firebase-profile-page.html">
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="stylesheet" href="../../paper-styles/demo.css">
+
     <link rel="import" href="../../paper-styles/color.html">
     <link rel="import" href="../../paper-styles/default-theme.html">
+    <link rel="import" href="../../paper-styles/demo-pages.html">
     <link rel="import" href="../../paper-styles/typography.html">
+    <link rel="import" href="../../paper-styles/shadow.html">
 
-    <style is="custom-style">
-      body {
-        padding: 0;        
-      }
-
-      #intro {
-        margin-top: 24px;
-      }
-
-      h3 {
-        padding-top: 24px;
-        padding-left: 24px;
-      }
-
-      #container {
-        padding: 0px 24px 24px 24px;
-      }
-
-      * {
-        --paper-dialog-title: {
-          margin-top: 0px;
-          padding-top: 24px;
-          padding-bottom: 24px;
-          background-color: #3f51b5;
-          color: white;
-        };
-        --paper-toolbar-content: {
+    <custom-style>
+      <style is="custom-style">
+        body {
           padding: 0;
-        };
-      }
+        }
 
-    </style>
+        #intro {
+          margin-top: 24px;
+        }
+
+        h3 {
+          padding-top: 24px;
+          padding-left: 24px;
+        }
+
+        #container {
+          padding: 0px 24px 24px 24px;
+        }
+
+        iron-pages {
+          margin-left: 56px;
+        }
+
+        * {
+          --paper-dialog-title: {
+            margin-top: 0px;
+            padding-top: 24px;
+            padding-bottom: 24px;
+            background-color: #3f51b5;
+            color: white;
+          };
+          --paper-toolbar-content: {
+            padding: 0;
+          };
+        }
+      </style>
+    </custom-style>
 
   </head>
   <body unresolved>
-    <template id="t" is="dom-bind">
-      <!-- Firebase related element -->
-      <firebase-app
-          name="metanov-test"
-          api-key="AIzaSyB7WY29KGjK-2Cns28hq2r0wJs2Mm45zic"
-          auth-domain="firebase-metanov-test.firebaseapp.com"
-          database-url="https://metanov-test.firebaseio.com"
-          storage-bucket="firebase-metanov-test.appspot.com"
-          messaging-sender-id="239043141373">
-      </firebase-app>
+    <dom-bind>
+      <template id="t">
+        <!-- Firebase related element -->
+        <firebase-app
+            api-key="AIzaSyB7WY29KGjK-2Cns28hq2r0wJs2Mm45zic"
+            auth-domain="metanov-test.firebaseapp.com"
+            database-url="https://metanov-test.firebaseio.com"
+            storage-bucket="firebase-metanov-test.appspot.com"
+            messaging-sender-id="239043141373">
+        </firebase-app>
 
-      <firebase-auth-manager
-        app-name="metanov-test">
-      </firebase-auth-manager>
+        <firebase-auth-manager
+          logged="{{logged}}"
+          profile="{{profile}}">
+        </firebase-auth-manager>
 
-      <firebase-auth-dialog entry-animation="scale-up-animation"
-                            exit-animation="fade-out-animation"
-                            providers='["facebook", "github", "google"]'
-                            modal>
-        <h2 title-sign-up>Sign-Up Dialog</h2>
-        <h2 title-sign-in>Sign-In Dialog</h2>
-        <b introduction>-- Welcome to the Firebase Element eXtended Demo: --</b>
-        <b provider>-- Sign-In with one of the following provider(s): --</b>
-        <b user>-- or provide your email and password : --</b>
-      </firebase-auth-dialog>
+        <!-- App Toolbar -->
+        <app-toolbar>
+          <paper-icon-button icon="menu" on-tap="_onWelcome"></paper-icon-button>
+          <div main-title>Firebase Element eXtended Demo</div>
+          <div spacer></div>
+          <firebase-profile-menu profile={{profile}}>
+              <paper-item on-tap="_onProfile">Profile</paper-item>
+          </firebase-profile-menu>
+        </app-toolbar>
 
-      <firebase-state logged="{{logged}}" user="{{user}}"></firebase-state>
+        <iron-pages selected="[[selectedPage]]" attr-for-selected="name" fallback-selection="welcome">
+          <!-- Welcome Page -->
+          <div name="welcome">
+            <template is="dom-if" if="[[!logged]]">
+              <span >Simply <b>Sign-Up</b> and/or <b>Sign-In</b> and modify dynamically the information of your profile!</span>
+            </template>
+            <template is="dom-if" if="[[logged]]">
+              <span>Hello <b>[[profile.displayName]]</b>, you can access your settings thanks in your profile menu.</span>
+            </template>
+          </div>
+          <!-- Auth Page -->
+          <firebase-auth-page id='authPage' name="auth"
+            providers='["facebook", "github", "google"]'>
+            <h2 title-sign-up>Sign-Up Dialog</h2>
+            <h2 title-sign-in>Sign-In Dialog</h2>
+            <b introduction>-- Welcome to the Firebase Element eXtended Demo: --</b>
+            <b provider>-- Sign-In with one of the following provider(s): --</b>
+            <b user>-- or provide your email and password : --</b>
+          </firebase-auth-page>
+          <!-- Profile Page -->
+          <firebase-profile-page name="profile" profile="{{profile}}">
+            <paper-material elevation="1">
+              <h3>Additional Information</h3>
+              <div id="container">
+                <paper-input label="Information 1" value="{{profile.info1}}"></paper-input>
+                <paper-input label="Information 2" value="{{profile.info2}}"></paper-input>
+              </div>
+            </paper-material>
+          </firebase-profile-page>
+        </iron-pages>
 
-      <!-- App Toolbar -->
-      <paper-toolbar>
-        <paper-icon-button icon="menu"></paper-icon-button>
-        <span class="title">Firebase Element eXtended Demo</span>
-        <firebase-account-menu></firebase-account-menu>
-      </paper-toolbar>
-
-      <!-- App Content -->
-      <br>
-      <span>Simply <b>Sign-Up</b> and/or <b>Sign-In</b> and modify dynamically the information of your profile!</span>
-
-      <h2>Sign-In status:</h2>
-      <pre id="login">[[_showStatus(logged)]]</pre>
-
-      <div hidden$="{{!logged}}">
-        <h2>Profile Raw Info</h2>
-        <firebase-profile profile="{{profile}}"></firebase-profile>
-        <div>{{profile.displayName}}</div>
-        <div>{{profile.firstName}}</div>
-        <div>{{profile.lastName}}</div>
-        <div>{{profile.email}}</div>
-
-        <h2>Profile Page</h2>
-        <firebase-profile-page profile="{{profile_from_page}}">
-          <paper-material elevation="1">
-            <h3>Additional Information</h3>
-            <div id="container">
-              <paper-input label="Information 1" value="{{profile_from_page.info1}}"></paper-input>
-              <paper-input label="Information 2" value="{{profile_from_page.info2}}"></paper-input>
-            </div>
-          </paper-material>
-        </firebase-profile-page>
-      </div>
-
-    </template>
-
-    <script>
-      var t = document.getElementById('t');
-
-      t._showStatus = function(logged) {
-        if (logged) {
-          return 'Logged in';
-        } else {
-          return 'Logged out';
+      </template>
+    </dom-bind>
+    <script type="text/javascript">
+      document.addEventListener('WebComponentsReady', function() {
+        var autoBind = document.querySelector('dom-bind');
+        var authPage = document.querySelector('#authPage')
+        window.addEventListener('sign-up-menu', function() {
+          authPage.type = 'SignUp'
+          autoBind.selectedPage = 'auth'
+        })
+        window.addEventListener('sign-in-menu', function() {
+          authPage.type = 'SignIn'
+          autoBind.selectedPage = 'auth'
+        })
+        window.addEventListener('sign-out', function() {
+          autoBind.selectedPage = 'welcome'
+        })
+        autoBind._onWelcome = function() {
+          autoBind.selectedPage = "welcome"
         }
-      };
-
+        autoBind._onProfile = function() {
+          autoBind.selectedPage = "profile"
+        }
+      })
     </script>
 
   </body>

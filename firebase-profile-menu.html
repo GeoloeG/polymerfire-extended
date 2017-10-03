@@ -1,0 +1,168 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+
+<link rel="import" href="./firebase-auth-manager.html">
+<link rel="import" href="./firebase-icons.html">
+
+<!--
+`<firebase-profile-menu>` is a navigation menu to be placed inside for example inside an `<app-toolbar>`.
+The state is driven via the 'profile' properties.
+If profile is undefined, the Sign-Up and Sign-In button are visible.
+If profile is defined, we show the current user image and name and populate the menu including a Sign-Out button.
+All Sign-XXX buttons are triggering the corresponding 'sign-xxx' event with clicked/tapped.
+
+Example:
+
+    <firebase-profile-menu>
+      <paper-item on-tap="menu1Open">Menu 1</paper-item>
+      <paper-item on-tap="menu2Open">Menu 2</paper-item>
+    </firebase-profile-menu>
+
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--firebase-profile-menu` | Mixin applied to the profile menu | `{}`
+`--firebase-profile-menu-image` | Mixin applied to the iron-image | `{}`
+
+@demo demo/index.html
+-->
+<dom-module id="firebase-profile-menu">
+  <template>
+    <style is="custom-style">
+      :host {
+        display: block;
+
+        @apply --firebase-profile-menu;
+      }
+
+      #signedIn, #signedOut {
+        @apply --layout-horizontal;
+        @apply --layout-center-center;
+      }
+
+      iron-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+
+        @apply --firebase-profile-menu-image;
+      }
+
+      #profileLabel {
+        padding-left: 8px;
+      }
+
+      paper-button:hover {
+        opacity: 0.7;
+      }
+    </style>
+
+    <iron-media-query query="(max-width: 600px)" query-matches="{{_isMobile}}"></iron-media-query>
+
+    <div hidden$="[[_isLogged(profile)]]">
+      <paper-menu-button vertical-offset="72"
+                         horizontal-align="right"
+                         horizontal-offset="12">
+        <paper-button id="signedIn" slot="dropdown-trigger">
+          <iron-image src="[[_computeSrc(profile)]]" sizing="cover"></iron-image>
+          <span id="profileLabel" hidden$="[[_isMobile]]">[[profile.displayName]]</span>
+          <iron-icon icon="firebase:expand-more"></iron-icon>
+        </paper-button>
+        <paper-listbox slot="dropdown-content">
+          <slot></slot>
+          <paper-item on-tap="_signOut">Sign Out</paper-item>
+        </paper-listbox>
+      </paper-menu-button>
+    </div>
+
+    <div hidden$="[[!_isLogged(profile)]]">
+      <div id="signedOut">
+        <paper-button on-tap="_signUp">Sign Up</paper-button>
+        <paper-button on-tap="_signIn">Sign In</paper-button>
+      </div>
+    </div>
+  </template>
+  <script>
+
+    class FirebaseprofileMenu extends Polymer.Element {
+      static get is() { return 'firebase-profile-menu' }
+
+      static get properties() {
+        return {
+          profile: {
+            type: Object
+          },
+          _isMobile: {
+            type: Boolean
+          },
+        }
+      }
+
+      _isLogged(profile) {
+        return !!(profile && Object.keys(profile).length === 0)
+      }
+
+      _computeSrc(profile) {
+        return profile.picture || ''
+      }
+
+      /**
+        Fired when a user sign-up.
+
+        @event sign-up
+      */
+      _signUp() {
+        this.dispatchEvent(new CustomEvent('sign-up-menu', { bubbles: true, composed: true }));
+        // TODO PG: do change the page value only
+
+        // if (this._firebaseAuthDialog) {
+        //   this._firebaseAuthDialog.setAttribute('type', 'SignUp');
+        //   this._firebaseAuthDialog.open();
+        // } else {
+        //   console.warn('Missing registered firebaseAuthDialog');
+        // }
+      }
+
+      /**
+        Fired when a user sign-in.
+
+        @event sign-in
+      */
+      _signIn() {
+        this.dispatchEvent(new CustomEvent('sign-in-menu', { bubbles: true, composed: true }));
+        // TODO PG: do change the page value only
+
+        // if (this._firebaseAuthDialog) {
+        //   this._firebaseAuthDialog.setAttribute('type', 'SignIn');
+        //   this._firebaseAuthDialog.open();
+        // } else {
+        //   console.warn('Missing registered firebaseAuthDialog');
+        // }
+      }
+
+      /**
+        Fired when a user sign-out.
+
+        @event sign-out
+      */
+      _signOut() {
+        this.dispatchEvent(new CustomEvent('sign-out', { bubbles: true, composed: true }));
+        // TODO PG: check if we need to change the page value back to a fallback
+      }
+
+    }
+
+    customElements.define(FirebaseprofileMenu.is, FirebaseprofileMenu)
+  </script>
+</dom-module>

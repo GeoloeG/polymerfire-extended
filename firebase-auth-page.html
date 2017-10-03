@@ -1,85 +1,45 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
 
-<link rel="import" href="../iron-meta/iron-meta.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 
-<link rel="import" href="../paper-dialog-behavior/paper-dialog-behavior.html">
-<link rel="import" href="../paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-input/paper-input.html">
 
-<link rel="import" href="../neon-animation/neon-animation-runner-behavior.html">
-
-<link rel="import" href="../gold-email-input/gold-email-input.html">
 <link rel="import" href="../gold-password-input/gold-password-input.html">
 <link rel="import" href="../gold-password-input/gold-password-input-validator.html">
 
 <link rel="import" href="./firebase-icons.html">
 
 <!--
-`<firebase-auth-dialog>` is a dialog with Material Design styling and optional animations that leverages firebase authentication in a flexible way. You can:
-- setup a 'Sign-Up' or 'Login' flavor.
-- configure the providers accessible within the dialog.
-- configure the Header e.g. a <h2></h2> with a "header" attribute
+`<firebase-auth-page>` is a page with Material Design styling and optional animations that leverages firebase authentication in a flexible way. You can:
+- setup a 'Sign-Up' or 'Sigh-In' flavor.
+- configure the providers accessible within the page.
+- configure the header e.g. a <h2></h2> with a "header" attribute
 - configure different sections: "introduction", "provider" and "user" thanks to the corresponding attribute.
-
-See `Polymer.PaperDialogBehavior` for specifics.
 
 Example:
 
-    <firebase-auth-dialog
-      providers='["facebook", "github", "google"]'
-      modal with-backdrop>
-        <h2 title-sign-up>Sing-Up Dialog</h2>
-        <h2 title-sign-in>Login Dialog</h2>
-        <span introduction>-- Welcome to the FBE Demo: --</span>
-        <span provider>-- Login with one of the following provider(s): --</span>
-        <span user>-- or provide your email and password : --</span>
-    </firebase-auth-dialog>
+    <firebase-auth-page
+      providers='["facebook", "github", "google"]'>
+        <h2 slot="title-sign-up">Sign-Up Page</h2>
+        <h2 slot="title-sign-in">Sign-In Page</h2>
+        <span slot="introduction">-- Welcome to the Firebase Auth Page Demo: --</span>
+        <span slot="provider">-- Login with one of the following provider(s): --</span>
+        <span slot="user">-- or provide your email and password : --</span>
+    </firebase-auth-page>
 
-### Styling
-
-See the docs of `Polymer.PaperDialogBehavior` for the custom properties available for styling
-this element.
-
-### Animations
-
-Set the `entry-animation` and/or `exit-animation` attributes to add an animation when the dialog
-is opened or closed. See the documentation in
-[PolymerElements/neon-animation](https://github.com/PolymerElements/neon-animation) for more info.
-
-For example:
-
-    <link rel="import" href="components/neon-animation/animations/scale-up-animation.html">
-    <link rel="import" href="components/neon-animation/animations/fade-out-animation.html">
-
-    <firebase-auth-dialog
-      entry-animation="scale-up-animation"
-      exit-animation="fade-out-animation"
-      ...
-      >
-    </firebase-auth-dialog>
-
-### Accessibility
-
-See the docs of `Polymer.PaperDialogBehavior` for accessibility features implemented by this
-element.
-
-@group GoogleWebComponents Elements
-@element firebase-auth-dialog
-@hero hero.svg
+@element firebase-auth-page
 @demo demo/index.html
 -->
-<dom-module id="firebase-auth-dialog">
+<dom-module id="firebase-auth-page">
   <template>
-    <style include="paper-dialog-shared-styles"></style>
-
-    <style is="custom-style">
+    <style>
       :host {
         display: block;
       }
 
-      :host > ::content > *:first-child {
+      :host > ::slotted(*:first-child) {
         margin-top: 0;
       }
 
@@ -114,18 +74,18 @@ element.
     </style>
 
     <template is="dom-if" if="[[_isSignUp(type)]]" restamp>
-      <content select="[title-sign-up]"></content>
+      <slot name="title-sign-up"></slot>
     </template>
     <template is="dom-if" if="[[_isSignIn(type)]]" restamp>
-      <content select="[title-sign-in]"></content>
+      <slot name="title-sign-in"></content>
     </template>
 
     <div id="introduction-section">
-      <content select="[introduction]" id="introduction"></content>
+      <slot name="introduction" id="introduction"></slot>
     </div>
 
     <div id="provider-section" hidden$="[[_computeProviderHidden(providers)]]">
-      <content select="[provider]" id="provider"></content>
+      <slot name="provider" id="provider"></slot>
     </div>
     <div id="providers">
       <template is="dom-repeat" items="{{providers}}" as="provider">
@@ -140,15 +100,17 @@ element.
     </div>
 
     <div id="user-section">
-      <content select="[user]" id="user"></content>
+      <slot name="user" id="user"></slot>
       <!-- Email input -->
-      <gold-email-input id="email"
+      <paper-input id="email"
+        type="email"
         invalid="{{emailInvalid}}"
         auto-validate
         error-message="Please, enter a valid email">
-      </gold-email-input>
+      </paper-input>
       <!-- Primary password input -->
       <gold-password-input id="primary"
+        reveal
         value="{{primary}}"
         invalid="{{primaryInvalid}}"
         auto-validate
@@ -159,6 +121,7 @@ element.
         pattern="[[primary]]">
       </gold-password-input-validator>
       <gold-password-input id="verification"
+        reveal
         invalid="{{verificationInvalid}}"
         auto-validate
         validator="gold-password-input-validator"
@@ -167,12 +130,13 @@ element.
     </div>
 
     <div class="buttons">
-      <paper-button dialog-confirm raised
+      <paper-button raised
                     disabled="[[_computeConfirmDisabled(type,emailInvalid,primary,primaryInvalid,verificationInvalid)]]"
                     on-tap="_handleConfirm">
         [[_computeConfirm(type)]]
       </paper-button>
-      <paper-button dialog-dismiss raised>
+      <paper-button raised
+                    on-tap="_handleCancel">
         Cancel
       </paper-button>
     </div>
@@ -190,82 +154,41 @@ element.
           SIGNIN: 'SignIn'
       };
 
-      Polymer({
+      class FirebaseAuthPage extends Polymer.Element {
 
-        is: 'firebase-auth-dialog',
+        static get is() { return 'firebase-auth-page' }
 
-        behaviors: [
-          Polymer.PaperDialogBehavior,
-          Polymer.NeonAnimationRunnerBehavior
-        ],
+        static get properties() {
+          return {
+            /**
+            * `type` indicates the type of authentication dialog to use. It can hold currently two
+            * values, namely DialogTypeValue.SIGNUP and DialogTypeValue.SIGNIN.
+            *
+            * @type {string}
+            */
+            type: {
+              type: String,
+              observer: '_typeChanged'
+            },
 
-        listeners: {
-          'neon-animation-finish': '_onNeonAnimationFinish'
-        },
-
-         // * FIXME PG: http://stackoverflow.com/questions/31199482/declared-property-with-enums
-         // * FIXME PG: https://github.com/Polymer/polymer/issues/3099
-        properties: {
-          /**
-           * `type` indicates the type of authentication dialog to use. It can hold currently two
-           * values, namely DialogTypeValue.SIGNUP and DialogTypeValue.SIGNIN.
-           *
-           * @type {string}
-           */
-          type: {
-            type: String,
-            observer: '_typeChanged'
-          },
-
-          /**
-           * `providers` set the list of providers accessible for SignUp/SignIn.
-           *
-           * @type {Array}
-           */
-          providers: {
-            type: Array,
-            value: function() { return []; },
-            observer: '_providersChanged'
+            /**
+            * `providers` set the list of providers accessible for SignUp/SignIn.
+            *
+            * @type {Array}
+            */
+            providers: {
+              type: Array,
+              value: function() { return []; },
+              observer: '_providersChanged'
+            }
           }
-        },
-
-        //
-        // Lifecycle API
-        //
-        ready: function() {
-          // Register the dialog in meta to be accessible from anywhere
-          new Polymer.IronMeta({type: 'polymerFireExtended', key: 'authDialog', value: this});
-        },
+        }
 
         //
         // Element Behavior
         //
-        _renderOpened: function() {
-          if (this.withBackdrop) {
-            this.backdropElement.open();
-          }
-          this.playAnimation('entry');
-        },
 
-        _renderClosed: function() {
-          if (this.withBackdrop) {
-            this.backdropElement.close();
-          }
-          this.playAnimation('exit');
-        },
-
-        _onNeonAnimationFinish: function() {
-          if (this.opened) {
-            this._finishRenderOpened();
-          } else {
-            this._finishRenderClosed();
-          }
-          this.$.email.value = '';
-          this.$.primary.value = '';
-          this.$.verification.value = '';
-        },
-
-        _typeChanged: function() {
+        _typeChanged() {
           switch(this.type) {
             case DialogTypeValue.SIGNUP:
               this.$.primary.setAttribute('strength-meter', '');
@@ -282,25 +205,25 @@ element.
             default:
               console.error('Invalid dialog type!');
           }
-        },
+        }
 
-        _providersChanged: function() {
+        _providersChanged() {
           // TODO PG: check the list of provider given and filter only the supported one
-        },
+        }
 
-        _isSignUp: function(type) {
+        _isSignUp(type) {
           return type === DialogTypeValue.SIGNUP;
-        },
+        }
 
-        _isSignIn: function(type) {
+        _isSignIn(type) {
           return type === DialogTypeValue.SIGNIN;
-        },
+        }
 
-        _computeProviderHidden: function(provider) {
+        _computeProviderHidden(provider) {
           return provider.length === 0;
-        },
+        }
 
-        _computeConfirm: function(type) {
+        _computeConfirm(type) {
           switch(type) {
             case DialogTypeValue.SIGNUP:
             case DialogTypeValue.SIGNIN:
@@ -308,9 +231,9 @@ element.
             default:
               console.error('Invalid dialog type!');
           }
-        },
+        }
 
-        _computeConfirmDisabled: function(type, emailInvalid, primary, primaryInvalid, verificationInvalid) {
+        _computeConfirmDisabled(type, emailInvalid, primary, primaryInvalid, verificationInvalid) {
           switch(type) {
             case DialogTypeValue.SIGNUP:
               if (this.$.verification.value === '' || verificationInvalid) {
@@ -327,16 +250,16 @@ element.
               break;
           }
           return false;
-        },
+        }
 
-        _handleProvider: function(e) {
+        _handleProvider(e) {
           if (e && e.target && e.target.getAttribute('provider')) {
-            this.fire('sign-in', { provider: e.target.getAttribute('provider') });
-            this.close();
+            this.dispatchEvent(new CustomEvent('sign-in',
+              { bubbles: true, composed: true, detail: { provider: e.target.getAttribute('provider') } }));
           }
-        },
+        }
 
-        _handleConfirm: function() {
+        _handleConfirm() {
           var params = {};
 
           params.email = this.$.email.value;
@@ -344,16 +267,22 @@ element.
 
           switch(this.type) {
             case DialogTypeValue.SIGNUP:
-              this.fire('sign-up', { params: params} );
+              this.dispatchEvent(new CustomEvent('sign-up',
+                { bubbles: true, composed: true, detail: { provider: 'password', params: params } }));
               break;
             case DialogTypeValue.SIGNIN:
-              this.fire('sign-in', { provider: 'password', params: params } );
+              this.dispatchEvent(new CustomEvent('sign-in',
+                { bubbles: true, composed: true, detail: { provider: 'password', params: params } }));
               break;
           }
         }
 
-      });
-
+        _handleCancel() {
+          this.$.email.value = '';
+          this.$.primary.value = '';
+          this.$.verification.value = '';
+        }
+      }
 
       /**
         Fired when a user confirm a Sign-Up.
@@ -368,6 +297,7 @@ element.
         @param {{ provider: string, params: Object}} detail Contains user and password info.
       */
 
+      customElements.define(FirebaseAuthPage.is, FirebaseAuthPage);
     }());
   </script>
 </dom-module>

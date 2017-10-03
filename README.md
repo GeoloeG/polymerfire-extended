@@ -19,13 +19,10 @@ $ bower install firebase-element-extended --save
 The elements of this set are designed to play nicely together and with the current [firebase-element](https://elements.polymer-project.org/elements/firebase-element). You can use them together or separately, depending on your need.
 
 The current set includes the following elements:
-- `<firebase-account-menu>`: navigation menu that displays 'signUp', 'signIn' or 'account' button, while 'account' contains a dropdown of accessible actions.
-- `<firebase-auth-dialog>`: is a customizable dialog that leverages firebase authentication in a flexible way.
 - `<firebase-auth-manager>`: is a core element providing the glue to the firebase services like `auth` or `database` access.
-- `<firebase-error-dialog>`: is a customizable dialog that displays error messages.
+- `<firebase-auth-page>`: is a customizable page that leverages firebase authentication in a flexible way.
 - `<firebase-icons>`: is set of icons used by elements.
-- `<firebase-state>`: is sharing in read-only mode via data-binding the basic state and profile of a user.
-- `<firebase-profile>`: is sharing in 2-way data-binding the profile information.
+- `<firebase-profile-menu>`: navigation menu that displays 'signUp', 'signIn' or 'profle' button, while 'profile' contains a dropdown of accessible actions.
 - `<firebase-profile-page>`: is an extensible page enabling the edition of profile information.
 
 Upcoming element:

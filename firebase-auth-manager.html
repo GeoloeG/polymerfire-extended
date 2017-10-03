@@ -1,17 +1,13 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 
-<link rel="import" href="../iron-meta/iron-meta.html">
 <link rel="import" href="../paper-toast/paper-toast.html">
 
 <link rel="import" href="../polymerfire/firebase-auth.html">
 <link rel="import" href="../polymerfire/firebase-document.html">
 
-<link rel="import" href="./firebase-error-dialog.html">
-
 <!--
 `<firebase-auth-manager>` is a wrapper element to `<firebase-auth>` that listens to the various `sign-XXX` event and delegate their execution.
 Whenever an error occurs during a firebase operation, it displays an error dialog with the corresponding error message. For successful operation, it shows a toast.
-It also provides the update of the global variables used by `<firebase-state>`.
 
 @group GoogleWebComponents Elements
 @element firebase-auth-manager
@@ -20,116 +16,90 @@ It also provides the update of the global variables used by `<firebase-state>`.
 -->
 <dom-module id="firebase-auth-manager">
   <template>
-      <iron-meta key="logged" value="[[_logged]]"></iron-meta>
-      <!-- TODO PG: check if we can switch this to 2 way-data binding if we solved the query issue... -->
-      <iron-meta key="user" value="{{_user}}"></iron-meta>
-      <iron-meta key="profile" value="{{_profile}}"></iron-meta>
-      <iron-meta key="profilePath" value="{{_profilePath}}"></iron-meta>
-      <iron-meta key="appName" value="{{appName}}"></iron-meta>
-
-      <firebase-auth app-name="[[appName]]"
-                     id="firebaseAuth"
+      <firebase-auth id="firebaseAuth"
                      user="{{_user}}"
-                     signed-in="{{_logged}}">
+                     signed-in="{{logged}}">
       </firebase-auth>
 
       <firebase-document id="firebaseAuthDoc"
-                         app-name="[[appName]]"
-                         path="{{_profilePath}}"
-                         data="{{_profile}}">
+                         path="[[_profilePath]]"
+                         data="{{profile}}">
       </firebase-document>
-
-      <firebase-error-dialog id="errorDialog"
-                             hidden$="{{!_lastError}}"
-                             entry-animation="scale-up-animation"
-                             exit-animation="fade-out-animation"
-                             modal>
-        <span error>[[_lastError]]</span>
-      </firebase-error-dialog>
 
       <!-- TODO PG: eventually write a firebase-toast and extract it-->
       <paper-toast id="toast" text="[[_toastMessage]]" duration="3000"></paper-toast>
   </template>
   <script>
 
-    Polymer({
+    class FirebaseAuthManager extends Polymer.Element {
+      static get is() { return 'firebase-auth-manager' }
 
-      is: 'firebase-auth-manager',
-
-      properties: {
-
-        /**
-         * User used for the `<firebase-auth>` inner element
-         */
-        _user: {
-          type: Object,
-          value: null
-        },
-
-        /**
-         * Logged used for the `<firebase-auth>` inner element
-         */
-        _logged: {
-          type: Boolean,
-          value: false,
-          observer: '_notifyStatus'
-        },
-
-        /**
-         * AppName used for `<firebase-auth>` inner element
-         */
-        appName: {
-          type: String,
-          value: null
-        },
-
-        /**
-         * Computed path used for the profile firebase document
-         */
-        _profilePath: {
-          type: String,
-          value: '/profiles/undefined',
-          notify: true
-        },
-
-        /**
-         * Value of the profile firebase document
-         */
-        _profile: {
-          type: Object
-        },
-
-        /**
-         * Last error that occured with one of the auth service
-         */
-        _lastError: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * Text message of the toast
-         */
-        _toastMessage: {
-          type: String
+      static get properties() {
+        return {
+          /**
+          * Logged used for the `<firebase-auth>` inner element
+          */
+          logged: {
+            type: Boolean,
+            notify: true,
+            observer: '_notifyStatus'
+          },
+          /**
+          * Profile base path used for the profile firebase document
+          */
+          profileBasePath: {
+            type: String,
+            value: '/profiles',
+            notify: true
+          },
+          /**
+          * Value of the profile firebase document
+          */
+          profile: {
+            type: Object,
+            notify: true
+          },
+          /**
+          * Computed path used for the profile firebase document
+          */
+          _profilePath: {
+            type: String,
+            computed: '_computeProfilePath(profileBasePath, _user)'
+          },
+          /**
+          * User used for the `<firebase-auth>` inner element
+          */
+          _user: {
+            type: Object,
+            value: null
+          },
+          /**
+          * Text message of the toast
+          */
+          _toastMessage: {
+            type: String
+          }
         }
-      },
+      }
 
-      observers: [
-        '_profileChanged(_profile, _user)'
-      ],
+      static get observers() {
+        return [
+          '_profileChanged(profile, _user)',
+        ]
+      }
 
-      attached: function() {
-        window.addEventListener('sign-up', this._signUpHandler.bind(this));
-        window.addEventListener('sign-in', this._signInHandler.bind(this));
-        window.addEventListener('sign-out', this._signOutHandler.bind(this));
-        window.addEventListener('user-created', this._userHandler.bind(this));
-        window.addEventListener('login', this._userHandler.bind(this));
-        window.addEventListener('logout', this._userHandler.bind(this));
-        window.addEventListener('error', this._errorHandler.bind(this));
-      },
+      ready() {
+        window.addEventListener('sign-up', this._signUpHandler.bind(this))
+        window.addEventListener('sign-in', this._signInHandler.bind(this))
+        window.addEventListener('sign-out', this._signOutHandler.bind(this))
+        window.addEventListener('user-created', this._userHandler.bind(this))
+        window.addEventListener('login', this._userHandler.bind(this))
+        window.addEventListener('logout', this._userHandler.bind(this))
+        window.addEventListener('error', this._errorHandler.bind(this))
+        super.ready()
+      }
 
-      detached: function() {
+      disconnectedCallback() {
         window.removeEventListener('sign-up', this._signUpHandler.bind(this));
         window.removeEventListener('sign-in', this._signInHandler.bind(this));
         window.removeEventListener('sign-out', this._signOutHandler.bind(this));
@@ -137,26 +107,27 @@ It also provides the update of the global variables used by `<firebase-state>`.
         window.removeEventListener('login', this._userHandler.bind(this));
         window.removeEventListener('logout', this._userHandler.bind(this));
         window.removeEventListener('error', this._errorHandler.bind(this));
-      },
+        super.disconnectedCallback()
+      }
 
-      _calcProfilePath: function(user) {
-        if (user && user.uid) {
-          return ['/profiles', user.uid].join('/');
-        } else {
-          return '/profiles/undefined';
-        }
-      },
-
-      _notifyStatus: function(newStatus, oldStatus) {
+      _notifyStatus(newStatus, oldStatus) {
         if (oldStatus && !newStatus) {
-          this.fire('logout');
+          this.dispatchEvent(new CustomEvent('logout', { bubbles: true, composed: true }))
         }
         if (newStatus && !oldStatus) {
-          this.fire('login');
+          this.dispatchEvent(new CustomEvent('login', { bubbles: true, composed: true }));
         }
-      },
+      }
 
-      _profileChanged: function(profile, user) {
+      _computeProfilePath(profileBasePath, user) {
+        if (this.logged) {
+          return [profileBasePath, user.uid].join('/')
+        } else {
+          return [profileBasePath, 'undefined'].join('/')
+        }
+      }
+
+      _profileChanged(profile, user) {
         if (user && profile && Object.keys(profile).length === 0) {
           var providerInfo = user.providerData;
           var i;
@@ -185,20 +156,19 @@ It also provides the update of the global variables used by `<firebase-state>`.
             }
             profile.picture = profile.picture || '';
           }
-          this.$.firebaseAuthDoc.save('/profiles', user.uid);
-          this.set('_profile', profile);
+          this.$.firebaseAuthDoc.saveValue(this.profileBasePath, user.uid);
+          this.set('profile', profile);
         }
-        this.set('_profilePath', this._calcProfilePath())
-      },
+      }
 
-      _signUpHandler: function(e) {
+      _signUpHandler(e) {
         this.$.firebaseAuth.createUserWithEmailAndPassword(
           e.detail.params.email,
           e.detail.params.password
         );
-      },
+      }
 
-      _signInHandler: function(e) {
+      _signInHandler(e) {
         this.$.firebaseAuth.provider = e.detail.provider;
         if (e.detail.provider == "password") {
           this.$.firebaseAuth.signInWithEmailAndPassword(
@@ -209,16 +179,16 @@ It also provides the update of the global variables used by `<firebase-state>`.
         else {
           this.$.firebaseAuth.signInWithPopup();
         }
-      },
+      }
 
-      _signOutHandler: function() {
+      _signOutHandler() {
         this.$.firebaseAuth.signOut();
-        this.async(function() {
-          // this.set('_profile', undefined);
-        });
-      },
+        // this.async(function() {
+        //   this.set('profile', undefined);
+        // });
+      }
 
-      _userHandler: function(e) {
+      _userHandler(e) {
         switch (e.type) {
           case 'user-created':
             this._toastMessage = 'Sign-Up ';
@@ -232,22 +202,17 @@ It also provides the update of the global variables used by `<firebase-state>`.
         }
         this._toastMessage += 'successful!';
         this.$.toast.open();
-      },
+      }
 
-      _errorHandler: function(e) {
+      _errorHandler(e) {
         if (e.detail && e.detail.code == 'auth/popup-blocked') {
           this.$.firebaseAuth.signInWithRedirect();
           return;
         }
-        this._lastError = e.detail;
-        if (this._lastError) {
-          this.$.errorDialog.open();
-        } else {
-          console.error('Unknown error: ' + JSON.stringify(e));
-        }
+        console.error('Unknown error: ' + e.detail);
       }
+    }
 
-    });
-
+    customElements.define(FirebaseAuthManager.is, FirebaseAuthManager)
   </script>
 </dom-module>
